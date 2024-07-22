@@ -2,32 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer base {
+  body {
+    @apply font-udemy-sans;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
+@layer components {
+  .header-item {
+    @apply flex items-center h-12 my-3 px-3 text-sm hover:text-[#412885] hover:cursor-pointer;
+  }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .heading-sm {
+    @apply text-sm leading-3 font-bold tracking-normal;
+  }
+
+  .btn {
+    @apply relative inline-flex justify-center items-center max-w-full min-w-2 border-none px-3 select-none align-bottom whitespace-nowrap cursor-pointer;
+  }
+
+  .btn-disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  .btn-medium {
+    @apply h-10;
+  }
+
+  .btn-large {
+    @apply h-12;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white;
+  }
+
+  .btn-secondary {
+    @apply border border-solid border-primary bg-white text-primary;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-primary min-w-[auto] p-0 hover:text-[#3b198f];
+  }
+
+  .btn-icon {
+    @apply min-w-[auto];
+  }
+
+  .btn-icon-medium {
+    @apply w-10 px-[10px];
+  }
+
+  .btn-icon-large {
+    @apply w-12 px-3;
+  }
+
+  .icon {
+    @apply fill-current inline-block flex-shrink-0;
+  }
+
+  .icon-small {
+    @apply w-5 h-5;
+  }
+
+  .icon-medium {
+    @apply w-6 h-6;
+  }
+
+  .text-input {
+    @apply block w-full px-4 border border-solid border-primary text-primary;
   }
 }
