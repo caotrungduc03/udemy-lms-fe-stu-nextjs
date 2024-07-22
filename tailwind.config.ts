@@ -10,7 +10,11 @@ const config: Config = {
     fontFamily: {
       "udemy-sans": ["var(--font-udemy-sans)", "-apple-system"],
     },
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#2d2f31",
+      },
+    },
   },
   plugins: [],
 };

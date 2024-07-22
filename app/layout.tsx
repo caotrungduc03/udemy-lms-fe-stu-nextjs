@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -30,7 +31,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={udemySans.variable}>{children}</body>
+      <body className={udemySans.variable}>
+        <div className="flex flex-col">
+          <Header />
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
