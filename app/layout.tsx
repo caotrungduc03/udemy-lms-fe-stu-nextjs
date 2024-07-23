@@ -1,6 +1,7 @@
-import Header from "@/components/Header";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import "./globals.css";
 
 const udemySans = localFont({
@@ -35,6 +36,7 @@ export default function RootLayout({
         <div className="flex flex-col">
           <Header />
           {children}
+          <Footer />
         </div>
       </body>
     </html>

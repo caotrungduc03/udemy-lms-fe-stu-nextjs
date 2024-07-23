@@ -38,10 +38,10 @@ const Header: React.FC = () => {
         >
           <MdOutlineShoppingCart className="icon icon-medium text-primary " />
         </Link>
-        <button className="btn btn-medium btn-secondary heading-sm ml-2">
+        <button className="btn btn-medium btn-secondary heading-sm w-[80px] ml-2">
           Log in
         </button>
-        <button className="btn btn-medium btn-primary heading-sm ml-2">
+        <button className="btn btn-medium btn-primary heading-sm w-[80px] ml-2">
           Sign up
         </button>
         <button className="btn btn-medium btn-secondary heading-sm btn-icon btn-icon-medium ml-2">
