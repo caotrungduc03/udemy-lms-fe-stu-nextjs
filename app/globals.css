@@ -33,6 +33,10 @@
     @apply h-12;
   }
 
+  .btn-round {
+    @apply rounded-[50%];
+  }
+
   .btn-primary {
     @apply bg-primary text-white;
   }
@@ -67,6 +71,10 @@
 
   .icon-medium {
     @apply w-6 h-6;
+  }
+
+  .icon-large {
+    @apply w-8 h-8;
   }
 
   .text-input {

@@ -4,7 +4,7 @@ import { MdLanguage, MdOutlineShoppingCart, MdSearch } from "react-icons/md";
 
 const Header: React.FC = () => {
   return (
-    <header className="flex items-center justify-between shadow-lg px-6 ">
+    <header className="z-10 flex items-center justify-between shadow-lg px-6">
       <Link href={"/"} className="pr-2">
         <Image
           src={"/logo-udemy.svg"}
