@@ -4,7 +4,7 @@ import { MdLanguage, MdOutlineShoppingCart, MdSearch } from "react-icons/md";
 
 const Header: React.FC = () => {
   return (
-    <header className="flex items-center justify-between shadow-lg px-6 ">
+    <header className="z-10 flex items-center justify-between shadow-lg px-6">
       <Link href={"/"} className="pr-2">
         <Image
           src={"/logo-udemy.svg"}
@@ -38,12 +38,18 @@ const Header: React.FC = () => {
         >
           <MdOutlineShoppingCart className="icon icon-medium text-primary " />
         </Link>
-        <button className="btn btn-medium btn-secondary heading-sm ml-2">
+        <Link
+          href={"/sign-in"}
+          className="btn btn-medium btn-secondary heading-sm w-[80px] ml-2"
+        >
           Log in
-        </button>
-        <button className="btn btn-medium btn-primary heading-sm ml-2">
+        </Link>
+        <Link
+          href={"/sign-up"}
+          className="btn btn-medium btn-primary heading-sm w-[80px] ml-2"
+        >
           Sign up
-        </button>
+        </Link>
         <button className="btn btn-medium btn-secondary heading-sm btn-icon btn-icon-medium ml-2">
           <MdLanguage className="icon icon-small text-primary" />
         </button>

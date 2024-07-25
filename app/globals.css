@@ -10,7 +10,7 @@
 
 @layer components {
   .header-item {
-    @apply flex items-center h-12 my-3 px-3 text-sm hover:text-[#412885] hover:cursor-pointer;
+    @apply flex items-center h-12 my-3 px-3 text-sm text-primary hover:text-[#412885] hover:cursor-pointer;
   }
 
   .heading-sm {
@@ -33,12 +33,16 @@
     @apply h-12;
   }
 
+  .btn-round {
+    @apply rounded-[50%];
+  }
+
   .btn-primary {
     @apply bg-primary text-white;
   }
 
   .btn-secondary {
-    @apply border border-solid border-primary bg-white text-primary;
+    @apply border border-solid border-primary bg-transparent text-primary;
   }
 
   .btn-ghost {
@@ -67,6 +71,10 @@
 
   .icon-medium {
     @apply w-6 h-6;
+  }
+
+  .icon-large {
+    @apply w-8 h-8;
   }
 
   .text-input {
