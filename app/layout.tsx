@@ -1,9 +1,10 @@
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "./globals.css";
-
+import StoreProvider from './StoreProvider';
 const udemySans = localFont({
   src: [
     {
@@ -48,9 +49,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={udemySans.variable}>
         <div className="flex flex-col">
-          <Header />
-          {children}
-          <Footer />
+          <StoreProvider>
+            <Header />
+            {children}
+            <Footer />
+          </StoreProvider>
         </div>
       </body>
     </html>
