@@ -18,13 +18,15 @@ interface Course {
 
 interface CourseSwiperProps {
   courses: Course[];
+  slidesPerView: number; // New prop
 }
 
-const CourseSwiper: React.FC<CourseSwiperProps> = ({ courses }) => {
+const CourseSwiper: React.FC<CourseSwiperProps> = ({ courses, slidesPerView }) => {
+  console.log("slidesPerView:", slidesPerView); 
   return (
     <Swiper
       spaceBetween={50}
-      slidesPerView={5}
+      slidesPerView={slidesPerView} // Use the prop here
       freeMode={true}
       pagination={{
         clickable: true,
@@ -35,7 +37,13 @@ const CourseSwiper: React.FC<CourseSwiperProps> = ({ courses }) => {
       {courses.map((course) => (
         <SwiperSlide key={course.id} className="mb-10">
           <div>
-            <Image src={course.imageSrc} alt="card" className="border border-gray-200 mt-2" />
+            <Image 
+              src={course.imageSrc} 
+              alt={course.title} 
+              className="border border-gray-200 mt-2" 
+              width={300} // Specify width
+              height={200} // Specify height
+            />
             <p className="font-bold text-sm">{course.title}</p>
             <p className="text-gray-600 text-xs">{course.author}</p>
             <div className="flex">

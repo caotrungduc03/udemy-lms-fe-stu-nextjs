@@ -200,7 +200,7 @@ const LandingPage: React.FC = () => {
           </div>
           <button className="mt-2 text-xs font-bold ml-5 border border-black p-2 hover:bg-gray-200">Explore Python</button>
           <div className="flex space-x-4 mx-5 mb-10 ">
-          <CourseSwiper courses={courses} />
+          <CourseSwiper courses={courses} slidesPerView={5}/>
           </div>
         </div>
       </div> 
@@ -235,7 +235,7 @@ const LandingPage: React.FC = () => {
       </div>
       <div className="ml-20">
         <h1 className="font-bold text-2xl">Learners are viewing</h1>
-        <CourseSwiper courses={courses} />
+        <CourseSwiper courses={courses} slidesPerView={5}/>
       </div>
       <div className="mt-10 content-around">
         <div className="mx-20">
