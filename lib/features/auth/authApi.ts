@@ -6,6 +6,13 @@ export const authApi = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_URL + '/auth',
   }),
   endpoints: (builder) => ({
+    register: builder.mutation({
+      query: (user) => ({
+        url: '/auth/register',
+        method: 'POST',
+        body: user,
+      }),
+    }),
     login: builder.mutation<any, { email: string; password: string }>({
       query: (data) => ({
         url: '/login',

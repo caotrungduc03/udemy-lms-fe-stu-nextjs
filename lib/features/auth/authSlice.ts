@@ -31,8 +31,6 @@ export const authSlice = createSlice({
       .addMatcher(
         authApi.endpoints.getAuthData.matchFulfilled,
         (state, { payload }) => {
-          setToken(payload.data.accessToken);
-
           return {
             ...state,
             user: payload.data.user,
