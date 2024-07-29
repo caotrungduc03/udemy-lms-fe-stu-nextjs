@@ -1,8 +1,10 @@
 'use client';
+
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { useLoginMutation } from '../../lib/features/auth/authApi';
 import GGicon from '../../public/gg-icon.png';
 import Logo from '../../public/logo.png';
@@ -36,12 +38,12 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      alert(data.message);
+      toast.success('Login successfully');
       redirect('/');
     }
 
     if (isError) {
-      alert((error as any).data.message);
+      toast.error((error as any).data.message);
     }
   }, [isSuccess, data, isError, error]);
 
