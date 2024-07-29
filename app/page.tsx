@@ -1,5 +1,6 @@
-import Image from "next/image";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+'use client';
+import Image from 'next/image';
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
 export default function Home() {
   return (

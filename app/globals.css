@@ -17,6 +17,10 @@
     @apply text-sm leading-3 font-bold tracking-normal;
   }
 
+  .heading-md {
+    @apply text-base leading-3 font-bold tracking-normal;
+  }
+
   .btn {
     @apply relative inline-flex justify-center items-center max-w-full min-w-2 border-none px-3 select-none align-bottom whitespace-nowrap cursor-pointer;
   }
