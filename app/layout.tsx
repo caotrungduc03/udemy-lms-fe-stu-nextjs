@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import './globals.css';
@@ -53,6 +55,7 @@ export default function RootLayout({
             <Header />
             {children}
             <Footer />
+            <ToastContainer autoClose={2000} />
           </div>
         </StoreProvider>
       </body>
