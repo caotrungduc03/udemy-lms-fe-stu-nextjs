@@ -1,7 +1,7 @@
 // // pages/signup.tsx
 "use client";  // Chỉ thị này cần được thêm vào đầu tệp
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { FaPlayCircle } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -12,12 +12,6 @@ import logo1 from '../../public/cisco_logo.svg';
 import logo2 from '../../public/citi_logo.svg';
 import customer from '../../public/customer.png';
 import logo3 from '../../public/ericsson_logo.svg';
-import card from '../../public/excercise.jpg';
-import card2 from '../../public/excercise2.jpg';
-import card3 from '../../public/excercise3.jpg';
-import card4 from '../../public/excercise4.jpg';
-import card5 from '../../public/excercise5.jpg';
-import card6 from '../../public/excercise6.jpg';
 import logo4 from '../../public/hewlett_packard_enterprise_logo.svg';
 import instructor from '../../public/instructor.jpg';
 import logoUB from '../../public/logo-ub.svg';
@@ -42,7 +36,7 @@ const courses = [
     author: "Author",
     rating: 4.6,
     price: "299,000 VND",
-    imageSrc: card, // Replace with actual image path
+    imageSrc: "/excercise.jpg", // Replace with actual image path
   },
   {
     id: 2,
@@ -50,39 +44,39 @@ const courses = [
     author: "Author",
     rating: 4.6,
     price: "299,000 VND",
-    imageSrc: card2, // Replace with actual image path
+    imageSrc: "/excercise2.jpg", // Replace with actual image path
   },
   {
-    id: 2,
+    id: 3,
     title: "The Completed Python Bootcamp From Zero to Hero in Python",
     author: "Author",
     rating: 4.6,
     price: "299,000 VND",
-    imageSrc: card3, // Replace with actual image path
+    imageSrc: "/excercise3.jpg", // Replace with actual image path
   },
   {
-    id: 2,
+    id: 4,
     title: "The Completed Python Bootcamp From Zero to Hero in Python",
     author: "Author",
     rating: 4.6,
     price: "299,000 VND",
-    imageSrc: card4, // Replace with actual image path
+    imageSrc: "/excercise4.jpg", // Replace with actual image path
   },
   {
-    id: 2,
+    id: 5,
     title: "The Completed Python Bootcamp From Zero to Hero in Python",
     author: "Author",
     rating: 4.6,
     price: "299,000 VND",
-    imageSrc: card5, // Replace with actual image path
+    imageSrc: "/excercise5.jpg", // Replace with actual image path
   },
   {
-    id: 2,
+    id: 6,
     title: "The Completed Python Bootcamp From Zero to Hero in Python",
     author: "Author",
     rating: 4.6,
     price: "299,000 VND",
-    imageSrc: card6, // Replace with actual image path
+    imageSrc: "/excercise6.jpg", // Replace with actual image path
   },
   
   // Repeat for other courses
@@ -145,6 +139,9 @@ const topic = [
 ]
 
 const LandingPage: React.FC = () => {
+  const [selectedTab, setSelectedTab] = useState('Python'); 
+  
+
   var settings = {
     dots: true,
     infinite: true,
@@ -184,16 +181,18 @@ const LandingPage: React.FC = () => {
       <div className="px-20 pt-5">
         <h1 className="font-bold text-2xl mb-5">A broad selection of courses</h1>
         <h2 className="text-xl mb-5">Choose from over 220,000 online video courses with new additions published every month</h2>
-        <div className="space-x-4 font-bold mb-2">
-          <button className="hover:text-purple-900">Python</button>
-          <button className="hover:text-purple-900">Microsoft Excel</button>
-          <button className="hover:text-purple-900">Web Development</button>
-          <button className="hover:text-purple-900">JavaScript</button>
-          <button className="hover:text-purple-900">Data Science</button>
-          <button className="hover:text-purple-900">Amazon</button>
-          <button className="hover:text-purple-900">Drawing</button>
-        </div>
-        <div className="border border-gray-300">
+        <div className="font-bold">
+      {['Python', 'Microsoft Excel', 'Web Development', 'JavaScript', 'Data Science', 'Amazon', 'Drawing'].map((tab) => (
+        <button
+          key={tab}
+          className={`hover:text-purple-900 hover:bg-gray-200 transition-colors duration-300 p-2 ${selectedTab === tab ? 'bg-gray-200' : ''}`}
+          onClick={() => setSelectedTab(tab)}
+        >
+          {tab}
+        </button>
+      ))}
+    </div>
+        <div className="bg-gray-200">
           <div className="grid grid-cols-5">
             <div className="text-xl font-bold m-5 col-span-5">Expand your career opportunities with Python</div>
             <p className="ml-5 text-sm pr-100 col-span-3">Take one of Udemys range of Python courses and learn how to code using this incredibly useful language. Its simple syntax and readability makes Python perfect for Flask, Django, data science, and machine learning. You’ll learn how to build everything from games to sites to apps. Choose from a range of courses that will appeal to...</p>
@@ -205,8 +204,8 @@ const LandingPage: React.FC = () => {
         </div>
       </div> 
       <div className="mt-10 bg-gray-100 content-around">
-        <div className="ml-20">
-          <div className="mt-16 font-bold text-2xl mb-5">How learners like you are achieving their goals</div>
+        <div className="ml-20 mr-20">
+          <div className="mt-5 font-bold text-2xl mb-5">How learners like you are achieving their goals</div>
           <Swiper
             spaceBetween={50}
             slidesPerView={3}
@@ -233,13 +232,13 @@ const LandingPage: React.FC = () => {
           </Swiper>
         </div>
       </div>
-      <div className="ml-20">
+      <div className="mx-20 mt-10">
         <h1 className="font-bold text-2xl">Learners are viewing</h1>
         <CourseSwiper courses={courses} slidesPerView={5}/>
       </div>
       <div className="mt-10 content-around">
         <div className="mx-20">
-          <div className="mt-16 font-bold text-2xl mb-5">Top categories</div>
+          <div className="mt-10 font-bold text-2xl mb-5">Top categories</div>
           <div className="grid grid-cols-4 gap-8">
             {topic.map((topic, index) =>(
               <div className="overflow-hidden relative">
@@ -247,7 +246,7 @@ const LandingPage: React.FC = () => {
                 <Image
                   src={topic.image}
                   alt="topics"
-                  className="z-10 transition duration-500 ease-in-out transform hover:scale-105"
+                  className="z-10 transition duration-500 ease-in-out transform hover:scale-105 mb-2"
                 />
               </div>
               <span className="font-bold tetx-sm">{topic.title}</span>
@@ -259,7 +258,7 @@ const LandingPage: React.FC = () => {
       </div>
       <div className="mt-10 bg-gray-100 content-around">
         <div className="ml-20 mb-10">
-          <div className="mt-16 font-bold text-2xl mb-5">Featured topics by category</div>
+          <div className="mt-5 font-bold text-2xl mb-5">Featured topics by category</div>
           <div className="grid grid-cols-4 gap-y-5">
             <h1 className="font-bold">Development</h1>
             <h1 className="font-bold">Business</h1>
@@ -324,7 +323,7 @@ const LandingPage: React.FC = () => {
       </div>
 
 
-      <div className="flex justify-center mx-20">
+      <div className="flex justify-center mx-20 my-10">
         <div className="grid grid-cols-2 justify-center items-center mt-20 mx-20" style={{width: "90%"}}>
           <div className="flex justify-center">
             <Image src={instructor} alt="instructor" width={400} className="object-contain" />
