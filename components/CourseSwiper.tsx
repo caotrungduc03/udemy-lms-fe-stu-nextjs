@@ -18,11 +18,10 @@ interface Course {
 
 interface CourseSwiperProps {
   courses: Course[];
-  slidesPerView: number; // New prop
+  slidesPerView: number; 
 }
 
 const CourseSwiper: React.FC<CourseSwiperProps> = ({ courses, slidesPerView }) => {
-  console.log("slidesPerView:", slidesPerView); 
   return (
     <Swiper
       spaceBetween={50}

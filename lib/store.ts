@@ -1,15 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authApi } from './features/auth/authApi';
 import authSlice from './features/auth/authSlice';
+import { courseApi } from './features/course/courseApi';
+import { userApi } from './features/user/userApi';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       auth: authSlice,
       [authApi.reducerPath]: authApi.reducer,
+      [courseApi.reducerPath]: courseApi.reducer,
+      [userApi.reducerPath]: userApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(authApi.middleware),
+      getDefaultMiddleware().concat(authApi.middleware, courseApi.middleware, userApi.middleware),
   });
 };
 

@@ -5,15 +5,30 @@ import { IoIosPhonePortrait } from "react-icons/io";
 import { LiaStopwatchSolid } from "react-icons/lia";
 import { MdOutlinePlayCircleFilled } from "react-icons/md";
 import CourseSwiper from "../../components/CourseSwiper";
-import card from '../../public/excercise.jpg';
-import { default as card2, default as course } from '../../public/excercise2.jpg';
-import card3 from '../../public/excercise3.jpg';
-import card4 from '../../public/excercise4.jpg';
-import card5 from '../../public/excercise5.jpg';
-import card6 from '../../public/excercise6.jpg';
-import instructor from '../../public/fakeImage/instructor2.jpg';
+import course from '../../public/excercise2.jpg';
 
+import { useGetCourseDataQuery } from '../../lib/features/course/courseApi';
+import instructor from '../../public/fakeImage/instructor2.jpg';
 const Course: React.FC = () => {
+    const handleData2 = () => {
+        if (isLoading) {
+        console.log('...Loading')
+        } else if (isSuccess) {
+        console.log('...Success', data)
+        } else if (isError) {
+        console.log('...Error', error)
+        }
+    };
+
+
+    const {
+        data: data,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+      } = useGetCourseDataQuery('1')
+
     const courses = [
         {
           id: 1,
@@ -21,7 +36,7 @@ const Course: React.FC = () => {
           author: "Author",
           rating: 4.6,
           price: "299,000 VND",
-          imageSrc: card, // Replace with actual image path
+          imageSrc: "/excercise.jpg", // Replace with actual image path
         },
         {
           id: 2,
@@ -29,7 +44,7 @@ const Course: React.FC = () => {
           author: "Author",
           rating: 4.6,
           price: "299,000 VND",
-          imageSrc: card2, // Replace with actual image path
+          imageSrc: "/excercise2.jpg", // Replace with actual image path
         },
         {
           id: 2,
@@ -37,7 +52,7 @@ const Course: React.FC = () => {
           author: "Author",
           rating: 4.6,
           price: "299,000 VND",
-          imageSrc: card3, // Replace with actual image path
+          imageSrc: "/excercise3.jpg", // Replace with actual image path
         },
         {
           id: 2,
@@ -45,7 +60,7 @@ const Course: React.FC = () => {
           author: "Author",
           rating: 4.6,
           price: "299,000 VND",
-          imageSrc: card4, // Replace with actual image path
+          imageSrc: "/excercise4.jpg", // Replace with actual image path
         },
         {
           id: 2,
@@ -53,7 +68,7 @@ const Course: React.FC = () => {
           author: "Author",
           rating: 4.6,
           price: "299,000 VND",
-          imageSrc: card5, // Replace with actual image path
+          imageSrc: "/excercise5.jpg", // Replace with actual image path
         },
         {
           id: 2,
@@ -61,7 +76,7 @@ const Course: React.FC = () => {
           author: "Author",
           rating: 4.6,
           price: "299,000 VND",
-          imageSrc: card6, // Replace with actual image path
+          imageSrc: "/excercise6.jpg", // Replace with actual image path
         },
         
         // Repeat for other courses
@@ -204,7 +219,7 @@ const Course: React.FC = () => {
                         )}
                         <h1 className='font-bold text-3xl'>₫1,099,000</h1>
                         <div className='flex py-2'>
-                            <button className='font-bold bg-purple-900 text-white py-2 px-10 mr-2'>
+                            <button className='font-bold bg-purple-900 text-white py-2 px-10 mr-2' onClick={handleData2}>
                                 Add to cart
                             </button>
                             <button className='font-bold bg-white border border-black p-2'>Buy now</button>

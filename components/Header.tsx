@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import React, { useState } from 'react';
 import {
   MdLanguage,
   MdOutlineFavoriteBorder,
@@ -10,9 +11,15 @@ import {
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 
+
 const Header: React.FC = () => {
   const { user } = useSelector((state: any) => state.auth);
-
+  const [wordSearch, setWordSearch] = useState("")
+  const handlerSearch =(event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const searchURL = `/search?query=${encodeURIComponent(wordSearch)}`;
+    window.location.href = searchURL;
+  }
   return (
     <header className="z-10 flex items-center justify-between shadow-lg px-6">
       <Link href={'/'} className="pr-2">
@@ -27,7 +34,7 @@ const Header: React.FC = () => {
       <nav className="flex-1 flex items-center justify-between">
         <span className="header-item">Categories</span>
         <div className="flex-1 h-12 mx-3 border border-solid border-primary rounded-full bg-gray-50">
-          <form className="flex items-center h-full pr-6">
+          <form className="flex items-center h-full pr-6" onSubmit={handlerSearch}>
             <button
               className="btn btn-large btn-ghost heading-sm btn-disabled btn-icon btn-icon-large"
               type="submit"
@@ -37,7 +44,10 @@ const Header: React.FC = () => {
             <input
               className="text-input flex-1 border-0 pl-1 bg-transparent text-sm focus:outline-none"
               placeholder="Search for anything"
+              value = {wordSearch}
+              onChange={e => setWordSearch(e.target.value)}
             ></input>
+            <Link href={{pathname:"/search", query: {wordSearch:wordSearch}}}></Link>
           </form>
         </div>
         <span className="header-item">Udemy Business</span>

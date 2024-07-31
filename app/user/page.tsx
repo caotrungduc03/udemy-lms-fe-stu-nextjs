@@ -1,12 +1,31 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useGetUserDataQuery } from "../../lib/features/user/userApi";
 import Avt from "../../public/gg-icon.png";
 import Security from "./user-account-security/page";
 import UserPhoto from "./userphoto/page";
 import Profile from "./userprofile/page";
+
 const User: React.FC = () => {
   const [page, setPage] = useState("profile"); // Default to "profile" page
+  const {
+    data: data,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetUserDataQuery('1')
+
+  useEffect(() => {
+    if (isLoading) {
+        console.log('...Loading')
+        } else if (isSuccess) {
+        console.log('...Success', data)
+        } else if (isError) {
+        console.log('...Error', error)
+        }
+  }, []);
 
   // Function to render the selected page
   const renderPage = () => {
@@ -48,15 +67,10 @@ const User: React.FC = () => {
                 onClick={() => setPage("changepassword")}    
             >
                 Account Security</div>
-            <div className="hover:bg-gray-400 text-sm text-gray-600 p-2">Subscriptions</div>
             <div className="hover:bg-gray-400 text-sm text-gray-600 p-2">Payment methods</div>
-            <div className="hover:bg-gray-400 text-sm text-gray-600 p-2">Privacy</div>
-            <div className="hover:bg-gray-400 text-sm text-gray-600 p-2">otifications</div>
-            <div className="hover:bg-gray-400 text-sm text-gray-600 p-2">API clients</div>
-            <div className="hover:bg-gray-400 text-sm text-gray-600 p-2">Close account</div>
           </div>
         </div>
-        <div className="col-span-5 p-3">
+        <div className="col-span-5">
           {renderPage()}
         </div>
       </div>
