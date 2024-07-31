@@ -33,7 +33,7 @@ export const authSlice = createSlice({
         (state, { payload }) => {
           return {
             ...state,
-            user: payload.data.user,
+            user: payload.data,
           };
         },
       );

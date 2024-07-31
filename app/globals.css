@@ -84,4 +84,12 @@
   .text-input {
     @apply block w-full px-4 border border-solid border-primary text-primary;
   }
+
+  .avatar {
+    @apply inline-flex justify-center items-center rounded-50 text-white bg-primary object-cover;
+  }
+
+  .link-underline {
+    @apply text-[#5022c3] decoration-[#8072e6] underline-offset-4 underline hover:text-[#3b198f];
+  }
 }

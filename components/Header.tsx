@@ -1,7 +1,8 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import { redirect } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import {
   MdLanguage,
   MdOutlineFavoriteBorder,
@@ -10,16 +11,33 @@ import {
   MdSearch,
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-
+import { useGetAuthDataQuery } from '../lib/features/auth/authApi';
+import { getToken } from '../lib/tokens';
 
 const Header: React.FC = () => {
+  const [token, setToken] = useState('');
   const { user } = useSelector((state: any) => state.auth);
-  const [wordSearch, setWordSearch] = useState("")
-  const handlerSearch =(event: React.FormEvent<HTMLFormElement>) => {
+  const [wordSearch, setWordSearch] = useState('');
+
+  const { isLoading, error } = useGetAuthDataQuery(
+    {
+      accessToken: token || '',
+    },
+    {
+      skip: !!user || !token,
+    },
+  );
+
+  useEffect(() => {
+    setToken(getToken());
+  }, [token]);
+
+  const handlerSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const searchURL = `/search?query=${encodeURIComponent(wordSearch)}`;
-    window.location.href = searchURL;
-  }
+    redirect(searchURL);
+  };
+
   return (
     <header className="z-10 flex items-center justify-between shadow-lg px-6">
       <Link href={'/'} className="pr-2">
@@ -28,13 +46,16 @@ const Header: React.FC = () => {
           width={91}
           height={34}
           alt={'Udemy Logo'}
-          loading={'lazy'}
+          priority={true}
         />
       </Link>
       <nav className="flex-1 flex items-center justify-between">
         <span className="header-item">Categories</span>
         <div className="flex-1 h-12 mx-3 border border-solid border-primary rounded-full bg-gray-50">
-          <form className="flex items-center h-full pr-6" onSubmit={handlerSearch}>
+          <form
+            className="flex items-center h-full pr-6"
+            onSubmit={handlerSearch}
+          >
             <button
               className="btn btn-large btn-ghost heading-sm btn-disabled btn-icon btn-icon-large"
               type="submit"
@@ -44,10 +65,12 @@ const Header: React.FC = () => {
             <input
               className="text-input flex-1 border-0 pl-1 bg-transparent text-sm focus:outline-none"
               placeholder="Search for anything"
-              value = {wordSearch}
-              onChange={e => setWordSearch(e.target.value)}
+              value={wordSearch}
+              onChange={(e) => setWordSearch(e.target.value)}
             ></input>
-            <Link href={{pathname:"/search", query: {wordSearch:wordSearch}}}></Link>
+            <Link
+              href={{ pathname: '/search', query: { wordSearch: wordSearch } }}
+            ></Link>
           </form>
         </div>
         <span className="header-item">Udemy Business</span>
@@ -84,9 +107,12 @@ const Header: React.FC = () => {
                   height={32}
                   alt="img"
                   loading="lazy"
+                  className="avatar"
                 />
               ) : (
-                <span>{user.fullName.split(' ')[0][0].toUpperCase()}</span>
+                <span className="avatar">
+                  {user.fullName.split(' ')[0][0].toUpperCase()}
+                </span>
               )}
             </Link>
           </>

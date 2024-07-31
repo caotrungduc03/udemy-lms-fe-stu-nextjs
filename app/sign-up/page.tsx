@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRegisterMutation } from '../../lib/features/auth/authApi';
@@ -108,9 +109,9 @@ const Signup: React.FC = () => {
           )}
           <div className="text-center mt-10">
             <span>Already have an account? </span>
-            <button className="font-bold underline text-purple-700">
+            <Link href="/log-in" className="font-bold link-underline">
               Log in
-            </button>
+            </Link>
           </div>
         </form>
       </div>

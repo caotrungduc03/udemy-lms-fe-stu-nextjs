@@ -22,7 +22,7 @@ export const authApi = createApi({
     }),
     getAuthData: builder.query<any, { accessToken: string }>({
       query: ({ accessToken }) => ({
-        url: '/users/getProfile',
+        url: '/users/profile',
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
