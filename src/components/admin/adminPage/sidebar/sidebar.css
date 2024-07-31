@@ -1,0 +1,11 @@
+.nav-list .nav-item span,
+.nav-label a
+{
+    display: none;
+}
+
+.sidenav.expand .nav-list .nav-item span,
+.sidenav.expand .nav-label a{
+    display: block;
+}
+
