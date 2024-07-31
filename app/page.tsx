@@ -12,6 +12,7 @@ export default function Home() {
             width={1340}
             height={400}
             alt="Banner 1"
+            priority={true}
           />
           <div className="absolute top-16 left-[72px] max-w-[440px] shadow-lg p-6 bg-white">
             <h1 className="text-4xl font-bold mb-2">Learning that gets you</h1>

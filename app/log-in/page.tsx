@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -114,9 +115,9 @@ const Login: React.FC = () => {
             </div>
             <div className="text-center mt-10">
               <span>Don't have an account? </span>
-              <button className="font-bold underline text-purple-700">
+              <Link href="/sign-up" className="font-bold link-underline">
                 Sign up
-              </button>
+              </Link>
             </div>
           </form>
         </div>
