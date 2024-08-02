@@ -8,7 +8,12 @@ interface Course {
   coverImage: string;
   priceType: string;
   price: number;
-} 
+}
+
+// Thêm interface để xác định các tham số cho query tìm kiếm
+interface CourseQuery {
+  q?: string;
+}
 
 export const courseApi = createApi({
   reducerPath: 'courseApi',
@@ -16,11 +21,17 @@ export const courseApi = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
   }),
   endpoints: (builder) => ({
-    getCourseData: builder.query<Course, string>({
-      query: () => ({
-        url: '/courses',
-        method: 'GET',
-      }),
+    getCourseData: builder.query({
+      query: (queryArg) => {
+        const params = new URLSearchParams();
+        if (queryArg.q) {
+          params.append('q', queryArg.q);
+        }
+        return {
+          url: `/courses/search?${params}`,
+          method: 'GET',
+        };
+      },
     }),
   }),
 });
