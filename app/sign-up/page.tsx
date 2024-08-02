@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { useRegisterMutation } from '../../lib/features/auth/authApi';
 import Logo from '../../public/logo.png';
 
@@ -15,7 +16,8 @@ type FormValues = {
 };
 
 const Signup: React.FC = () => {
-  const [addUser, { isLoading, error }] = useRegisterMutation();
+  const [addUser, { data, isLoading, isSuccess, error }] =
+    useRegisterMutation();
   const {
     register,
     handleSubmit,
@@ -23,6 +25,11 @@ const Signup: React.FC = () => {
     watch,
   } = useForm<FormValues>();
   const password = watch('password');
+
+  // useEffect(() => {
+  //   toast.success('Sign up successfully');
+  //   redirect('/log-in');
+  // }, [isSuccess, data]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (data.password !== data.confirmPassword) {
@@ -33,6 +40,10 @@ const Signup: React.FC = () => {
     try {
       const result = await addUser(data).unwrap();
       console.log('result', result);
+      if (result) {
+        toast.success('Sign up successfully');
+        window.location.href = '/log-in';
+      }
       // Handle success (e.g., navigate to another page or show a success message)
     } catch (err) {
       console.error('Failed to register:', err);

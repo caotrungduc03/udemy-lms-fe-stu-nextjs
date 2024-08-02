@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   MdLanguage,
   MdOutlineFavoriteBorder,
@@ -14,10 +15,13 @@ import { useSelector } from 'react-redux';
 import { useGetAuthDataQuery } from '../lib/features/auth/authApi';
 import { getToken } from '../lib/tokens';
 
+interface SearchFormData {
+  search: string;
+}
+
 const Header: React.FC = () => {
   const [token, setToken] = useState('');
   const { user } = useSelector((state: any) => state.auth);
-  const [wordSearch, setWordSearch] = useState('');
 
   const { isLoading, error } = useGetAuthDataQuery(
     {
@@ -32,9 +36,10 @@ const Header: React.FC = () => {
     setToken(getToken());
   }, [token]);
 
-  const handlerSearch = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const searchURL = `/search?query=${encodeURIComponent(wordSearch)}`;
+  const { register, handleSubmit } = useForm<SearchFormData>();
+
+  const onSubmit: SubmitHandler<SearchFormData> = (data) => {
+    const searchURL = `/search?query=${encodeURIComponent(data.search)}`;
     window.location.href = searchURL;
   };
 
@@ -54,7 +59,7 @@ const Header: React.FC = () => {
         <div className="flex-1 h-12 mx-3 border border-solid border-primary rounded-full bg-gray-50">
           <form
             className="flex items-center h-full pr-6"
-            onSubmit={handlerSearch}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <button
               className="btn btn-large btn-ghost heading-sm btn-disabled btn-icon btn-icon-large"
@@ -65,11 +70,10 @@ const Header: React.FC = () => {
             <input
               className="text-input flex-1 border-0 pl-1 bg-transparent text-sm focus:outline-none"
               placeholder="Search for anything"
-              value={wordSearch}
-              onChange={(e) => setWordSearch(e.target.value)}
+              {...register('search')}
             ></input>
             <Link
-              href={{ pathname: '/search', query: { wordSearch: wordSearch } }}
+              href={{ pathname: '/search', query: { search: 'search' } }}
             ></Link>
           </form>
         </div>
