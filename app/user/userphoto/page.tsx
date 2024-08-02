@@ -37,7 +37,7 @@ const UserPhoto: React.FC<PhotoProps> = ({ photo }) => {
             />
             <button
               type="submit"
-              className="text-white font-bold bg-black mt-4 py-2 px-4"
+              className="text-white font-bold bg-black mt-4 py-2 px-4 rounded-md"
             >
               Save
             </button>

@@ -1,10 +1,10 @@
 // components/CourseSwiper.tsx
-"use-client"
-import Image from "next/image";
+'use-client';
+import Image from 'next/image';
 import React from 'react';
-import "swiper/css";
-import "swiper/css/pagination";
-import { FreeMode, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Autoplay, FreeMode, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 interface Course {
@@ -18,10 +18,13 @@ interface Course {
 
 interface CourseSwiperProps {
   courses: Course[];
-  slidesPerView: number; 
+  slidesPerView: number;
 }
 
-const CourseSwiper: React.FC<CourseSwiperProps> = ({ courses, slidesPerView }) => {
+const CourseSwiper: React.FC<CourseSwiperProps> = ({
+  courses,
+  slidesPerView,
+}) => {
   return (
     <Swiper
       spaceBetween={50}
@@ -30,16 +33,20 @@ const CourseSwiper: React.FC<CourseSwiperProps> = ({ courses, slidesPerView }) =
       pagination={{
         clickable: true,
       }}
+      autoplay={{
+        delay: 2500,
+        disableOnInteraction: false,
+      }}
       speed={750}
-      modules={[FreeMode, Pagination]}
+      modules={[FreeMode, Pagination, Autoplay]}
     >
       {courses.map((course) => (
         <SwiperSlide key={course.id} className="mb-10">
           <div>
-            <Image 
-              src={course.imageSrc} 
-              alt={course.title} 
-              className="border border-gray-200 mt-2" 
+            <Image
+              src={course.imageSrc}
+              alt={course.title}
+              className="border border-gray-200 mt-2"
               width={300} // Specify width
               height={200} // Specify height
             />
