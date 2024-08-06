@@ -13,7 +13,7 @@ interface User {
 type FormValues = {
   fullName: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
 };
 
 const Profile: React.FC<User> = ({ userName, email, phone }) => {
@@ -40,7 +40,7 @@ const Profile: React.FC<User> = ({ userName, email, phone }) => {
       console.log('result', result);
       if (result) {
         toast.success('Update successfully');
-        // window.location.href = '/';
+        window.location.href = '/user';
       }
       // Handle success (e.g., navigate to another page or show a success message)
     } catch (err) {
@@ -78,7 +78,7 @@ const Profile: React.FC<User> = ({ userName, email, phone }) => {
               <h1 className="font-bold text-sm">Phone:</h1>
               <input
                 placeholder={phone}
-                {...register('phone', { required: true })}
+                {...register('phoneNumber', { required: true })}
                 className="w-full p-2 rounded-md border border-black mb-4"
               />
               <button
