@@ -29,8 +29,25 @@ export const authApi = createApi({
         },
       }),
     }),
+    updateUserProfile: builder.mutation<
+      any,
+      { accessToken: string; userData: any }
+    >({
+      query: ({ accessToken, userData }) => ({
+        url: '/users/profile',
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: userData,
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useGetAuthDataQuery } =
-  authApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useGetAuthDataQuery,
+  useUpdateUserProfileMutation,
+} = authApi;
