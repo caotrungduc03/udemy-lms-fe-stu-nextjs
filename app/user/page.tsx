@@ -1,12 +1,9 @@
 'use client';
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useGetAuthDataQuery } from '../../lib/features/auth/authApi';
 import { getToken } from '../../lib/tokens';
-import Avt from '../../public/gg-icon.png';
 import Security from './user-account-security/page';
-import UserPhoto from './userphoto/page';
 import Profile from './userprofile/page';
 
 const User: React.FC = () => {
@@ -56,10 +53,9 @@ const User: React.FC = () => {
             userName={user.fullName}
             email={user.email}
             phone={user.phoneNumber}
+            photo={user.avatar}
           />
         );
-      case 'userphoto':
-        return <UserPhoto photo={user.avatar} />;
       case 'changepassword':
         return <Security />;
       default:
@@ -68,6 +64,7 @@ const User: React.FC = () => {
             userName={user.fullName}
             email={user.email}
             phone={user.phoneNumber}
+            photo={user.avatar}
           />
         );
     }
@@ -77,8 +74,12 @@ const User: React.FC = () => {
     <>
       <div className="grid grid-cols-7 p-3">
         <div className="col-start-2 col-span-1 border border-gray-200 flex flex-col items-center">
-          <div className="rounded-full border border-gray-200 mt-4">
-            <Image src={Avt} alt="avt" width={100} />
+          <div className="rounded-full mx-2 border border-gray-200 mt-4">
+            <img
+              src={user.avatar}
+              alt="avt"
+              className="rounded-full aspect-square p-1 object-cover"
+            />
           </div>
           <span className="mt-2 font-bold">Username</span>
           <div className="w-full">
@@ -87,12 +88,6 @@ const User: React.FC = () => {
               onClick={() => setPage('profile')}
             >
               Profile
-            </div>
-            <div
-              className="hover:bg-gray-400 text-sm text-gray-600 p-2 cursor-pointer"
-              onClick={() => setPage('userphoto')}
-            >
-              Photo
             </div>
             <div
               className="hover:bg-gray-400 text-sm text-gray-600 p-2 cursor-pointer"
