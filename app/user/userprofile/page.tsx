@@ -8,15 +8,18 @@ interface User {
   userName: string;
   email: string;
   phone: string;
+  photo: string;
 }
 
 type FormValues = {
   fullName: string;
   email: string;
   phoneNumber: string;
+  file: FileList;
 };
 
-const Profile: React.FC<User> = ({ userName, email, phone }) => {
+const Profile: React.FC<User> = ({ userName, email, phone, photo }) => {
+  const [previewImage, setPreviewImage] = useState(photo);
   const [token, setToken] = useState('');
 
   const [updateUser, { data, isLoading, isSuccess, error }] =
@@ -31,18 +34,39 @@ const Profile: React.FC<User> = ({ userName, email, phone }) => {
     setToken(getToken());
     console.log(token);
   }, [token]);
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setPreviewImage(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const formData = new FormData();
+    formData.append('fullName', data.fullName);
+    formData.append('email', data.email);
+    formData.append('phoneNumber', data.phoneNumber);
+    if (data.file[0]) {
+      formData.append('file', data.file[0]);
+    }
+
     try {
       const result = await updateUser({
         accessToken: token,
-        userData: data,
+        userData: formData,
       }).unwrap();
       console.log('result', result);
       if (result) {
         toast.success('Update successfully');
-        window.location.href = '/user';
+        setTimeout(() => {
+          window.location.href = '/user';
+        }, 2000);
       }
-      // Handle success (e.g., navigate to another page or show a success message)
     } catch (err) {
       console.error('Failed to update:', err);
     }
@@ -61,7 +85,7 @@ const Profile: React.FC<User> = ({ userName, email, phone }) => {
           <div className="w-full max-w-lg">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="bg-white p-6 rounded shadow-md w-full max-w-md"
+              className="bg-white p-6 rounded shadow-sm w-full max-w-md"
             >
               <h1 className="font-bold text-sm">Name:</h1>
               <input
@@ -72,14 +96,42 @@ const Profile: React.FC<User> = ({ userName, email, phone }) => {
               <h1 className="font-bold text-sm">Email:</h1>
               <input
                 placeholder={email}
-                {...register('email', { required: true })}
+                {...register('email')}
                 className="w-full p-2 rounded-md border border-black mb-4"
               />
               <h1 className="font-bold text-sm">Phone:</h1>
               <input
                 placeholder={phone}
-                {...register('phoneNumber', { required: true })}
+                {...register('phoneNumber')}
                 className="w-full p-2 rounded-md border border-black mb-4"
+              />
+              <span className="text-sm font-bold text-gray-700">
+                Image preview
+              </span>
+              <div className="w-96 h-96">
+                <img
+                  src={previewImage}
+                  alt="altAvt"
+                  className="w-full h-auto border border-black"
+                />
+              </div>
+              <h1 className="text-sm font-bold text-gray-700 mt-10">
+                Add / Change Image
+              </h1>
+              {/* <input
+                className="p-2 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                aria-describedby="file_input_help"
+                id="file_input"
+                type="file"
+              /> */}
+              <input
+                className="p-2 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                aria-describedby="file_input_help"
+                id="file_input"
+                type="file"
+                accept="image/*"
+                {...register('file')}
+                onChange={handleFileChange}
               />
               <button
                 type="submit"

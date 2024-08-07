@@ -101,14 +101,12 @@ const Header: React.FC = () => {
               <MdOutlineNotifications className="icon icon-medium text-primary " />
             </Link>
             <Link
-              href={'/profile'}
+              href={'/user'}
               className="btn btn-large btn-ghost heading-sm btn-icon btn-icon-large"
             >
               {user.avatar ? (
-                <Image
+                <img
                   src={user.avatar}
-                  width={32}
-                  height={32}
                   alt="img"
                   loading="lazy"
                   className="avatar"
