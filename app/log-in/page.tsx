@@ -33,14 +33,15 @@ const Login: React.FC = () => {
   const { register, handleSubmit, formState } = useForm<Inputs>();
   const [login, { isLoading, isSuccess, data, isError, error }] =
     useLoginMutation();
-
   const onSubmit: SubmitHandler<Inputs> = ({ email, password }) =>
     login({ email, password });
 
   useEffect(() => {
     if (isSuccess) {
       toast.success('Login successfully');
-      redirect('/');
+      if (data.data.user.role.roleName === 'ADMIN') {
+        redirect('/');
+      }
     }
 
     if (isError) {
