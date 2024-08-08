@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
@@ -20,6 +21,7 @@ interface SearchFormData {
 }
 
 const Header: React.FC = () => {
+  const router = useRouter();
   const [token, setToken] = useState('');
   const { user } = useSelector((state: any) => state.auth);
 
@@ -40,7 +42,8 @@ const Header: React.FC = () => {
 
   const onSubmit: SubmitHandler<SearchFormData> = (data) => {
     const searchURL = `/search?query=${encodeURIComponent(data.search)}`;
-    window.location.href = searchURL;
+    // window.location.href = searchURL;
+    router.push(searchURL);
   };
 
   return (
@@ -81,7 +84,9 @@ const Header: React.FC = () => {
         {user ? (
           <>
             <span className="header-item">Instructor</span>
-            <span className="header-item">My learning</span>
+            <Link href={'/my-course'}>
+              <span className="header-item">My learning</span>
+            </Link>
             <Link
               href={'/'}
               className="btn btn-large btn-ghost heading-sm btn-icon btn-icon-large"
