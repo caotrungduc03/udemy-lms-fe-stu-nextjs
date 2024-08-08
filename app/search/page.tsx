@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 
 import Link from 'next/link';
 import { IoIosArrowDropleft, IoIosArrowDropright } from 'react-icons/io';
-import { useSelector } from 'react-redux';
 import { useGetCourseDataQuery } from '../../lib/features/course/courseApi';
 
 interface Course {
@@ -18,11 +17,13 @@ interface Course {
   author: Author;
   category: Category;
 }
+
 interface Category {
   id: number;
   createdAt: string;
   categoryName: string;
 }
+
 interface Author {
   id: number;
   createdAt: string;
@@ -35,8 +36,14 @@ export const Search: React.FC = () => {
   const search = searchParam.get('query') || '';
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-  const { isLoading, isSuccess } = useGetCourseDataQuery({ q: search });
-  const { course } = useSelector((state: any) => state);
+  const {
+    data: courses,
+    isLoading,
+    isSuccess,
+  } = useGetCourseDataQuery({ q: search });
+  // const courses = useSelector((state: any) => state.course.courses);
+
+  console.log(courses);
 
   if (isLoading) {
     return (
@@ -60,26 +67,12 @@ export const Search: React.FC = () => {
       </div>
     );
   } else if (isSuccess) {
-    const numResults = course.courses.length;
+    const numResults = courses.data.total;
     var totalPages = Math.ceil(numResults / itemsPerPage);
-
-    // const filteredData = fakeData.filter(
-    //   (course) =>
-    //     course.summary.toLowerCase().includes(search.toLowerCase()) ||
-    //     course.description.toLowerCase().includes(search.toLowerCase()),
-    // );
-
-    // const [numberResults, setNumResults] = useState(0);
-
-    // React.useEffect(() => {
-    //   setNumResults(data.data.total);
-    // }, [isSuccess]);
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentData = course.courses.slice(startIndex, endIndex);
-
-    // const totalPages = Math.ceil(numberResults / itemsPerPage);
+    const currentData = courses.data.items.slice(startIndex, endIndex);
 
     const paginationNumbers = () => {
       const pages: (number | string)[] = [];
@@ -123,7 +116,7 @@ export const Search: React.FC = () => {
         <div className="grid grid-cols-12 my-5">
           <div className="col-span-1" />
           <h1 className="font-bold text-2xl col-span-11">
-            {course.courses.length} result for "{search}"
+            {courses.data.total} result for "{search}"
           </h1>
         </div>
         <div className="grid grid-cols-12">
@@ -265,6 +258,8 @@ export const Search: React.FC = () => {
       </>
     );
   }
+
+  return null; // In case neither loading nor success state is active
 };
 
 export default Search;
