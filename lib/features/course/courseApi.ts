@@ -10,7 +10,6 @@ interface Course {
   price: number;
 }
 
-// Thêm interface để xác định các tham số cho query tìm kiếm
 interface CourseQuery {
   q?: string;
 }
@@ -22,7 +21,7 @@ export const courseApi = createApi({
   }),
   endpoints: (builder) => ({
     getCourseData: builder.query({
-      query: (queryArg) => {
+      query: (queryArg: CourseQuery) => {
         const params = new URLSearchParams();
         if (queryArg.q) {
           params.append('q', queryArg.q);
@@ -33,7 +32,18 @@ export const courseApi = createApi({
         };
       },
     }),
+    getMyCourseData: builder.query<any, { accessToken: string }>({
+      query: ({ accessToken }) => {
+        return {
+          url: `/progress`,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetCourseDataQuery } = courseApi;
+export const { useGetCourseDataQuery, useGetMyCourseDataQuery } = courseApi;
