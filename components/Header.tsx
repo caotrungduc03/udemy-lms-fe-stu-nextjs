@@ -14,17 +14,31 @@ import {
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import { useGetAuthDataQuery } from '../lib/features/auth/authApi';
-import { getToken } from '../lib/tokens';
+import { getToken, removeToken } from '../lib/tokens';
 
 interface SearchFormData {
   search: string;
 }
 
 const Header: React.FC = () => {
+  const [open, setOpen] = useState(false);
+
+  const handleToggle = () => {
+    setOpen(!open);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const router = useRouter();
   const [token, setToken] = useState('');
   const { user } = useSelector((state: any) => state.auth);
-
+  // console.log(user);
+  const handleLogout = () => {
+    removeToken();
+    window.location.href = '/log-in';
+  };
   const { isLoading, error } = useGetAuthDataQuery(
     {
       accessToken: token || '',
@@ -48,6 +62,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="z-10 flex items-center justify-between shadow-lg px-6">
+      {/* <h1>{user?.role?.roleName}</h1> */}
       <Link href={'/'} className="pr-2">
         <Image
           src={'/logo-udemy.svg'}
@@ -105,23 +120,36 @@ const Header: React.FC = () => {
             >
               <MdOutlineNotifications className="icon icon-medium text-primary " />
             </Link>
-            <Link
-              href={'/user'}
-              className="btn btn-large btn-ghost heading-sm btn-icon btn-icon-large"
-            >
+            <div className="btn btn-large btn-ghost heading-sm btn-icon btn-icon-large">
               {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt="img"
-                  loading="lazy"
-                  className="avatar"
-                />
+                <div className="dropdown" onBlur={handleClose}>
+                  <img
+                    src={user.avatar}
+                    alt="img"
+                    loading="lazy"
+                    className="avatar"
+                    onClick={handleToggle}
+                  />
+                  {open && (
+                    <div className="dropdown-menu">
+                      <Link href="/user" className="dropdown-item">
+                        User Profile
+                      </Link>
+                      <Link href="/" className="dropdown-item">
+                        Settings
+                      </Link>
+                      <button onClick={handleLogout} className="dropdown-item">
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <span className="avatar">
                   {user.fullName.split(' ')[0][0].toUpperCase()}
                 </span>
               )}
-            </Link>
+            </div>
           </>
         ) : (
           <>
