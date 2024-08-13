@@ -3,7 +3,6 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useGetMyCourseDataQuery } from '../../lib/features/course/courseApi';
 import { getToken } from '../../lib/tokens';
 
@@ -11,8 +10,8 @@ const MyCourse: React.FC = () => {
   const { data, isLoading, isSuccess } = useGetMyCourseDataQuery({
     accessToken: getToken(),
   });
-  const { courses } = useSelector((state: any) => state.course);
-  console.log('course', courses);
+  // const { courses } = useSelector((state: any) => state.course);
+  console.log('course', data);
   useEffect(() => {
     AOS.init({
       duration: 1000, // Animation duration
@@ -79,7 +78,7 @@ const MyCourse: React.FC = () => {
 
   return (
     <div className="p-10 flex flex-col">
-      {courses.map((c: any) => (
+      {data.data.items.map((c: any) => (
         <div
           key={c.course.id}
           className="flex py-2 transition duration-500 ease-in-out transform hover:scale-105"
