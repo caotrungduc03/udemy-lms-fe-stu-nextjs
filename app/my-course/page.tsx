@@ -11,7 +11,7 @@ const MyCourse: React.FC = () => {
   const { data, isLoading, isSuccess } = useGetMyCourseDataQuery({
     accessToken: getToken(),
   });
-  const { courses } = useSelector((state) => state.course);
+  const { courses } = useSelector((state: any) => state.course);
   console.log('course', courses);
   useEffect(() => {
     AOS.init({
@@ -72,16 +72,14 @@ const MyCourse: React.FC = () => {
   //   // Repeat for other courses
   // ];
 
-  const handleClick = (id: number, idLesson: number) => {
-    const searchURL = `/learning?courseId=${encodeURIComponent(
-      id,
-    )}&lesson=${encodeURIComponent(idLesson)}`;
+  const handleClick = (id: number) => {
+    const searchURL = `/learning?courseId=${encodeURIComponent(id)}`;
     router.push(searchURL);
   };
 
   return (
     <div className="p-10 flex flex-col">
-      {courses.map((c) => (
+      {courses.map((c: any) => (
         <div
           key={c.course.id}
           className="flex py-2 transition duration-500 ease-in-out transform hover:scale-105"
@@ -111,7 +109,7 @@ const MyCourse: React.FC = () => {
               </div>
             </div>
             <button
-              onClick={() => handleClick(c.course.id, 2)}
+              onClick={() => handleClick(c.course.id)}
               className="transition duration-500 ease-in-out transform hover:scale-105 font-bold bg-purple-900 text-white py-2 px-5 mr-2 hover:bg-black hover:opacity-70 "
             >
               Learn

@@ -3,6 +3,12 @@ import { authApi } from './features/auth/authApi';
 import authSlice from './features/auth/authSlice';
 import { courseApi } from './features/course/courseApi';
 import courseSlice from './features/course/courseSlice';
+import { exerciseApi } from './features/exercise/exerciseApi';
+import exerciseSlice from './features/exercise/exerciseSlice';
+import { lessonApi } from './features/lesson/lessonApi';
+import lessonSlice from './features/lesson/lessonSlice';
+import { progressApi } from './features/progress/progressApi';
+import progressSlice from './features/progress/progressSlice';
 import { userApi } from './features/user/userApi';
 
 export const makeStore = () => {
@@ -10,15 +16,24 @@ export const makeStore = () => {
     reducer: {
       auth: authSlice,
       course: courseSlice,
+      lesson: lessonSlice,
+      exercise: exerciseSlice,
+      progress: progressSlice,
       [authApi.reducerPath]: authApi.reducer,
       [courseApi.reducerPath]: courseApi.reducer,
       [userApi.reducerPath]: userApi.reducer,
+      [lessonApi.reducerPath]: lessonApi.reducer,
+      [exerciseApi.reducerPath]: exerciseApi.reducer,
+      [progressApi.reducerPath]: progressApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(
         authApi.middleware,
         courseApi.middleware,
         userApi.middleware,
+        lessonApi.middleware,
+        exerciseApi.middleware,
+        progressApi.middleware,
       ),
   });
 };
