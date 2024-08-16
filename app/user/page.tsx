@@ -100,7 +100,7 @@ const User: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="col-span-5">{renderPage()}</div>
+        <div className="col-span-4">{renderPage()}</div>
       </div>
     </>
   );
