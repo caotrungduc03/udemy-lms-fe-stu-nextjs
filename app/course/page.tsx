@@ -1,32 +1,35 @@
 'use client';
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { IoIosPhonePortrait } from 'react-icons/io';
 import { LiaStopwatchSolid } from 'react-icons/lia';
 import { MdOutlinePlayCircleFilled } from 'react-icons/md';
 import CourseSwiper from '../../components/CourseSwiper';
-import course from '../../public/excercise2.jpg';
 
-import { useGetCourseDataQuery } from '../../lib/features/course/courseApi';
-import instructor from '../../public/fakeImage/instructor2.jpg';
+import { useSearchParams } from 'next/navigation';
+import { useGetCourseByIdDataQuery } from '../../lib/features/course/courseApi';
 const Course: React.FC = () => {
-  const handleData2 = () => {
-    if (isLoading) {
-      console.log('...Loading');
-    } else if (isSuccess) {
-      console.log('...Success', data);
-    } else if (isError) {
-      console.log('...Error', error);
-    }
-  };
+  const searchParam = useSearchParams();
+  const id = searchParam.get('id');
+  const { data, isLoading } = useGetCourseByIdDataQuery({ id: id });
+  console.log('aaaaaaaa', data);
+  const handleBuy = () => {};
+  // const handleData2 = () => {
+  //   if (isLoading) {
+  //     console.log('...Loading');
+  //   } else if (isSuccess) {
+  //     console.log('...Success', data);
+  //   } else if (isError) {
+  //     console.log('...Error', error);
+  //   }
+  // };
 
-  const {
-    data: data,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetCourseDataQuery('1');
+  // const {
+  //   data: data,
+  //   isLoading,
+  //   isSuccess,
+  //   isError,
+  //   error,
+  // } = useGetCourseDataQuery('1');
 
   const courses = [
     {
@@ -105,7 +108,28 @@ const Course: React.FC = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
+  if (isLoading) {
+    return (
+      <div role="status" className="flex justify-center p-40">
+        <svg
+          aria-hidden="true"
+          className="w-40 h-40 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+          viewBox="0 0 100 101"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+            fill="currentColor"
+          />
+          <path
+            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+            fill="currentFill"
+          />
+        </svg>
+      </div>
+    );
+  }
   return (
     <>
       <div className="flex justify-center bg-primary">
@@ -114,17 +138,23 @@ const Course: React.FC = () => {
           <div className="col-span-10 flex justify-between">
             <div className="max-w-[550px]">
               <h1 className="text-white mb-2 text-4xl font-bold">
-                Programming for Beginners: (Python, HTML, CSS, JavaScript)
+                {data.data.courseName}
               </h1>
               <span className="text-white mb-2">
                 From Zero to Coder: A Practical Guide to Programming for
                 Beginners
               </span>
               <span className="text-white">Created by </span>
-              <span className="underline font-bold text-purple-200">ABC</span>
+              <span className="underline font-bold text-purple-200">
+                {data.data.author.fullName}
+              </span>
             </div>
             <div className="min-w-[350px]" id="course-image">
-              <Image src={course} alt="img" className="w-[350px]" />
+              <img
+                src={data.data.coverImage}
+                alt="img"
+                className="w-[300px] h-[150px]"
+              />
             </div>
           </div>
           <div className="col-span-1"></div>
@@ -174,67 +204,7 @@ const Course: React.FC = () => {
                 isExpanded ? 'max-h-full' : 'max-h-24 overflow-hidden'
               }`}
             >
-              "Programming for Beginners: Building the Foundations" offers a
-              comprehensive introduction to the world of web development and
-              Python programming, catering to individuals with little to no
-              prior experience in coding. Whether you're aspiring to become a
-              web developer, data analyst, or simply looking to gain valuable
-              technical skills, this course equips you with the fundamental
-              knowledge and practical experience needed to kickstart your
-              journey in the dynamic field of programming.
-              <br />
-              <br />
-              Throughout the course, you will delve into the core technologies
-              that power the modern web, including HTML, CSS, JavaScript, and
-              Python. The journey begins with an exploration of HTML, the
-              backbone of web development, where you'll learn to create
-              structured and semantically meaningful web pages. From there,
-              you'll progress to CSS, mastering the art of styling and layout to
-              transform your HTML documents into visually appealing websites.
-              <br />
-              <br />
-              As your understanding of front-end development solidifies, you'll
-              venture into the realm of JavaScript, the language of
-              interactivity and dynamism on the web. Through hands-on exercises
-              and projects, you'll discover how to manipulate the Document
-              Object Model (DOM), respond to user interactions, and breathe life
-              into your web pages with dynamic content and functionality.
-              <br />
-              <br />
-              In parallel, the course introduces you to the versatile
-              programming language Python, known for its simplicity and
-              readability. You'll embark on a journey of logical thinking and
-              problem-solving as you grasp Python's syntax, data types, control
-              structures, and functions. With Python as your tool, you'll tackle
-              coding challenges and explore real-world applications, from
-              automating tasks to analyzing data and beyond.
-              <br />
-              <br />
-              Building on your newfound Python skills, the course seamlessly
-              integrates backend development into your repertoire. You'll learn
-              to harness the power of Flask, a lightweight web framework, to
-              create dynamic web applications with Python serving as the backend
-              logic. By mastering concepts such as routing, templating, and
-              handling requests, you'll gain the confidence to build and deploy
-              your own web applications from scratch.
-              <br />
-              <br />
-              Throughout the course, emphasis is placed on hands-on learning and
-              project-based assessments. You'll apply your skills to practical
-              projects, including building a personal portfolio website that
-              showcases your abilities and creativity. With guidance from
-              experienced instructors and a supportive learning community,
-              you'll receive personalized feedback and guidance to ensure your
-              success every step of the way.
-              <br />
-              <br />
-              By the end of "Programming for Beginners: Building the
-              Foundations," you'll emerge with a solid understanding of web
-              development principles, proficiency in HTML, CSS, JavaScript, and
-              Python, and the confidence to pursue further learning and explore
-              exciting opportunities in the ever-evolving world of technology.
-              Join us on this transformative journey and unlock your potential
-              as a programmer and web developer.
+              {data.data.description}
             </p>
             <button
               className="text-purple-500 underline mt-2 font-bold text-sm hover:text-purple-900"
@@ -247,8 +217,8 @@ const Course: React.FC = () => {
             <h1 className="text-2xl font-bold mb-2 mt-10">Instructor</h1>
             <div className="flex gap-5">
               <div className="rounded-full mb-2 border border-gray-200 h-[100px] w-[100px]">
-                <Image
-                  src={instructor}
+                <img
+                  src={data.data.author.avatar}
                   alt="instructor"
                   className="rounded-full aspect-square object-cover"
                   width={100}
@@ -257,7 +227,7 @@ const Course: React.FC = () => {
               </div>
               <div className="gap-2 text-sm text-gray-500">
                 <h3 className="underline text-2xl font-bold text-purple-700">
-                  Digital Learning Academy
+                  {data.data.author.fullName}
                 </h3>
                 <span className="">Digital learning 24 /7</span>
                 <div className="flex">
@@ -290,18 +260,25 @@ const Course: React.FC = () => {
           <div className="sticky top-5 border border-gray-200 p-5">
             {showStickyImage && (
               <div className="mb-4">
-                <Image src={course} alt="Course image" className="w-full" />
+                <img
+                  src={data.data.coverImage}
+                  alt="Course image"
+                  className="w-[300px] h-[150px]"
+                />
               </div>
             )}
-            <h1 className="font-bold text-3xl">₫1,099,000</h1>
+            <h1 className="font-bold text-3xl">{data.data.price}</h1>
             <div className="flex py-2">
               <button
                 className="font-bold bg-purple-900 text-white py-2 px-10 mr-2 transition duration-500 ease-in-out transform hover:scale-105"
-                onClick={handleData2}
+                // onClick={handleData2}
               >
                 Add to cart
               </button>
-              <button className="font-bold bg-white border border-black p-2 transition duration-500 ease-in-out transform hover:scale-105">
+              <button
+                onClick={handleBuy}
+                className="font-bold bg-white border border-black p-2 transition duration-500 ease-in-out transform hover:scale-105"
+              >
                 Buy now
               </button>
             </div>

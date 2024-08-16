@@ -1,5 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+interface CourseQuery {
+  q?: string;
+}
 interface Course {
   id: number;
   createdAt: string;
@@ -8,10 +11,21 @@ interface Course {
   coverImage: string;
   priceType: string;
   price: number;
+  author: Author;
+  category: Category;
 }
 
-interface CourseQuery {
-  q?: string;
+interface Category {
+  id: number;
+  createdAt: string;
+  categoryName: string;
+}
+
+interface Author {
+  id: number;
+  createdAt: string;
+  fullName: string;
+  avatar?: any;
 }
 
 export const courseApi = createApi({
@@ -20,7 +34,7 @@ export const courseApi = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
   }),
   endpoints: (builder) => ({
-    getCourseData: builder.query({
+    getCourseData: builder.query<Course, any>({
       query: (queryArg: CourseQuery) => {
         const params = new URLSearchParams();
         if (queryArg.q) {
@@ -28,6 +42,14 @@ export const courseApi = createApi({
         }
         return {
           url: `/courses/search?${params}`,
+          method: 'GET',
+        };
+      },
+    }),
+    getCourseByIdData: builder.query({
+      query: ({ id }) => {
+        return {
+          url: `/courses/${id}`,
           method: 'GET',
         };
       },
@@ -46,4 +68,8 @@ export const courseApi = createApi({
   }),
 });
 
-export const { useGetCourseDataQuery, useGetMyCourseDataQuery } = courseApi;
+export const {
+  useGetCourseDataQuery,
+  useGetMyCourseDataQuery,
+  useGetCourseByIdDataQuery,
+} = courseApi;
