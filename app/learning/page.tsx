@@ -9,8 +9,10 @@ import ExercisePage from '../../components/exercisePage';
 import LessonPage from '../../components/lessonPage';
 import { useGetProgressDataQuery } from '../../lib/features/progress/progressApi';
 import { getToken } from '../../lib/tokens';
+import useAuth from '../hook/auth';
 
 const Learning: React.FC = () => {
+  useAuth();
   const searchParam = useSearchParams();
   const router = useRouter();
   const id = searchParam.get('courseId') || '';
