@@ -15,7 +15,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useGetAuthDataQuery } from '../lib/features/auth/authApi';
 import { getToken, removeToken } from '../lib/tokens';
-
+import { categories } from './categories';
 interface SearchFormData {
   search: string;
 }
@@ -39,13 +39,13 @@ const Header: React.FC = () => {
     removeToken();
     window.location.href = '/log-in';
   };
-  const { isLoading, error } = useGetAuthDataQuery(
+  const { isLoading, isFetching, isSuccess, error } = useGetAuthDataQuery(
     {
       accessToken: token || '',
     },
-    {
-      skip: !!user || !token,
-    },
+    // {
+    //   skip: !!user || !token,
+    // },
   );
 
   useEffect(() => {
@@ -59,7 +59,21 @@ const Header: React.FC = () => {
     // window.location.href = searchURL;
     router.push(searchURL);
   };
-
+  if (isLoading || isFetching) {
+    return (
+      <div className="animate-pulse z-10 flex items-center shadow-lg">
+        <header className="bg-slate-200 w-full h-[88px] flex items-center justify-center">
+          <Image
+            src={'/logo-udemy.svg'}
+            width={91}
+            height={34}
+            alt={'Udemy Logo'}
+            priority={true}
+          />
+        </header>
+      </div>
+    );
+  }
   return (
     <header className="z-10 flex items-center justify-between shadow-lg px-6">
       {/* <h1>{user?.role?.roleName}</h1> */}
@@ -73,7 +87,42 @@ const Header: React.FC = () => {
         />
       </Link>
       <nav className="flex-1 flex items-center justify-between">
-        <span className="header-item">Categories</span>
+        <div className="p-2">
+          <div className="group/main inline-block relative">
+            <button className="inline-flex items-center">
+              <span className="header-item">Categories</span>
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path>
+              </svg>
+            </button>
+            <ul className="absolute hidden pt-1 w-48 group-hover/main:block bg-white border border-gray-200">
+              {categories.map((category, index) => (
+                <li key={index} className="group/item">
+                  <a
+                    className="flex items-center my-3 px-3 text-sm text-primary hover:text-[#412885] hover:cursor-pointer"
+                    href="#"
+                  >
+                    {category.name}
+                  </a>
+                  <ul className="absolute hidden w-48 bg-white border border-gray-200 group-hover/item:block top-0 left-48">
+                    {category.subcategories.map((subcategory, subIndex) => (
+                      <li
+                        key={subIndex}
+                        className="flex items-center my-3 px-3 text-sm text-primary hover:text-[#412885] hover:cursor-pointer"
+                      >
+                        {subcategory}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
         <div className="flex-1 h-12 mx-3 border border-solid border-primary rounded-full bg-gray-50">
           <form
             className="flex items-center h-full pr-6"
@@ -96,7 +145,7 @@ const Header: React.FC = () => {
           </form>
         </div>
         <span className="header-item">Udemy Business</span>
-        {user ? (
+        {user && isSuccess ? (
           <>
             <span className="header-item">Instructor</span>
             <Link href={'/my-course'}>
@@ -135,7 +184,7 @@ const Header: React.FC = () => {
                       <Link href="/user" className="dropdown-item">
                         User Profile
                       </Link>
-                      <Link href="/" className="dropdown-item">
+                      <Link href="/notifications" className="dropdown-item">
                         Settings
                       </Link>
                       <button onClick={handleLogout} className="dropdown-item">
