@@ -1,5 +1,6 @@
 'use client';
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -30,6 +31,11 @@ const loginOptions = {
 };
 
 const Login: React.FC = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration
+    });
+  }, []);
   const { register, handleSubmit, formState } = useForm<Inputs>();
   const [login, { isLoading, isSuccess, data, isError, error }] =
     useLoginMutation();
@@ -51,7 +57,13 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <div className="md:grid md:grid-cols-2 md:justify-end">
+      <div
+        className="md:grid md:grid-cols-2 md:justify-end"
+        data-aos="fade-up"
+        data-aos-offset="200"
+        data-aos-easing="ease-in-sine"
+        data-aos-duration="600"
+      >
         <div className="flex justify-center ml-10">
           <Image src={Logo} alt="img" loading="lazy" />
         </div>

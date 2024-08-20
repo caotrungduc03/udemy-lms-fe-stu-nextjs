@@ -1,8 +1,9 @@
 'use client';
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useRegisterMutation } from '../../lib/features/auth/authApi';
@@ -16,6 +17,11 @@ type FormValues = {
 };
 
 const Signup: React.FC = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration
+    });
+  }, []);
   const [addUser, { data, isLoading, isSuccess, error }] =
     useRegisterMutation();
   const {
@@ -51,7 +57,13 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="md:grid md:grid-cols-2 md:justify-end">
+    <div
+      className="md:grid md:grid-cols-2 md:justify-end"
+      data-aos="fade-up"
+      data-aos-offset="200"
+      data-aos-easing="ease-in-sine"
+      data-aos-duration="600"
+    >
       <div className="flex justify-center ml-10">
         <Image src={Logo} alt="img" className="h-full w-auto" />
       </div>
