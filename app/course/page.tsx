@@ -7,7 +7,9 @@ import CourseSwiper from '../../components/CourseSwiper';
 
 import { useSearchParams } from 'next/navigation';
 import { useGetCourseByIdDataQuery } from '../../lib/features/course/courseApi';
+import useAuth from '../hook/auth';
 const Course: React.FC = () => {
+  useAuth();
   const searchParam = useSearchParams();
   const id = searchParam.get('id');
   const { data, isLoading } = useGetCourseByIdDataQuery({ id: id });

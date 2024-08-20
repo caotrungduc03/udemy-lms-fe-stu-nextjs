@@ -3,14 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useGetAuthDataQuery } from '../../lib/features/auth/authApi';
 import { getToken } from '../../lib/tokens';
+import useAuth from '../hook/auth';
 import Security from './user-account-security/page';
 import Profile from './userprofile/page';
 
 const User: React.FC = () => {
+  useAuth();
   const [token, setToken] = useState('');
   const { user } = useSelector((state: any) => state.auth);
   const [page, setPage] = useState('profile'); // Default to "profile" page
-  const { isLoading, error } = useGetAuthDataQuery(
+  const [tab, setTab] = useState(1);
+  const { isLoading, isFetching, error } = useGetAuthDataQuery(
     { accessToken: token || '' },
     { skip: !!user || !token },
   );
@@ -21,7 +24,7 @@ const User: React.FC = () => {
   }, [token]);
   console.log(user);
 
-  if (error || !user) {
+  if (isFetching || !user) {
     return (
       <div role="status" className="flex justify-center p-40">
         <svg
@@ -69,6 +72,10 @@ const User: React.FC = () => {
         );
     }
   };
+  const handleClick = (page: string, tab: number) => {
+    setTab(tab);
+    setPage(page);
+  };
 
   return (
     <>
@@ -84,14 +91,18 @@ const User: React.FC = () => {
           <span className="mt-2 font-bold">Username</span>
           <div className="w-full">
             <div
-              className="hover:bg-gray-400 text-sm text-gray-600 p-2 cursor-pointer"
-              onClick={() => setPage('profile')}
+              className={`hover:bg-gray-400 text-sm text-gray-600 p-2 cursor-pointer ${
+                tab == 1 ? 'bg-gray-400' : ''
+              }`}
+              onClick={() => handleClick('profile', 1)}
             >
               Profile
             </div>
             <div
-              className="hover:bg-gray-400 text-sm text-gray-600 p-2 cursor-pointer"
-              onClick={() => setPage('changepassword')}
+              className={`hover:bg-gray-400 text-sm text-gray-600 p-2 cursor-pointer ${
+                tab == 2 ? 'bg-gray-400' : ''
+              }`}
+              onClick={() => handleClick('changepassword', 2)}
             >
               Account Security
             </div>

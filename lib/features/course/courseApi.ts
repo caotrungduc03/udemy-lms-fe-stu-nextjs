@@ -34,7 +34,7 @@ export const courseApi = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
   }),
   endpoints: (builder) => ({
-    getCourseData: builder.query<Course, any>({
+    getCourseData: builder.query<any, any>({
       query: (queryArg: CourseQuery) => {
         const params = new URLSearchParams();
         if (queryArg.q) {

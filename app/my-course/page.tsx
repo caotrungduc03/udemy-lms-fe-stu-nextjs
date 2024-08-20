@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useGetMyCourseDataQuery } from '../../lib/features/course/courseApi';
 import { getToken } from '../../lib/tokens';
+import useAuth from '../hook/auth';
 
 const MyCourse: React.FC = () => {
+  useAuth();
   const { data, isLoading, isSuccess } = useGetMyCourseDataQuery({
     accessToken: getToken(),
   });

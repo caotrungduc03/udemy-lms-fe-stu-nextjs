@@ -1,10 +1,10 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 
-import Link from 'next/link';
 import { IoIosArrowDropleft, IoIosArrowDropright } from 'react-icons/io';
 import { useGetCourseDataQuery } from '../../lib/features/course/courseApi';
+import useAuth from '../hook/auth';
 
 interface Course {
   id: number;
@@ -16,6 +16,7 @@ interface Course {
   price: number;
   author: Author;
   category: Category;
+  language: string;
 }
 
 interface Category {
@@ -32,18 +33,28 @@ interface Author {
 }
 
 export const Search: React.FC = () => {
+  useAuth();
   const searchParam = useSearchParams();
   const search = searchParam.get('query') || '';
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
+  interface Filters {
+    priceType: string[];
+    type: string[];
+    language: string[];
+  }
+
+  const [filters, setFilters] = useState<Filters>({
+    priceType: [],
+    type: [],
+    language: [],
+  });
   const {
     data: courses,
     isLoading,
     isSuccess,
   } = useGetCourseDataQuery({ q: search });
   // const courses = useSelector((state: any) => state.course.courses);
-
-  console.log(courses);
 
   if (isLoading) {
     return (
@@ -67,12 +78,40 @@ export const Search: React.FC = () => {
       </div>
     );
   } else if (isSuccess) {
-    const numResults = courses.data.total;
+    const filteredProducts = courses.data.items.filter((product: Course) => {
+      return (
+        (filters.priceType.length === 0 ||
+          filters.priceType.includes(product.priceType)) &&
+        // (filters.type.length === 0 || filters.type.includes(product.type)) &&
+        (filters.language.length === 0 ||
+          filters.language.includes(product.language))
+      );
+    });
+    const toggleFilter = (filterType: keyof Filters, value: string) => {
+      setFilters((prevFilters) => {
+        const updatedFilters = { ...prevFilters };
+        const filterIndex = updatedFilters[filterType].indexOf(value);
+        if (filterIndex !== -1) {
+          updatedFilters[filterType] = updatedFilters[filterType].filter(
+            (item) => item !== value,
+          );
+        } else {
+          updatedFilters[filterType] = [...updatedFilters[filterType], value];
+        }
+        return updatedFilters;
+      });
+    };
+    console.log('aa', filteredProducts);
+    const numResults = filteredProducts.length;
     var totalPages = Math.ceil(numResults / itemsPerPage);
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentData = courses.data.items.slice(startIndex, endIndex);
+    const currentData = filteredProducts.slice(startIndex, endIndex);
+    const router = useRouter();
+    const handleClick = (id: any) => {
+      router.push(`/course?id=${id}`);
+    };
 
     const paginationNumbers = () => {
       const pages: (number | string)[] = [];
@@ -136,11 +175,23 @@ export const Search: React.FC = () => {
                     Language
                   </span>
                   <div className="text-gray-800 text-sm">
-                    <input type="checkbox" id="checkbox1" className="m-2" />
+                    <input
+                      type="checkbox"
+                      id="checkbox1"
+                      className="m-2"
+                      onChange={() => toggleFilter('language', 'English')}
+                      checked={filters.language.includes('English')}
+                    />
                     English
                   </div>
                   <div className="text-gray-800 text-sm">
-                    <input type="checkbox" id="checkbox2" className="m-2" />
+                    <input
+                      type="checkbox"
+                      id="checkbox2"
+                      className="m-2"
+                      onChange={() => toggleFilter('language', 'Tiếng Việt')}
+                      checked={filters.language.includes('Tiếng Việt')}
+                    />
                     Tiếng Việt
                   </div>
                 </div>
@@ -162,11 +213,23 @@ export const Search: React.FC = () => {
                     Price
                   </span>
                   <div className="text-gray-800 text-sm">
-                    <input type="checkbox" id="checkbox1" className="m-2" />
+                    <input
+                      type="checkbox"
+                      id="checkbox1"
+                      className="m-2"
+                      onChange={() => toggleFilter('priceType', 'paid')}
+                      checked={filters.priceType.includes('paid')}
+                    />
                     Paid
                   </div>
                   <div className="text-gray-800 text-sm">
-                    <input type="checkbox" id="checkbox2" className="m-2" />
+                    <input
+                      type="checkbox"
+                      id="checkbox2"
+                      className="m-2"
+                      onChange={() => toggleFilter('priceType', 'free')}
+                      checked={filters.priceType.includes('free')}
+                    />
                     Free
                   </div>
                 </div>
@@ -183,9 +246,12 @@ export const Search: React.FC = () => {
                       className="border border-gray-200 w-[300px] h-[150px] mr-5 object-cover"
                     />
                     <div className="space-y-2">
-                      <Link href="/course" className="font-bold text-sm">
+                      <h1
+                        onClick={() => handleClick(1)}
+                        className="font-bold text-sm"
+                      >
                         {c.courseName}
-                      </Link>
+                      </h1>
                       <h2 className="text-gray-700 text-sm">{c.description}</h2>
                       <p className="text-xs text-gray-500">
                         Author: {c.author.fullName}
