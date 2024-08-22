@@ -125,4 +125,30 @@
   .avatar {
     cursor: pointer;
   }
+
+  .tutor-table {
+    @apply w-full border-collapse;
+  }
+
+  .tutor-table,
+  .tutor-table th,
+  .tutor-table td {
+    @apply border border-solid border-[#cdcfd5] rounded-md;
+  }
+
+  .tutor-table th {
+    @apply py-2 px-4 text-sm text-left bg-[#f4f6f9];
+  }
+
+  .tutor-table td {
+    @apply p-4 text-sm;
+  }
+
+  .label-success {
+    @apply text-[#24A148];
+  }
+
+  .label-error {
+    @apply text-[#F44337];
+  }
 }

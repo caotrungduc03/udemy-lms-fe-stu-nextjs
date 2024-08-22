@@ -1,72 +1,137 @@
 'use client';
-import React from 'react';
-import { IoTime } from 'react-icons/io5';
-import { TbWorld } from 'react-icons/tb';
+import React, { memo } from 'react';
+import { MdInfoOutline } from 'react-icons/md';
+import { toast } from 'react-toastify';
 import { useGetExerciseDataQuery } from '../lib/features/exercise/exerciseApi';
 import { getToken } from '../lib/tokens';
-interface exercise {
+import Loading from './Loading';
+interface Exercise {
   exerciseId: string;
 }
-const ExercisePage: React.FC<exercise> = ({ exerciseId }) => {
-  const { data, isLoading, isSuccess } = useGetExerciseDataQuery({
+const ExercisePage: React.FC<Exercise> = ({ exerciseId }) => {
+  const { data, isLoading, isFetching, isError } = useGetExerciseDataQuery({
     id: exerciseId,
     accessToken: getToken(),
   });
-  if (isLoading) {
+
+  if (isError) {
+    return toast.error('Something went wrong');
+  }
+
+  if (isLoading || isFetching) {
+    return <Loading />;
+  }
+
+  const randomNumber = Math.floor(Math.random() * 10);
+
+  if (randomNumber % 2 === 0) {
     return (
-      <div role="status" className="flex justify-center p-40">
-        <svg
-          aria-hidden="true"
-          className="w-40 h-40 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-          viewBox="0 0 100 101"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-            fill="currentColor"
-          />
-          <path
-            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-            fill="currentFill"
-          />
-        </svg>
-      </div>
-    );
-  } else if (isSuccess) {
-    return (
-      <div>
-        <div className="border-b border-gray-200 p-10">
-          <h1
-            // onClick={() => handleClick(lesson.id)}
-            className="text-xl font-bold cursor-pointer"
-          >
-            {data.data.exerciseName}
-          </h1>
-          <div className="flex items-center space-x-2 text-sm pt-5">
-            <IoTime />
-            <span>{data.data.duration}'</span>
+      <div className="flex items-center justify-center w-full px-4 py-16">
+        <div className="w-[560px] border border-solid border-primary rounded-xl py-16 px-20">
+          <div className="border-b border-solid border-[#cdcfd5] pb-7">
+            <p className="pb-2">Exercise</p>
+            <h3 className="text-2xl heading-md">{data.data.exerciseName}</h3>
           </div>
-          <div className="flex items-center space-x-2 text-sm">
-            <TbWorld />
-            <span>English</span>
+          <div className="mt-6 mb-14">
+            <p>Deadline: {data.data.deadline}</p>
+            <p className="pt-4">
+              Number of questions: {data.data.questions.length}
+            </p>
+            <p className="pt-4">Time limit: {data.data.duration}'</p>
+            <p className="pt-4">Total tries: 0/{data.data.max_tries}</p>
+            <p className="pt-4">
+              Minimum score to complete: {data.data.min_passing_percentage}%
+            </p>
           </div>
-        </div>
-        <div className="flex space-x-10 text-sm p-10">
-          <h1>Description</h1>
-          <div className="w-3/4">
-            <p>{data.data.description}</p>
-          </div>
-        </div>
-        <div className="space-x-10 text-sm px-10 pb-10">
-          <h1 className="font-bold">Type</h1>
-          <div className="w-3/4">
-            <p>{data.data.exerciseType}</p>
+          <div className="flex gap-6 w-full justify-start">
+            <button className="btn btn-medium btn-primary heading-sm rounded-md">
+              Start
+            </button>
+            <button className="btn btn-medium btn-ghost heading-sm rounded-md">
+              Skip this exercise
+            </button>
           </div>
         </div>
       </div>
     );
   }
+
+  return (
+    <div className="flex items-center justify-center w-full px-4 py-16">
+      <div className="w-[1000px]">
+        <div className="mb-8">
+          <p className="pb-2">Exercise</p>
+          <h3 className="text-2xl heading-md">{data.data.exerciseName}</h3>
+        </div>
+        <div className="flex items-center justify-between py-5 border-y border-solid border-[#cdcfd5]">
+          <p>Deadline: {data.data.deadline}</p>
+          <p>Number of questions: {data.data.questions.length}</p>
+          <p>Time limit: {data.data.duration}'</p>
+          <p>
+            Minimum score:{' '}
+            {Math.ceil(data.data.min_passing_percentage * data.data.max_tries) /
+              100}
+          </p>
+        </div>
+        <div className="mt-5 mb-6">
+          <table className="tutor-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Question</th>
+                <th>Correct Answers</th>
+                <th>Incorrect Answers</th>
+                <th>Score</th>
+                <th>Result</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tháng Bảy 6, 2024 6:48 chiều </td>
+                <td>2 </td>
+                <td>2 </td>
+                <td>0 </td>
+                <td>2 (100%) </td>
+                <td>
+                  <span className="label-success">Đạt</span>
+                </td>
+                <td>
+                  <div className="flex justify-center">
+                    <a className="btn btn-medium btn-secondary rounded-md">
+                      <MdInfoOutline className="icon icon-small" />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Tháng Bảy 6, 2024 6:48 chiều </td>
+                <td>2 </td>
+                <td>2 </td>
+                <td>0 </td>
+                <td>2 (100%) </td>
+                <td>
+                  <span className="label-error">Trượt</span>
+                </td>
+                <td>
+                  <div className="flex justify-center">
+                    <a className="btn btn-medium btn-secondary rounded-md">
+                      <MdInfoOutline className="icon icon-small" />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="flex gap-6 w-full justify-start">
+          <button className="btn btn-medium btn-primary heading-sm rounded-md">
+            Start
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default ExercisePage;
+export default memo(ExercisePage);

@@ -17,7 +17,19 @@ export const progressApi = createApi({
         };
       },
     }),
+    getProgressExercise: builder.query({
+      query: ({ id, accessToken }) => {
+        return {
+          url: `/progress-exercises/${id}`,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetProgressDataQuery } = progressApi;
+export const { useGetProgressDataQuery, useGetProgressExerciseQuery } =
+  progressApi;

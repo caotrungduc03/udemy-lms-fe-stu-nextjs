@@ -2,7 +2,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ExercisePage from '../../components/exercisePage';
+import ExercisePage from '../../components/ExercisePage';
 import LessonPage from '../../components/lessonPage';
 import SidebarContent from '../../components/SidebarContent';
 import SidebarToggleButton from '../../components/SidebarToggleButton';
