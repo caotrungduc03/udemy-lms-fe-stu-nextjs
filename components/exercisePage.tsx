@@ -6,14 +6,14 @@ import { useGetExerciseDataQuery } from '../lib/features/exercise/exerciseApi';
 import { getToken } from '../lib/tokens';
 import Loading from './Loading';
 interface Exercise {
+  progressLEID: any;
   exerciseId: string;
 }
-const ExercisePage: React.FC<Exercise> = ({ exerciseId }) => {
+const ExercisePage: React.FC<Exercise> = ({ exerciseId, progressLEID }) => {
   const { data, isLoading, isFetching, isError } = useGetExerciseDataQuery({
     id: exerciseId,
     accessToken: getToken(),
   });
-
   if (isError) {
     return toast.error('Something went wrong');
   }
@@ -24,7 +24,7 @@ const ExercisePage: React.FC<Exercise> = ({ exerciseId }) => {
 
   const randomNumber = Math.floor(Math.random() * 10);
 
-  if (randomNumber % 2 === 0) {
+  if (!progressLEID.exercise.includes(parseInt(exerciseId))) {
     return (
       <div className="flex items-center justify-center w-full px-4 py-16">
         <div className="w-[560px] border border-solid border-primary rounded-xl py-16 px-20">

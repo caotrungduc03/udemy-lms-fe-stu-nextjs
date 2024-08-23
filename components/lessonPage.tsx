@@ -14,7 +14,6 @@ const LessonPage: React.FC<lesson> = ({ lessonId }) => {
     id: lessonId,
     accessToken: getToken(),
   });
-  console.log('lesson', data);
   // const { currentLesson: lessons } = useSelector((state: any) => state.lesson);
   // console.log('AAA', lessons);
   if (isLoading) {

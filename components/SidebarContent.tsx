@@ -4,6 +4,7 @@ import { IoCloseSharp } from 'react-icons/io5';
 import { MdOutlineArrowDropDown } from 'react-icons/md';
 
 interface SidebarContentProps {
+  progressLEID: any;
   hidden: boolean;
   setHidden: (hidden: boolean) => void;
   progress: any;
@@ -12,6 +13,7 @@ interface SidebarContentProps {
 }
 
 const SidebarContent: React.FC<SidebarContentProps> = ({
+  progressLEID,
   hidden,
   setHidden,
   progress,
@@ -20,7 +22,6 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
 }) => {
   const [showLessons, setShowLessons] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
-
   return (
     <div
       className={`col-span-1 border border-gray-200 top-0 transform transition-transform duration-300 ease-in-out ${
@@ -53,7 +54,11 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                     className="flex items-center hover:bg-gray-200 p-2 cursor-pointer"
                     onClick={() => handleLessonClick(lesson.id)}
                   >
-                    <input type="checkbox" className="mr-2" />
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      checked={progressLEID?.lesson?.includes(lesson.id)}
+                    />
                     <h1 className="text-sm text-gray-400">
                       {lesson.lessonName}
                     </h1>
@@ -81,7 +86,12 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                     className="flex items-center hover:bg-gray-200 p-2 cursor-pointer"
                     onClick={() => handleExerciseClick(exercise.id)}
                   >
-                    <input type="checkbox" className="mr-2" />
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      style={{ backgroundColor: 'green', color: 'white' }}
+                      checked={progressLEID?.exercise?.includes(exercise.id)}
+                    />
                     <h1 className="text-sm text-gray-400">
                       {exercise.exerciseName}
                     </h1>

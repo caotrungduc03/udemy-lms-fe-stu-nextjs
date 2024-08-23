@@ -269,7 +269,7 @@ const Course: React.FC = () => {
                 />
               </div>
             )}
-            <h1 className="font-bold text-3xl">{data.data.price}</h1>
+            <h1 className="font-bold text-3xl">${data.data.price}</h1>
             <div className="flex py-2">
               <button
                 className="font-bold bg-purple-900 text-white py-2 px-10 mr-2 transition duration-500 ease-in-out transform hover:scale-105"

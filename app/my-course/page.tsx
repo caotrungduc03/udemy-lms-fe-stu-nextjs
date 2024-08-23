@@ -75,6 +75,7 @@ const MyCourse: React.FC = () => {
 
   const handleClick = (id: number) => {
     const searchURL = `/learning?courseId=${encodeURIComponent(id)}`;
+    let arrayid = [0, 1, 12, 5];
     router.push(searchURL);
   };
   if (isLoading) {
@@ -100,11 +101,11 @@ const MyCourse: React.FC = () => {
     );
   }
   return (
-    <div className="p-10 flex flex-col">
+    <div className="p-10 w-5/6 flex flex-col ">
       {data.data.items.map((c: any) => (
         <div
           key={c.course.id}
-          className="flex py-2 transition duration-500 ease-in-out transform hover:scale-105"
+          className="flex justify-center items-center py-2 transition duration-500 ease-in-out transform hover:scale-105"
           data-aos="fade-up"
           data-aos-offset="200"
           data-aos-easing="ease-in-sine"
@@ -120,11 +121,11 @@ const MyCourse: React.FC = () => {
               <h2 className="text-gray-700 text-lg font-bold">
                 {c.course.courseName}
               </h2>
-              <h2 className="font-bold text-sm pl-10">
-                {c.course.price},000vnd
-              </h2>
+              <h2 className="font-bold text-sm pl-10">${c.course.price}</h2>
             </div>
-            <p className="text-xs text-gray-500">Author: </p>
+            <p className="text-xs text-gray-500">
+              Author: {c.course.author.fullName}
+            </p>
             <div className="w-full bg-neutral-200 dark:bg-neutral-600 rounded-full">
               <div
                 className="bg-blue-600 p-0.5 text-center text-white text-xs rounded-full font-medium leading-none text-primary-100"

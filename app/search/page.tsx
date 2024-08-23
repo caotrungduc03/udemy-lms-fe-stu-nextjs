@@ -243,12 +243,12 @@ export const Search: React.FC = () => {
                     <img
                       src={c.coverImage}
                       alt={c.courseName}
-                      className="border border-gray-200 w-[300px] h-[150px] mr-5 object-cover"
+                      className="border border-gray-200 w-[300px] h-[150px] mr-5 object-cover cursor-pointer"
                     />
                     <div className="space-y-2">
                       <h1
                         onClick={() => handleClick(1)}
-                        className="font-bold text-sm"
+                        className="font-bold text-sm cursor-pointer"
                       >
                         {c.courseName}
                       </h1>
@@ -263,7 +263,7 @@ export const Search: React.FC = () => {
                         Buy now
                       </button>
                     </div>
-                    <div className="font-bold text-sm">{c.price},000vnd</div>
+                    <div className="font-bold text-sm">${c.price}</div>
                   </div>
                 ))}
 

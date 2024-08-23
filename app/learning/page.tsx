@@ -2,12 +2,13 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ExercisePage from '../../components/ExercisePage';
+import ExercisePage from '../../components/exercisePage';
 import LessonPage from '../../components/lessonPage';
 import Loading from '../../components/Loading';
 import SidebarContent from '../../components/SidebarContent';
 import SidebarToggleButton from '../../components/SidebarToggleButton';
 import { useGetProgressDataQuery } from '../../lib/features/progress/progressApi';
+import { useGetProgressLEIDDataQuery } from '../../lib/features/progressLEID/idApi';
 import { getToken } from '../../lib/tokens';
 import useAuth from '../hook/auth';
 
@@ -19,19 +20,24 @@ const Learning: React.FC = () => {
   const lessonId = searchParam.get('lessonId');
   const exerciseId = searchParam.get('exerciseId');
   const [hidden, setHidden] = useState(false);
-  const { data, isLoading } = useGetProgressDataQuery({
+  const { data, isSuccess } = useGetProgressLEIDDataQuery({
+    id,
+    accessToken: getToken(),
+  });
+  const { isLoading } = useGetProgressDataQuery({
     id,
     accessToken: getToken(),
   });
   const { progress } = useSelector((state: any) => state.progress);
-  const state = useSelector((state: any) => state.course.courses);
-  let filteredID = state?.filter((fid: any) => {
-    console.log(id);
-    return fid.course.id == id;
-  });
-  let idLesson = filteredID[0].progressLessons;
-  let idExercise = filteredID[0].progressExercises;
-  console.log(idLesson, idExercise);
+  const { progressLEID } = useSelector((state: any) => state);
+  // const state = useSelector((state: any) => state.course.courses);
+  // let filteredID = state?.filter((fid: any) => {
+  //   console.log(id);
+  //   return fid.course.id == id;
+  // });
+  // let idLesson = filteredID[0].progressLessons;
+  // let idExercise = filteredID[0].progressExercises;
+  // console.log(idLesson, idExercise);
   const dispatch = useDispatch();
 
   useEffect(() => {}, [dispatch]);
@@ -45,36 +51,40 @@ const Learning: React.FC = () => {
   };
 
   const handleExerciseClick = (exerciseId: string) => {
-    router.push(`/learning?courseId=${1}&exerciseId=${exerciseId}`);
+    router.push(`/learning?courseId=${id}&exerciseId=${exerciseId}`);
   };
-
-  return (
-    <div className="relative grid grid-cols-4">
-      <div className={`col-span-${hidden ? '4' : '3'} flex flex-col pb-10`}>
-        {lessonId && <LessonPage lessonId={lessonId} />}
-        {exerciseId && <ExercisePage exerciseId={exerciseId} />}
-        {!lessonId && !exerciseId && (
-          <div className="flex flex-col space-y-5 m-2">
-            <h1 className="font-bold text-2xl text-center">Nhạc dẩy đầm</h1>
-            <iframe
-              className="w-full h-[450px]"
-              src="https://www.youtube.com/embed/Q71_rxMv0uU?si=drwsVur_0fgu1noN"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        )}
+  if (isSuccess) {
+    return (
+      <div className="relative grid grid-cols-4">
+        <div className={`col-span-${hidden ? '4' : '3'} flex flex-col pb-10`}>
+          {lessonId && <LessonPage lessonId={lessonId} />}
+          {exerciseId && (
+            <ExercisePage exerciseId={exerciseId} progressLEID={progressLEID} />
+          )}
+          {!lessonId && !exerciseId && (
+            <div className="flex flex-col space-y-5 m-2">
+              <h1 className="font-bold text-2xl text-center">Nhạc dẩy đầm</h1>
+              <iframe
+                className="w-full h-[450px]"
+                src="https://www.youtube.com/embed/Q71_rxMv0uU?si=drwsVur_0fgu1noN"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          )}
+        </div>
+        <SidebarContent
+          progressLEID={progressLEID}
+          hidden={hidden}
+          setHidden={setHidden}
+          progress={progress}
+          handleLessonClick={handleLessonClick}
+          handleExerciseClick={handleExerciseClick}
+        />
+        {hidden && <SidebarToggleButton setHidden={setHidden} />}
       </div>
-      <SidebarContent
-        hidden={hidden}
-        setHidden={setHidden}
-        progress={progress}
-        handleLessonClick={handleLessonClick}
-        handleExerciseClick={handleExerciseClick}
-      />
-      {hidden && <SidebarToggleButton setHidden={setHidden} />}
-    </div>
-  );
+    );
+  }
 };
 
 export default Learning;
