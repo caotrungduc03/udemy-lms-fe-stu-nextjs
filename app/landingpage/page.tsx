@@ -156,11 +156,11 @@ const LandingPage: React.FC = () => {
     <>
       <div className="relative w-full" style={{ height: 'auto' }}>
         <div
-          className="mx-20 bg-cover bg-center bg-gray-100 flex"
+          className="bg-cover bg-center bg-gray-100 flex"
           style={{
             backgroundImage: 'url(./clock-landingpage.jpg)',
-            width: '90%',
-            height: '90%',
+            width: '100%',
+            height: '100%',
           }}
         >
           <div className="z-10 items-left justify-center text-black ml-20 mt-20 mb-30 p-30">
