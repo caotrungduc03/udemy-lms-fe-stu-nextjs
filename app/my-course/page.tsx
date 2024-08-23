@@ -126,8 +126,11 @@ const MyCourse: React.FC = () => {
             </div>
             <p className="text-xs text-gray-500">Author: </p>
             <div className="w-full bg-neutral-200 dark:bg-neutral-600 rounded-full">
-              <div className="bg-blue-600 w-1/4 p-0.5 text-center text-white text-xs rounded-full font-medium leading-none text-primary-100">
-                25%
+              <div
+                className="bg-blue-600 p-0.5 text-center text-white text-xs rounded-full font-medium leading-none text-primary-100"
+                style={{ width: `${c.percentage}%` }}
+              >
+                {c.percentage}%
               </div>
             </div>
             <button

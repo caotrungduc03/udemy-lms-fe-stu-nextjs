@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ExercisePage from '../../components/exercisePage';
 import LessonPage from '../../components/lessonPage';
+import Loading from '../../components/Loading';
 import SidebarContent from '../../components/SidebarContent';
 import SidebarToggleButton from '../../components/SidebarToggleButton';
 import { useGetProgressDataQuery } from '../../lib/features/progress/progressApi';
@@ -23,16 +24,20 @@ const Learning: React.FC = () => {
     accessToken: getToken(),
   });
   const { progress } = useSelector((state: any) => state.progress);
+  const state = useSelector((state: any) => state.course.courses);
+  let filteredID = state?.filter((fid: any) => {
+    console.log(id);
+    return fid.course.id == id;
+  });
+  let idLesson = filteredID[0].progressLessons;
+  let idExercise = filteredID[0].progressExercises;
+  console.log(idLesson, idExercise);
   const dispatch = useDispatch();
 
   useEffect(() => {}, [dispatch]);
 
   if (isLoading) {
-    return (
-      <div role="status" className="flex justify-center p-40">
-        {/* Spinner code */}
-      </div>
-    );
+    return <Loading />;
   }
 
   const handleLessonClick = (lessonId: string) => {
