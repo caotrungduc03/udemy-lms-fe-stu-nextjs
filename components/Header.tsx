@@ -188,7 +188,7 @@ const Header: React.FC = () => {
                         Settings
                       </Link>
                       <button onClick={handleLogout} className="dropdown-item">
-                        Logout
+                        Log out
                       </button>
                     </div>
                   )}
