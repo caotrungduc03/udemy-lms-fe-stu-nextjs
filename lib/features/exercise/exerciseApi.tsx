@@ -6,7 +6,7 @@ export const exerciseApi = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
   }),
   endpoints: (builder) => ({
-    getExerciseData: builder.query({
+    getExercise: builder.query({
       query: ({ id, accessToken }) => {
         return {
           url: `/exercises/${id}`,
@@ -16,8 +16,9 @@ export const exerciseApi = createApi({
           },
         };
       },
+      transformResponse: (res: any) => res.data,
     }),
   }),
 });
 
-export const { useGetExerciseDataQuery } = exerciseApi;
+export const { useGetExerciseQuery } = exerciseApi;

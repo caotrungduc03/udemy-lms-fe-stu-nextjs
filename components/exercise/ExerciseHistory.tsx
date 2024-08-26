@@ -1,61 +1,23 @@
-'use client';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { MdInfoOutline } from 'react-icons/md';
-import { toast } from 'react-toastify';
-import { useGetExerciseDataQuery } from '../lib/features/exercise/exerciseApi';
-import { getToken } from '../lib/tokens';
-import Loading from './Loading';
-interface Exercise {
-  progressLEID: any;
-  exerciseId: string;
+
+const data = {
+  data: {
+    exerciseName: 'Exercise 1',
+    deadline: '2022-06-30T00:00:00.000Z',
+    questions: [],
+    duration: 60,
+    max_tries: 3,
+    min_passing_percentage: 60,
+  },
+};
+
+interface Props {
+  progressId: string | number;
+  exerciseId: string | number;
 }
-const ExercisePage: React.FC<Exercise> = ({ exerciseId, progressLEID }) => {
-  const { data, isLoading, isFetching, isError } = useGetExerciseDataQuery({
-    id: exerciseId,
-    accessToken: getToken(),
-  });
-  if (isError) {
-    return toast.error('Something went wrong');
-  }
 
-  if (isLoading || isFetching) {
-    return <Loading />;
-  }
-
-  const randomNumber = Math.floor(Math.random() * 10);
-
-  if (!progressLEID.exercise.includes(parseInt(exerciseId))) {
-    return (
-      <div className="flex items-center justify-center w-full px-4 py-16">
-        <div className="w-[560px] border border-solid border-primary rounded-xl py-16 px-20">
-          <div className="border-b border-solid border-[#cdcfd5] pb-7">
-            <p className="pb-2">Exercise</p>
-            <h3 className="text-2xl heading-md">{data.data.exerciseName}</h3>
-          </div>
-          <div className="mt-6 mb-14">
-            <p>Deadline: {data.data.deadline}</p>
-            <p className="pt-4">
-              Number of questions: {data.data.questions.length}
-            </p>
-            <p className="pt-4">Time limit: {data.data.duration}'</p>
-            <p className="pt-4">Total tries: 0/{data.data.max_tries}</p>
-            <p className="pt-4">
-              Minimum score to complete: {data.data.min_passing_percentage}%
-            </p>
-          </div>
-          <div className="flex gap-6 w-full justify-start">
-            <button className="btn btn-medium btn-primary heading-sm rounded-md">
-              Start
-            </button>
-            <button className="btn btn-medium btn-ghost heading-sm rounded-md">
-              Skip this exercise
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+const ExerciseHistory: React.FC<Props> = ({ progressId, exerciseId }) => {
   return (
     <div className="flex items-center justify-center w-full px-4 py-16">
       <div className="w-[1000px]">
@@ -134,4 +96,4 @@ const ExercisePage: React.FC<Exercise> = ({ exerciseId, progressLEID }) => {
   );
 };
 
-export default memo(ExercisePage);
+export default memo(ExerciseHistory);
