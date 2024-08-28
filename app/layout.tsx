@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
+import Wrapper from '../components/Wrapper';
 import './globals.css';
 import StoreProvider from './StoreProvider';
 
@@ -51,13 +50,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={udemySans.variable}>
         <StoreProvider>
-          <div className="flex flex-col">
-            <Header />
-            {children}
-            <Footer />
-            <ToastContainer autoClose={2000} />
-          </div>
+          <Wrapper children={children} />
         </StoreProvider>
+        <ToastContainer autoClose={2000} />
       </body>
     </html>
   );

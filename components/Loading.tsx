@@ -1,6 +1,6 @@
 const Loading: React.FC = () => {
   return (
-    <div role="status" className="flex justify-center p-40">
+    <div className="flex justify-center p-40">
       <svg
         aria-hidden="true"
         className="w-40 h-40 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
