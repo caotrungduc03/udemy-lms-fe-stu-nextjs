@@ -1,9 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { setToken } from '../../tokens';
+import { getToken, setToken } from '../../tokens';
 import { authApi } from './authApi';
 
-const initialState = {
+type AuthState = {
+  user: any;
+  accessToken: string | undefined;
+};
+
+const initialState: AuthState = {
   user: null,
+  accessToken: undefined,
 };
 
 export const authSlice = createSlice({
@@ -13,6 +19,7 @@ export const authSlice = createSlice({
     logout: (state) => {
       localStorage.removeItem('accessToken');
       state.user = null;
+      state.accessToken = undefined;
     },
   },
   extraReducers: (builder) => {
@@ -22,19 +29,15 @@ export const authSlice = createSlice({
         (state, { payload }) => {
           setToken(payload.data.accessToken);
 
-          return {
-            ...state,
-            user: payload.data.user,
-          };
+          state.user = payload.data.user;
+          state.accessToken = payload.data.accessToken;
         },
       )
       .addMatcher(
         authApi.endpoints.getAuthData.matchFulfilled,
         (state, { payload }) => {
-          return {
-            ...state,
-            user: payload.data,
-          };
+          state.user = payload.data;
+          state.accessToken = getToken();
         },
       );
   },
