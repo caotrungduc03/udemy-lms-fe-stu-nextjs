@@ -8,6 +8,7 @@ import {
   MdOutlineClose,
 } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import {
   setExerciseId,
   setLessonId,
@@ -22,12 +23,21 @@ const SidebarContent: React.FC = () => {
   const { lessonIds, exerciseIds } = useSelector(
     (state: any) => state.progress,
   );
+  const { isDoingSubmission } = useSelector((state: any) => state.submission);
   const dispatch = useDispatch();
   const handleLessonClick = (lessonId: string) => {
+    if (isDoingSubmission) {
+      return toast.warn('Please complete the exercise first');
+    }
+
     dispatch(setLessonId(lessonId));
   };
 
   const handleExerciseClick = (exerciseId: string) => {
+    if (isDoingSubmission) {
+      return toast.warn('Please complete the exercise first');
+    }
+
     dispatch(setExerciseId(exerciseId));
   };
 

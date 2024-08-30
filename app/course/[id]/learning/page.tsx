@@ -48,7 +48,7 @@ const LearnPage: React.FC = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="relative flex min-h-[400px]">
+    <div className="relative flex min-h-[600px]">
       <div className="basis-3/4 grow">
         {!lessonId && !exerciseId && <Loading />}
         {lessonId && <LessonPage />}

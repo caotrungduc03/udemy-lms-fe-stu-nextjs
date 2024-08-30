@@ -9,6 +9,7 @@ import { lessonApi } from './features/lesson/lessonApi';
 import { progressApi } from './features/progress/progressApi';
 import progressSlice from './features/progress/progressSlice';
 import { submissionApi } from './features/submission/submissionApi';
+import submissionSlice from './features/submission/submissionSlice';
 import { userApi } from './features/user/userApi';
 
 export const makeStore = () => {
@@ -18,6 +19,7 @@ export const makeStore = () => {
       course: courseSlice,
       learning: learningSlice,
       progress: progressSlice,
+      submission: submissionSlice,
       [authApi.reducerPath]: authApi.reducer,
       [courseApi.reducerPath]: courseApi.reducer,
       [userApi.reducerPath]: userApi.reducer,

@@ -6,6 +6,12 @@ type getSubmissionsParams = {
   accessToken: string;
 };
 
+type createProgressExerciseParams = {
+  progressId: number;
+  exerciseId: number;
+  accessToken: string;
+};
+
 export const submissionApi = createApi({
   reducerPath: 'submissionApi',
   baseQuery: fetchBaseQuery({
@@ -24,7 +30,23 @@ export const submissionApi = createApi({
       },
       transformResponse: (res: any) => res.data,
     }),
+    createProgressExercise: builder.mutation<any, createProgressExerciseParams>(
+      {
+        query: ({ progressId, exerciseId, accessToken }) => {
+          return {
+            url: `/progress-exercises`,
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ progressId, exerciseId }),
+          };
+        },
+        transformResponse: (res: any) => res.data,
+      },
+    ),
   }),
 });
 
-export const { useGetSubmissionsQuery } = submissionApi;
+export const { useGetSubmissionsQuery, useCreateProgressExerciseMutation } =
+  submissionApi;
