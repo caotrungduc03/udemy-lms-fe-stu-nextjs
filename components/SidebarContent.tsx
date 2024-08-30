@@ -8,8 +8,10 @@ import {
   MdOutlineClose,
 } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { setExerciseId } from '../lib/features/exercise/exerciseSlice';
-import { setLessonId } from '../lib/features/lesson/lessonSlice';
+import {
+  setExerciseId,
+  setLessonId,
+} from '../lib/features/learning/learningSlice';
 import Loading from './Loading';
 
 const SidebarContent: React.FC = () => {
@@ -23,12 +25,10 @@ const SidebarContent: React.FC = () => {
   const dispatch = useDispatch();
   const handleLessonClick = (lessonId: string) => {
     dispatch(setLessonId(lessonId));
-    dispatch(setExerciseId(null));
   };
 
   const handleExerciseClick = (exerciseId: string) => {
     dispatch(setExerciseId(exerciseId));
-    dispatch(setLessonId(null));
   };
 
   if (!lessonIds || !exerciseIds) {

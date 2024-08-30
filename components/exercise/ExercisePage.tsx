@@ -5,7 +5,7 @@ import ExerciseInfo from './ExerciseInfo';
 
 const ExercisePage: React.FC = () => {
   const { exerciseIds } = useSelector((state: any) => state.progress);
-  const { exerciseId } = useSelector((state: any) => state.exercise);
+  const { exerciseId } = useSelector((state: any) => state.learning);
 
   return exerciseIds.includes(exerciseId) ? (
     <ExerciseHistory />

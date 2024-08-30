@@ -14,7 +14,7 @@ const MyCourse: React.FC = () => {
   const router = useRouter();
 
   const handleClick = (id: number) => {
-    router.push(`/course/${id}/learn`);
+    router.push(`/course/${id}/learning`);
   };
 
   useEffect(() => {

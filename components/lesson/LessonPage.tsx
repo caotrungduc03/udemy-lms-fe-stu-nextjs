@@ -8,7 +8,7 @@ import Loading from '../Loading';
 
 const LessonPage: React.FC = () => {
   const { accessToken } = useSelector((state: any) => state.auth);
-  const { lessonId } = useSelector((state: any) => state.lesson);
+  const { lessonId } = useSelector((state: any) => state.learning);
 
   const { data, isFetching } = useGetLessonByIdQuery(
     {
@@ -20,7 +20,7 @@ const LessonPage: React.FC = () => {
     },
   );
 
-  if (isFetching) {
+  if (!lessonId || isFetching) {
     return <Loading />;
   }
 

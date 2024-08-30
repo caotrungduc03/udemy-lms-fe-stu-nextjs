@@ -8,8 +8,10 @@ import LessonPage from '../../../../components/lesson/LessonPage';
 import Loading from '../../../../components/Loading';
 import SidebarContent from '../../../../components/SidebarContent';
 import { useGetCourseByIdQuery } from '../../../../lib/features/course/courseApi';
-import { setExerciseId } from '../../../../lib/features/exercise/exerciseSlice';
-import { setLessonId } from '../../../../lib/features/lesson/lessonSlice';
+import {
+  setExerciseId,
+  setLessonId,
+} from '../../../../lib/features/learning/learningSlice';
 import { useGetProgressByCourseIdQuery } from '../../../../lib/features/progress/progressApi';
 
 type Params = {
@@ -19,8 +21,7 @@ type Params = {
 const LearnPage: React.FC = () => {
   const params: Params = useParams();
   const { accessToken } = useSelector((state: any) => state.auth);
-  const { lessonId } = useSelector((state: any) => state.lesson);
-  const { exerciseId } = useSelector((state: any) => state.exercise);
+  const { lessonId, exerciseId } = useSelector((state: any) => state.learning);
   const dispatch = useDispatch();
 
   const { data, isLoading: isLoadingCourse } = useGetCourseByIdQuery({

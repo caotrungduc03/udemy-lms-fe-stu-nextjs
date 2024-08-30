@@ -4,7 +4,7 @@ import Loading from '../Loading';
 
 const ExerciseInfo: React.FC = () => {
   const { accessToken } = useSelector((state: any) => state.auth);
-  const { exerciseId } = useSelector((state: any) => state.exercise);
+  const { exerciseId } = useSelector((state: any) => state.learning);
   const { data, isFetching } = useGetExerciseByIdQuery(
     {
       id: exerciseId,
@@ -26,7 +26,7 @@ const ExerciseInfo: React.FC = () => {
         </div>
         <div className="mt-6 mb-14">
           <p>Deadline: {data.deadline}</p>
-          <p className="pt-4">Number of questions: {data.questions.length}</p>
+          <p className="pt-4">Number of questions: {data.totalQuestions}</p>
           <p className="pt-4">Time limit: {data.duration}'</p>
           <p className="pt-4">Total tries: 0/{data.max_tries}</p>
           <p className="pt-4">
