@@ -2,13 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 import { progressApi } from './progressApi';
 
 type ProgressState = {
-  id: number | null;
+  progressId: number | null;
   lessonIds: number[];
   exerciseIds: number[];
 };
 
 const initialState: ProgressState = {
-  id: null,
+  progressId: null,
   lessonIds: [],
   exerciseIds: [],
 };
@@ -21,7 +21,7 @@ const progressSlice = createSlice({
     builder.addMatcher(
       progressApi.endpoints.getProgressByCourseId.matchFulfilled,
       (state, { payload }) => {
-        state.id = payload.data.id;
+        state.progressId = payload.data.id;
         state.lessonIds = payload.data.progressLessonIds;
         state.exerciseIds = payload.data.progressExerciseIds;
       },

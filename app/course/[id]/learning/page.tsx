@@ -36,10 +36,12 @@ const LearnPage: React.FC = () => {
   const isLoading = isLoadingProgress || isLoadingCourse;
 
   useEffect(() => {
-    if (data?.lessons?.[0]?.id) {
-      dispatch(setLessonId(data.lessons[0].id));
-    } else if (data?.exercises?.[0]?.id) {
-      dispatch(setExerciseId(data.exercises[0].id));
+    if (!lessonId && !exerciseId) {
+      if (data?.lessons?.[0]?.id) {
+        dispatch(setLessonId(data.lessons[0].id));
+      } else if (data?.exercises?.[0]?.id) {
+        dispatch(setExerciseId(data.exercises[0].id));
+      }
     }
   }, [data, dispatch]);
 

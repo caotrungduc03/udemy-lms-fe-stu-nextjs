@@ -1,82 +1,89 @@
 import { MdInfoOutline } from 'react-icons/md';
-
-const data = {
-  data: {
-    exerciseName: 'Exercise 1',
-    deadline: '2022-06-30T00:00:00.000Z',
-    questions: [],
-    duration: 60,
-    max_tries: 3,
-    min_passing_percentage: 60,
-  },
-};
+import { useSelector } from 'react-redux';
+import { useGetSubmissionsQuery } from '../../lib/features/submission/submissionApi';
+import Loading from '../Loading';
 
 const ExerciseHistory: React.FC = () => {
+  const { accessToken } = useSelector((state: any) => state.auth);
+  const { progressId } = useSelector((state: any) => state.progress);
+  const { exerciseId } = useSelector((state: any) => state.learning);
+  const { data, isFetching } = useGetSubmissionsQuery({
+    progressId,
+    exerciseId,
+    accessToken,
+  });
+
+  if (!progressId || !exerciseId || isFetching) return <Loading />;
+
   return (
     <div className="flex items-center justify-center w-full px-4 py-16">
       <div className="w-[1000px]">
         <div className="mb-8">
           <p className="pb-2">Exercise</p>
-          <h3 className="text-2xl heading-md">{data.data.exerciseName}</h3>
+          <h3 className="text-2xl heading-md">{data.exercise.exerciseName}</h3>
         </div>
         <div className="flex items-center justify-between py-5 border-y border-solid border-[#cdcfd5]">
-          <p>Deadline: {data.data.deadline}</p>
-          <p>Number of questions: {data.data.questions.length}</p>
-          <p>Time limit: {data.data.duration}'</p>
+          <p>Deadline: {data.exercise.deadline}</p>
           <p>
-            Minimum score:{' '}
-            {Math.ceil(data.data.min_passing_percentage * data.data.max_tries) /
-              100}
+            Total tries:
+            {` ${data.submissions.length} / ${data.exercise.max_tries}`}
+          </p>
+          <p>Time limit: {data.exercise.duration}'</p>
+          <p>
+            Minimum score:
+            {` ${data.exercise.min_passing_percentage}%`}
           </p>
         </div>
         <div className="mt-5 mb-6">
           <table className="tutor-table">
             <thead>
               <tr>
+                <th>STT</th>
                 <th>Date</th>
                 <th>Question</th>
                 <th>Correct Answers</th>
                 <th>Incorrect Answers</th>
+                <th>Pending Answers</th>
                 <th>Score</th>
                 <th>Result</th>
                 <th>Details</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Tháng Bảy 6, 2024 6:48 chiều </td>
-                <td>2 </td>
-                <td>2 </td>
-                <td>0 </td>
-                <td>2 (100%) </td>
-                <td>
-                  <span className="label-success">Đạt</span>
-                </td>
-                <td>
-                  <div className="flex justify-center">
-                    <a className="btn btn-medium btn-secondary rounded-md">
-                      <MdInfoOutline className="icon icon-small" />
-                    </a>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>Tháng Bảy 6, 2024 6:48 chiều </td>
-                <td>2 </td>
-                <td>2 </td>
-                <td>0 </td>
-                <td>2 (100%) </td>
-                <td>
-                  <span className="label-error">Trượt</span>
-                </td>
-                <td>
-                  <div className="flex justify-center">
-                    <a className="btn btn-medium btn-secondary rounded-md">
-                      <MdInfoOutline className="icon icon-small" />
-                    </a>
-                  </div>
-                </td>
-              </tr>
+              {data.submissions.map((submission: any) => (
+                <tr key={submission.id}>
+                  <td>{submission.tryCount}</td>
+                  <td>
+                    <p>{submission.date.split(' ')[0]}</p>
+                    <p>{submission.date.split(' ')[1]}</p>
+                  </td>
+                  <td>{submission.totalQuestions}</td>
+                  <td>{submission.numberOfCorrectAnswers}</td>
+                  <td>{submission.numberOfIncorrectAnswers}</td>
+                  <td>{submission.numberOfPendingAnswers}</td>
+                  <td>{`${submission.gainedPointQuestions} (${submission.percentage}%)`}</td>
+                  <td>
+                    <span
+                      className={`${
+                        submission.status === 'PENDING'
+                          ? 'label-warning'
+                          : submission.status === 'PASS'
+                          ? 'label-success'
+                          : 'label-error'
+                      }`}
+                    >
+                      {submission.status}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="flex justify-center">
+                      <a className="btn btn-medium btn-secondary rounded-md">
+                        <MdInfoOutline className="icon icon-small" />
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

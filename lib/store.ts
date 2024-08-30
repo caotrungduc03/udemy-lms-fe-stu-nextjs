@@ -8,6 +8,7 @@ import learningSlice from './features/learning/learningSlice';
 import { lessonApi } from './features/lesson/lessonApi';
 import { progressApi } from './features/progress/progressApi';
 import progressSlice from './features/progress/progressSlice';
+import { submissionApi } from './features/submission/submissionApi';
 import { userApi } from './features/user/userApi';
 
 export const makeStore = () => {
@@ -23,6 +24,7 @@ export const makeStore = () => {
       [lessonApi.reducerPath]: lessonApi.reducer,
       [exerciseApi.reducerPath]: exerciseApi.reducer,
       [progressApi.reducerPath]: progressApi.reducer,
+      [submissionApi.reducerPath]: submissionApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(
@@ -32,6 +34,7 @@ export const makeStore = () => {
         lessonApi.middleware,
         exerciseApi.middleware,
         progressApi.middleware,
+        submissionApi.middleware,
       ),
   });
 };
