@@ -6,13 +6,13 @@ import { MdOutlinePlayCircleFilled } from 'react-icons/md';
 import CourseSwiper from '../../components/CourseSwiper';
 
 import { useSearchParams } from 'next/navigation';
-import { useGetCourseByIdDataQuery } from '../../lib/features/course/courseApi';
+import { useGetCourseByIdQuery } from '../../lib/features/course/courseApi';
 import useAuth from '../hook/auth';
 const Course: React.FC = () => {
   useAuth();
   const searchParam = useSearchParams();
   const id = searchParam.get('id');
-  const { data, isLoading } = useGetCourseByIdDataQuery({ id: id });
+  const { data, isLoading } = useGetCourseByIdQuery({ id: id });
   console.log('aaaaaaaa', data);
   const handleBuy = () => {};
   // const handleData2 = () => {

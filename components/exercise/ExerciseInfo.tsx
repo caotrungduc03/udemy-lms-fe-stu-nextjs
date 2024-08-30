@@ -1,19 +1,21 @@
-import { memo } from 'react';
-import { useGetExerciseQuery } from '../../lib/features/exercise/exerciseApi';
-import { getToken } from '../../lib/tokens';
+import { useSelector } from 'react-redux';
+import { useGetExerciseByIdQuery } from '../../lib/features/exercise/exerciseApi';
 import Loading from '../Loading';
 
-interface Props {
-  exerciseId: string | number;
-}
+const ExerciseInfo: React.FC = () => {
+  const { accessToken } = useSelector((state: any) => state.auth);
+  const { exerciseId } = useSelector((state: any) => state.exercise);
+  const { data, isFetching } = useGetExerciseByIdQuery(
+    {
+      id: exerciseId,
+      accessToken,
+    },
+    {
+      skip: !exerciseId,
+    },
+  );
 
-const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
-  const { data, isLoading, isFetching } = useGetExerciseQuery({
-    id: exerciseId,
-    accessToken: getToken(),
-  });
-
-  if (isLoading || isFetching) return <Loading />;
+  if (!exerciseId || isFetching) return <Loading />;
 
   return (
     <div className="flex items-center justify-center w-full px-4 py-16">
@@ -44,4 +46,4 @@ const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
   );
 };
 
-export default memo(ExerciseInfo);
+export default ExerciseInfo;

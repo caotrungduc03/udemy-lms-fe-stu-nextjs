@@ -1,19 +1,17 @@
-'use client';
-import React, { memo } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import ExerciseHistory from './ExerciseHistory';
 import ExerciseInfo from './ExerciseInfo';
-interface Exercise {
-  exerciseId: string | number;
-}
 
-const ExercisePage: React.FC<Exercise> = ({ exerciseId }) => {
-  const randomNumber = Math.floor(Math.random() * 10);
+const ExercisePage: React.FC = () => {
+  const { exerciseIds } = useSelector((state: any) => state.progress);
+  const { exerciseId } = useSelector((state: any) => state.exercise);
 
-  if (randomNumber % 2 === 0) {
-    return <ExerciseInfo exerciseId={exerciseId} />;
-  }
-
-  return <ExerciseHistory progressId={15} exerciseId={exerciseId} />;
+  return exerciseIds.includes(exerciseId) ? (
+    <ExerciseHistory />
+  ) : (
+    <ExerciseInfo />
+  );
 };
 
-export default memo(ExercisePage);
+export default ExercisePage;

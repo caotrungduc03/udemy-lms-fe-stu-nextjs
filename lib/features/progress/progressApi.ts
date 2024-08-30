@@ -6,10 +6,10 @@ export const progressApi = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
   }),
   endpoints: (builder) => ({
-    getProgressData: builder.query({
-      query: ({ id, accessToken }) => {
+    getMyCourse: builder.query<any, { accessToken: string | undefined }>({
+      query: ({ accessToken }) => {
         return {
-          url: `/courses/${id}`,
+          url: `/progress`,
           method: 'GET',
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -17,10 +17,10 @@ export const progressApi = createApi({
         };
       },
     }),
-    getProgressExercise: builder.query({
+    getProgressByCourseId: builder.query({
       query: ({ id, accessToken }) => {
         return {
-          url: `/progress-exercises/${id}`,
+          url: `/progress/courses/${id}`,
           method: 'GET',
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -31,5 +31,5 @@ export const progressApi = createApi({
   }),
 });
 
-export const { useGetProgressDataQuery, useGetProgressExerciseQuery } =
+export const { useGetMyCourseQuery, useGetProgressByCourseIdQuery } =
   progressApi;

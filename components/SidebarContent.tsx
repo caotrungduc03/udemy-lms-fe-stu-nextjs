@@ -1,54 +1,71 @@
 'use client';
+
 import { useState } from 'react';
-import { IoCloseSharp } from 'react-icons/io5';
-import { MdOutlineArrowDropDown } from 'react-icons/md';
+import {
+  MdArrowBack,
+  MdArrowDropDown,
+  MdArrowDropUp,
+  MdOutlineClose,
+} from 'react-icons/md';
+import { useDispatch, useSelector } from 'react-redux';
+import { setExerciseId } from '../lib/features/exercise/exerciseSlice';
+import { setLessonId } from '../lib/features/lesson/lessonSlice';
+import Loading from './Loading';
 
-interface SidebarContentProps {
-  progressLEID: any;
-  hidden: boolean;
-  setHidden: (hidden: boolean) => void;
-  progress: any;
-  handleLessonClick: (lessonId: string) => void;
-  handleExerciseClick: (exerciseId: string) => void;
-}
-
-const SidebarContent: React.FC<SidebarContentProps> = ({
-  progressLEID,
-  hidden,
-  setHidden,
-  progress,
-  handleLessonClick,
-  handleExerciseClick,
-}) => {
-  const [showLessons, setShowLessons] = useState(false);
+const SidebarContent: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [showLessons, setShowLessons] = useState(true);
   const [showExercises, setShowExercises] = useState(false);
+  const { lessons, exercises } = useSelector((state: any) => state.course);
+  const { lessonIds, exerciseIds } = useSelector(
+    (state: any) => state.progress,
+  );
+  const dispatch = useDispatch();
+  const handleLessonClick = (lessonId: string) => {
+    dispatch(setLessonId(lessonId));
+    dispatch(setExerciseId(null));
+  };
+
+  const handleExerciseClick = (exerciseId: string) => {
+    dispatch(setExerciseId(exerciseId));
+    dispatch(setLessonId(null));
+  };
+
+  if (!lessonIds || !exerciseIds) {
+    return <Loading />;
+  }
+
   return (
     <div
-      className={`col-span-1 border border-gray-200 top-0 transform transition-transform duration-300 ease-in-out ${
-        hidden ? 'translate-x-full' : 'relative translate-x-0'
+      className={`border border-gray-200 top-0 transform transition-transform duration-300 ease-in-out ${
+        isOpen ? 'w-1/4' : 'w-0'
       }`}
     >
-      {!hidden && (
-        <>
-          <div>
-            <div className="flex justify-between items-center p-2 border-b border-gray-200">
-              <h1 className="font-bold">Course Content</h1>
-              <button onClick={() => setHidden(!hidden)}>
-                <IoCloseSharp />
-              </button>
-            </div>
+      {isOpen && (
+        <div className="flex flex-col">
+          <div className="flex justify-between items-center p-2 border-b border-gray-200">
+            <h2 className="font-bold">Course Content</h2>
+            <button onClick={() => setIsOpen(!isOpen)}>
+              <MdOutlineClose />
+            </button>
+          </div>
+          <div className="flex flex-col">
             <div
               className="flex justify-between items-center cursor-pointer hover:bg-gray-200"
               onClick={() => setShowLessons(!showLessons)}
             >
-              <span className=" text-black px-2 py-2 rounded-md">
-                Show Lessons
-              </span>
-              <MdOutlineArrowDropDown />
+              <h2 className="text-black px-2 py-2 rounded-md">
+                The List Of Lessons
+              </h2>
+              {showLessons ? (
+                <MdArrowDropUp className="text-2xl" />
+              ) : (
+                <MdArrowDropDown className="text-2xl" />
+              )}
             </div>
             {showLessons && (
               <div className="mt-2">
-                {progress?.lessons?.map((lesson: any) => (
+                {lessons?.map((lesson: any) => (
                   <div
                     key={lesson.id}
                     className="flex items-center hover:bg-gray-200 p-2 cursor-pointer"
@@ -57,7 +74,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                     <input
                       type="checkbox"
                       className="mr-2"
-                      checked={progressLEID?.lesson?.includes(lesson.id)}
+                      defaultChecked={lessonIds.includes(lesson.id)}
                     />
                     <h1 className="text-sm text-gray-400">
                       {lesson.lessonName}
@@ -67,20 +84,23 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
               </div>
             )}
           </div>
-
-          <div>
+          <div className="flex flex-col">
             <div
               className="flex justify-between items-center cursor-pointer hover:bg-gray-200"
               onClick={() => setShowExercises(!showExercises)}
             >
-              <span className=" text-black px-2 py-2 rounded-md">
-                Show Exercises
-              </span>
-              <MdOutlineArrowDropDown />
+              <h2 className="text-black px-2 py-2 rounded-md">
+                The List Of Exercises
+              </h2>
+              {showExercises ? (
+                <MdArrowDropUp className="text-2xl" />
+              ) : (
+                <MdArrowDropDown className="text-2xl" />
+              )}
             </div>
             {showExercises && (
               <div className="mt-2">
-                {progress.exercises.map((exercise: any) => (
+                {exercises?.map((exercise: any) => (
                   <div
                     key={exercise.id}
                     className="flex items-center hover:bg-gray-200 p-2 cursor-pointer"
@@ -90,7 +110,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                       type="checkbox"
                       className="mr-2"
                       style={{ backgroundColor: 'green', color: 'white' }}
-                      checked={progressLEID?.exercise?.includes(exercise.id)}
+                      defaultChecked={exerciseIds?.includes(exercise.id)}
                     />
                     <h1 className="text-sm text-gray-400">
                       {exercise.exerciseName}
@@ -100,7 +120,18 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
               </div>
             )}
           </div>
-        </>
+        </div>
+      )}
+
+      {!isOpen && (
+        <div
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 transition-transform duration-300 ease-in-out hover:translate-x-0 bg-gray-800 p-2 rounded-l cursor-pointer"
+          onClick={() => setIsOpen(true)}
+        >
+          <button className="flex items-center">
+            <MdArrowBack className="text-white" />
+          </button>
+        </div>
       )}
     </div>
   );

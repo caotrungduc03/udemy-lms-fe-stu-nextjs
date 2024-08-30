@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { MdInfoOutline } from 'react-icons/md';
 
 const data = {
@@ -12,12 +11,7 @@ const data = {
   },
 };
 
-interface Props {
-  progressId: string | number;
-  exerciseId: string | number;
-}
-
-const ExerciseHistory: React.FC<Props> = ({ progressId, exerciseId }) => {
+const ExerciseHistory: React.FC = () => {
   return (
     <div className="flex items-center justify-center w-full px-4 py-16">
       <div className="w-[1000px]">
@@ -96,4 +90,4 @@ const ExerciseHistory: React.FC<Props> = ({ progressId, exerciseId }) => {
   );
 };
 
-export default memo(ExerciseHistory);
+export default ExerciseHistory;

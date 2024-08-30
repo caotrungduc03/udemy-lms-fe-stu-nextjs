@@ -1,70 +1,34 @@
-import { createSlice, SerializedError } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { courseApi } from './courseApi';
 
-const initialState = {
-  courses: [],
-  loading: false,
-  error: null as SerializedError | null,
+type CourseState = {
+  general: null;
+  lessons: any[];
+  exercises: any[];
+};
+
+const initialState: CourseState = {
+  general: null,
+  lessons: [],
+  exercises: [],
 };
 
 const courseSlice = createSlice({
   name: 'course',
   initialState,
-  reducers: {
-    clearCourses(state) {
-      state.courses = [];
-      state.loading = false;
-      state.error = null;
-    },
-    resetState() {
-      return initialState;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addMatcher(courseApi.endpoints.getCourseData.matchPending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.courses = []; // Clear courses when a new query starts
-      })
-      .addMatcher(
-        courseApi.endpoints.getCourseData.matchFulfilled,
-        (state, { payload }) => {
-          state.courses = payload.data.items;
-          state.loading = false;
-          state.error = null;
-        },
-      )
-      .addMatcher(
-        courseApi.endpoints.getCourseData.matchRejected,
-        (state, { error }) => {
-          state.error = error;
-          state.loading = false;
-        },
-      )
-      .addMatcher(courseApi.endpoints.getMyCourseData.matchPending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.courses = []; // Clear courses when a new query starts
-      })
-      .addMatcher(
-        courseApi.endpoints.getMyCourseData.matchFulfilled,
-        (state, { payload }) => {
-          state.courses = payload.data.items;
-          state.loading = false;
-          state.error = null;
-        },
-      )
-      .addMatcher(
-        courseApi.endpoints.getMyCourseData.matchRejected,
-        (state, { error }) => {
-          state.error = error;
-          state.loading = false;
-        },
-      );
+    builder.addMatcher(
+      courseApi.endpoints.getCourseById.matchFulfilled,
+      (state, { payload }) => {
+        const { lessons, exercises, ...rest } = payload;
+        state.general = rest;
+        state.lessons = lessons;
+        state.exercises = exercises;
+      },
+    );
   },
 });
 
-export const { clearCourses, resetState } = courseSlice.actions;
-
+export const {} = courseSlice.actions;
 export default courseSlice.reducer;
