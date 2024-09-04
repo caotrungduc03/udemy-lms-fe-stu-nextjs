@@ -4,10 +4,13 @@ import { useGetSubmissionsQuery } from '../../lib/features/submission/submission
 import { setIsDoingSubmission } from '../../lib/features/submission/submissionSlice';
 import Loading from '../Loading';
 
-const ExerciseHistory: React.FC = () => {
+type Props = {
+  exerciseId: string;
+};
+
+const ExerciseHistory: React.FC<Props> = ({ exerciseId }) => {
   const { accessToken } = useSelector((state: any) => state.auth);
   const { progressId } = useSelector((state: any) => state.progress);
-  const { exerciseId } = useSelector((state: any) => state.learning);
   const dispatch = useDispatch();
   const { data, isFetching } = useGetSubmissionsQuery({
     progressId,
@@ -15,7 +18,7 @@ const ExerciseHistory: React.FC = () => {
     accessToken,
   });
 
-  if (!progressId || !exerciseId || isFetching) return <Loading />;
+  if (!progressId || isFetching) return <Loading />;
 
   return (
     <div className="w-[1000px]">

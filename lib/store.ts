@@ -4,7 +4,6 @@ import authSlice from './features/auth/authSlice';
 import { courseApi } from './features/course/courseApi';
 import courseSlice from './features/course/courseSlice';
 import { exerciseApi } from './features/exercise/exerciseApi';
-import learningSlice from './features/learning/learningSlice';
 import { lessonApi } from './features/lesson/lessonApi';
 import { progressApi } from './features/progress/progressApi';
 import progressSlice from './features/progress/progressSlice';
@@ -17,7 +16,6 @@ export const makeStore = () => {
     reducer: {
       auth: authSlice,
       course: courseSlice,
-      learning: learningSlice,
       progress: progressSlice,
       submission: submissionSlice,
       [authApi.reducerPath]: authApi.reducer,

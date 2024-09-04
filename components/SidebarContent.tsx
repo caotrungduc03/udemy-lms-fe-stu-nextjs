@@ -7,38 +7,30 @@ import {
   MdArrowDropUp,
   MdOutlineClose,
 } from 'react-icons/md';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import {
-  setExerciseId,
-  setLessonId,
-} from '../lib/features/learning/learningSlice';
 import Loading from './Loading';
 
 const SidebarContent: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [showLessons, setShowLessons] = useState(true);
-  const [showExercises, setShowExercises] = useState(false);
+  const [showExercises, setShowExercises] = useState(true);
   const { lessons, exercises } = useSelector((state: any) => state.course);
   const { lessonIds, exerciseIds } = useSelector(
     (state: any) => state.progress,
   );
   const { isDoingSubmission } = useSelector((state: any) => state.submission);
-  const dispatch = useDispatch();
+
   const handleLessonClick = (lessonId: string) => {
     if (isDoingSubmission) {
       return toast.warn('Please complete the exercise first');
     }
-
-    dispatch(setLessonId(lessonId));
   };
 
   const handleExerciseClick = (exerciseId: string) => {
     if (isDoingSubmission) {
       return toast.warn('Please complete the exercise first');
     }
-
-    dispatch(setExerciseId(exerciseId));
   };
 
   if (!lessonIds || !exerciseIds) {
