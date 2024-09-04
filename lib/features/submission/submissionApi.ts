@@ -2,13 +2,13 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 type getSubmissionsParams = {
   progressId: number;
-  exerciseId: number;
+  exerciseId: number | string;
   accessToken: string;
 };
 
 type createProgressExerciseParams = {
   progressId: number;
-  exerciseId: number;
+  exerciseId: number | string;
   accessToken: string;
 };
 

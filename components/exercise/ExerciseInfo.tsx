@@ -3,21 +3,19 @@ import { useGetExerciseByIdQuery } from '../../lib/features/exercise/exerciseApi
 import { setIsDoingSubmission } from '../../lib/features/submission/submissionSlice';
 import Loading from '../Loading';
 
-const ExerciseInfo: React.FC = () => {
-  const { accessToken } = useSelector((state: any) => state.auth);
-  const { exerciseId } = useSelector((state: any) => state.learning);
-  const dispatch = useDispatch();
-  const { data, isFetching } = useGetExerciseByIdQuery(
-    {
-      id: exerciseId,
-      accessToken,
-    },
-    {
-      skip: !exerciseId,
-    },
-  );
+type Props = {
+  exerciseId: string;
+};
 
-  if (!exerciseId || isFetching) return <Loading />;
+const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
+  const { accessToken } = useSelector((state: any) => state.auth);
+  const dispatch = useDispatch();
+  const { data, isFetching } = useGetExerciseByIdQuery({
+    id: exerciseId,
+    accessToken,
+  });
+
+  if (isFetching) return <Loading />;
 
   return (
     <div className="w-[560px] border border-solid border-primary rounded-xl py-16 px-20">
