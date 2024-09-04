@@ -3,30 +3,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 interface CourseQuery {
   q?: string;
 }
-interface Course {
-  id: number;
-  createdAt: string;
-  courseName: string;
-  description: string;
-  coverImage: string;
-  priceType: string;
-  price: number;
-  author: Author;
-  category: Category;
-}
 
-interface Category {
-  id: number;
-  createdAt: string;
-  categoryName: string;
-}
-
-interface Author {
-  id: number;
-  createdAt: string;
-  fullName: string;
-  avatar?: any;
-}
+type getCourseByIdParams = {
+  id: number | string;
+};
 
 export const courseApi = createApi({
   reducerPath: 'courseApi',
@@ -46,30 +26,16 @@ export const courseApi = createApi({
         };
       },
     }),
-    getCourseByIdData: builder.query({
+    getCourseById: builder.query<any, getCourseByIdParams>({
       query: ({ id }) => {
         return {
           url: `/courses/${id}`,
           method: 'GET',
         };
       },
-    }),
-    getMyCourseData: builder.query<any, { accessToken: string }>({
-      query: ({ accessToken }) => {
-        return {
-          url: `/progress`,
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        };
-      },
+      transformResponse: (res: any) => res.data,
     }),
   }),
 });
 
-export const {
-  useGetCourseDataQuery,
-  useGetMyCourseDataQuery,
-  useGetCourseByIdDataQuery,
-} = courseApi;
+export const { useGetCourseDataQuery, useGetCourseByIdQuery } = courseApi;

@@ -1,7 +1,7 @@
-export const getToken = (): string => {
-  if (typeof window === 'undefined') return '';
+export const getToken = (): string | undefined => {
+  if (typeof window === 'undefined') return undefined;
 
-  return localStorage.getItem('accessToken') || '';
+  return localStorage.getItem('accessToken') || undefined;
 };
 
 export const setToken = (token: string) => {

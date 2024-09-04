@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   MdLanguage,
@@ -12,71 +12,35 @@ import {
   MdOutlineShoppingCart,
   MdSearch,
 } from 'react-icons/md';
-import { useSelector } from 'react-redux';
-import { useGetAuthDataQuery } from '../lib/features/auth/authApi';
-import { getToken, removeToken } from '../lib/tokens';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../lib/features/auth/authSlice';
 import { categories } from './categories';
 interface SearchFormData {
   search: string;
 }
 
 const Header: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const { user } = useSelector((state: any) => state.auth);
+  const { register, handleSubmit } = useForm<SearchFormData>();
+  const [isOpenDropDown, setIsOpenDropDown] = useState(false);
+  const dispatch = useDispatch();
 
   const handleToggle = () => {
-    setOpen(!open);
+    setIsOpenDropDown(!isOpenDropDown);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const router = useRouter();
-  const [token, setToken] = useState('');
-  const { user } = useSelector((state: any) => state.auth);
-  // console.log(user);
   const handleLogout = () => {
-    removeToken();
-    window.location.href = '/log-in';
+    dispatch(logout());
   };
-  const { isLoading, isFetching, isSuccess, error } = useGetAuthDataQuery(
-    {
-      accessToken: token || '',
-    },
-    // {
-    //   skip: !!user || !token,
-    // },
-  );
-
-  useEffect(() => {
-    setToken(getToken());
-  }, [token]);
-
-  const { register, handleSubmit } = useForm<SearchFormData>();
 
   const onSubmit: SubmitHandler<SearchFormData> = (data) => {
     const searchURL = `/search?query=${encodeURIComponent(data.search)}`;
-    // window.location.href = searchURL;
     router.push(searchURL);
   };
-  if (isLoading || isFetching) {
-    return (
-      <div className="animate-pulse z-10 flex items-center shadow-lg">
-        <header className="bg-slate-200 w-full h-[88px] flex items-center justify-center">
-          <Image
-            src={'/logo-udemy.svg'}
-            width={91}
-            height={34}
-            alt={'Udemy Logo'}
-            priority={true}
-          />
-        </header>
-      </div>
-    );
-  }
+
   return (
     <header className="z-10 flex items-center justify-between shadow-lg px-6">
-      {/* <h1>{user?.role?.roleName}</h1> */}
       <Link href={'/'} className="pr-2">
         <Image
           src={'/logo-udemy.svg'}
@@ -145,7 +109,7 @@ const Header: React.FC = () => {
           </form>
         </div>
         <span className="header-item">Udemy Business</span>
-        {user && isSuccess ? (
+        {user ? (
           <>
             <span className="header-item">Instructor</span>
             <Link href={'/my-course'}>
@@ -171,15 +135,14 @@ const Header: React.FC = () => {
             </Link>
             <div className="btn btn-large btn-ghost heading-sm btn-icon btn-icon-large">
               {user.avatar ? (
-                <div className="dropdown" onBlur={handleClose}>
+                <div className="dropdown" onClick={handleToggle}>
                   <img
                     src={user.avatar}
                     alt="img"
                     loading="lazy"
                     className="avatar"
-                    onClick={handleToggle}
                   />
-                  {open && (
+                  {isOpenDropDown && (
                     <div className="dropdown-menu">
                       <Link href="/user" className="dropdown-item">
                         User Profile

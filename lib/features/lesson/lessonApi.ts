@@ -6,7 +6,7 @@ export const lessonApi = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
   }),
   endpoints: (builder) => ({
-    getLessonData: builder.query({
+    getLessonById: builder.query({
       query: ({ id, accessToken }) => {
         return {
           url: `/lessons/${id}`,
@@ -20,4 +20,4 @@ export const lessonApi = createApi({
   }),
 });
 
-export const { useGetLessonDataQuery } = lessonApi;
+export const { useGetLessonByIdQuery } = lessonApi;

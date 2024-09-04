@@ -20,7 +20,7 @@ export const authApi = createApi({
         body: data,
       }),
     }),
-    getAuthData: builder.query<any, { accessToken: string }>({
+    getAuthData: builder.query<any, { accessToken: string | undefined }>({
       query: ({ accessToken }) => ({
         url: '/users/profile',
         method: 'GET',
