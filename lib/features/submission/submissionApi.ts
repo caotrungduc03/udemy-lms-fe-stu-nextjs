@@ -28,7 +28,7 @@ export const submissionApi = createApi({
           },
         };
       },
-      transformResponse: (res: any) => res.data,
+      transformResponse: (res: any) => res.data || {},
     }),
     createProgressExercise: builder.mutation<any, createProgressExerciseParams>(
       {
@@ -42,7 +42,7 @@ export const submissionApi = createApi({
             body: JSON.stringify({ progressId, exerciseId }),
           };
         },
-        transformResponse: (res: any) => res.data,
+        transformResponse: (res: any) => res.data || {},
       },
     ),
   }),

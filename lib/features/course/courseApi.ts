@@ -33,7 +33,7 @@ export const courseApi = createApi({
           method: 'GET',
         };
       },
-      transformResponse: (res: any) => res.data,
+      transformResponse: (res: any) => res.data || {},
     }),
   }),
 });

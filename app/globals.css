@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --sidebar-width: 416px;
+  }
+
   body {
     @apply font-udemy-sans;
   }
@@ -43,6 +47,10 @@
 
   .btn-primary {
     @apply bg-primary text-white;
+  }
+
+  .btn-primary:hover {
+    @apply bg-[#3e4143];
   }
 
   .btn-secondary {

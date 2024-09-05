@@ -19,7 +19,7 @@ export const exerciseApi = createApi({
           },
         };
       },
-      transformResponse: (res: any) => res.data,
+      transformResponse: (res: any) => res.data || {},
     }),
   }),
 });

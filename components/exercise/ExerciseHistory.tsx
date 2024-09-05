@@ -30,12 +30,12 @@ const ExerciseHistory: React.FC<Props> = ({ exerciseId }) => {
         <p>Deadline: {data.exercise.deadline}</p>
         <p>
           Total tries:
-          {` ${data.submissions.length} / ${data.exercise.max_tries}`}
+          {` ${data.submissions.length} / ${data.exercise.maxTries}`}
         </p>
         <p>Time limit: {data.exercise.duration}'</p>
         <p>
           Minimum score:
-          {` ${data.exercise.min_passing_percentage}%`}
+          {` ${data.exercise.minPassingPercentage}%`}
         </p>
       </div>
       <div className="mt-5 mb-6">
