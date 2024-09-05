@@ -69,6 +69,10 @@
     @apply fill-current inline-block flex-shrink-0;
   }
 
+  .icon-xsmall {
+    @apply w-4 h-4;
+  }
+
   .icon-small {
     @apply w-5 h-5;
   }
@@ -154,5 +158,29 @@
 
   .label-warning {
     @apply text-[#FF9800];
+  }
+
+  .ud-text-xs {
+    @apply text-xs font-normal;
+  }
+
+  .ud-text-sm {
+    @apply text-sm font-normal;
+  }
+
+  .real-toggle-input {
+    @apply hidden;
+  }
+
+  .real-toggle-input:checked + .fake-toggle-checkbox {
+    @apply bg-primary text-white;
+  }
+
+  .fake-toggle-input {
+    @apply border-[2px] border-solid border-primary;
+  }
+
+  .fake-toggle-checkbox {
+    @apply text-transparent;
   }
 }
