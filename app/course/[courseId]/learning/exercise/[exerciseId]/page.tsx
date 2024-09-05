@@ -20,7 +20,7 @@ const ExercisePage: React.FC = () => {
     <div className="flex items-center justify-center w-full px-4 py-16">
       {isDoingSubmission ? (
         <Submission />
-      ) : exerciseIds.includes(exerciseId) ? (
+      ) : exerciseIds.includes(Number(exerciseId)) ? (
         <ExerciseHistory exerciseId={exerciseId} />
       ) : (
         <ExerciseInfo exerciseId={exerciseId} />

@@ -15,6 +15,8 @@ const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
     accessToken,
   });
 
+  console.log(data);
+
   if (isFetching) return <Loading />;
 
   return (
@@ -27,9 +29,9 @@ const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
         <p>Deadline: {data.deadline}</p>
         <p className="pt-4">Number of questions: {data.totalQuestions}</p>
         <p className="pt-4">Time limit: {data.duration}'</p>
-        <p className="pt-4">Total tries: 0/{data.max_tries}</p>
+        <p className="pt-4">Total tries: 0/{data.maxTries}</p>
         <p className="pt-4">
-          Minimum score to complete: {data.min_passing_percentage}%
+          Minimum score to complete: {data.minPassingPercentage}%
         </p>
       </div>
       <div className="flex gap-6 w-full justify-start">
