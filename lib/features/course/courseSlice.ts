@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { courseApi } from './courseApi';
 
 type CourseState = {
-  general: null;
+  general: any;
   lessons: any[];
   exercises: any[];
 };
