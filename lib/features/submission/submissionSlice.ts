@@ -11,7 +11,6 @@ type SubmissionState = {
   tryCount: number | null;
   questions: any[];
   isDoingSubmission: boolean;
-  submission: AnswerSubmission[];
 };
 
 const initialState: SubmissionState = {
@@ -19,7 +18,6 @@ const initialState: SubmissionState = {
   tryCount: null,
   questions: [],
   isDoingSubmission: false,
-  submission: [],
 };
 
 const SubmissionSlice = createSlice({
@@ -27,16 +25,22 @@ const SubmissionSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addMatcher(
-      submissionApi.endpoints.createProgressExercise.matchFulfilled,
-      (state, { payload }) => {
-        state.progressExerciseId = payload.id;
-        state.tryCount = payload.tryCount;
-        state.questions = payload.questions;
-        state.isDoingSubmission = true;
-        state.submission = [];
-      },
-    );
+    builder
+      .addMatcher(
+        submissionApi.endpoints.createProgressExercise.matchFulfilled,
+        (state, { payload }) => {
+          state.progressExerciseId = payload.id;
+          state.tryCount = payload.tryCount;
+          state.questions = payload.questions;
+          state.isDoingSubmission = true;
+        },
+      )
+      .addMatcher(
+        submissionApi.endpoints.createSubmission.matchFulfilled,
+        (state, { payload }) => {
+          state.isDoingSubmission = false;
+        },
+      );
   },
 });
 

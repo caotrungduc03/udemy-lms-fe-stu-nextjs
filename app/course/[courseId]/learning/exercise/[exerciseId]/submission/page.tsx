@@ -1,25 +1,76 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Loading from '../../../../../../../components/Loading';
 import { useCreateSubmissionMutation } from '../../../../../../../lib/features/submission/submissionApi';
+import { AnswerSubmission } from '../../../../../../../lib/features/submission/submissionSlice';
 import { RootState } from '../../../../../../../lib/store';
 
+const questionTypeLabels: Record<string, string> = {
+  SINGLE_CHOICE: 'select one answer',
+  MULTIPLE_CHOICE: 'select multiple answers',
+  SHORT_ANSWER: 'write short answer',
+};
+
 const SubmissionPage: React.FC = () => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const { accessToken } = useSelector((state: RootState) => state.auth);
   const { general } = useSelector((state: RootState) => state.exercise);
+  const { progressExerciseId, tryCount, questions, isDoingSubmission } =
+    useSelector((state: RootState) => state.submission);
   const {
-    progressExerciseId,
-    tryCount,
-    questions,
-    isDoingSubmission,
-    submission,
-  } = useSelector((state: RootState) => state.submission);
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const [trigger] = useCreateSubmissionMutation();
   const router = useRouter();
   const pathName = usePathname();
+
+  const handleFinishSubmission = (data: any) => {
+    if (confirm('Are you sure you want to submit?')) {
+      const submission: AnswerSubmission[] = [];
+      Object.keys(data).forEach((key) => {
+        const keys = key.split('-');
+        const questionId = Number(keys[1]);
+
+        submission.push({
+          questionId,
+          answers: [data[key]],
+        });
+      });
+      trigger({
+        progressExerciseId,
+        submission,
+        accessToken,
+      })
+        .unwrap()
+        .then((res) => {
+          toast.success('Submitted successfully');
+          router.push(pathName.split('/').slice(0, -1).join('/'));
+        })
+        .catch((error) => {
+          toast.error(error.data.message);
+          console.log('error', error);
+        });
+    }
+  };
+
+  const handlePrevQuestion = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? questions?.length - 1 : prevIndex - 1,
+    );
+  };
+
+  const handleNextQuestion = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === questions?.length - 1 ? 0 : prevIndex + 1,
+    );
+  };
 
   if (
     !general ||
@@ -33,30 +84,15 @@ const SubmissionPage: React.FC = () => {
     return <Loading />;
   }
 
-  const handleFinishSubmission = () => {
-    trigger({
-      progressExerciseId,
-      submission,
-      accessToken,
-    })
-      .unwrap()
-      .then((res) => {
-        toast.success('Submitted successfully');
-        router.push(pathName.split('/').slice(0, -1).join('/'));
-      })
-      .catch((error) => {
-        toast.error(error.data.message);
-        console.log('error', error);
-      });
-  };
-
   return (
     <div className="w-[1000px]">
       <div className="flex justify-between">
         <div className="flex">
           <div className="flex mr-6">
             <span className="mr-3">Question Number:</span>
-            <span className="font-bold">1/6</span>
+            <span className="font-bold">
+              {currentIndex + 1}/{questions.length}
+            </span>
           </div>
           <div className="flex mr-6">
             <span className="mr-3">Total tries:</span>
@@ -72,98 +108,70 @@ const SubmissionPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="my-10">
-        <h2 className="mb-5 text-2xl">1. Tại sao sử dụng Linux?</h2>
-        <p>(chọn 1 đáp án)</p>
-      </div>
-      <div className="flex w-full flex-wrap">
-        <div className="w-1/2 flex justify-between px-3 mb-4">
-          <div className="flex items-center w-full border border-black rounded-md px-4 py-3">
-            <input
-              id="answer-1"
-              type="radio"
-              name="answer"
-              defaultChecked={false}
-            />
-            <label htmlFor="answer-1" className="flex-1 ml-2 cursor-pointer">
-              Tối ưu hiệu suất và chi phí
-            </label>
+      <form onSubmit={handleSubmit(handleFinishSubmission)}>
+        {questions?.map((question: any, index: number) => (
+          <div
+            key={question.id}
+            className={currentIndex === index ? 'block' : 'hidden'}
+          >
+            <div className="my-10">
+              <h2 className="mb-5 text-2xl">
+                {index + 1}. {question.questionTitle}
+              </h2>
+              <p>({questionTypeLabels[question.questionType]})</p>
+            </div>
+            <div className="flex w-full flex-wrap">
+              {question.answers.map((answer: any, index: number) => (
+                <div
+                  key={index}
+                  className="w-1/2 flex justify-between px-3 mb-4"
+                >
+                  <label
+                    htmlFor={`question-${question.id}-answer-${index}`}
+                    className="flex items-center w-full border border-black rounded-md px-4 py-3 cursor-pointer"
+                  >
+                    <input
+                      {...register(`question-${question.id}-answer`)}
+                      id={`question-${question.id}-answer-${index}`}
+                      type="radio"
+                      value={answer}
+                    />
+                    <span className="flex-1 ml-2">{answer}</span>
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-3 justify-center mt-10">
+              {currentIndex > 0 && (
+                <button
+                  type="button"
+                  className="btn btn-medium btn-primary heading-sm rounded-md"
+                  onClick={handlePrevQuestion}
+                >
+                  Previous
+                </button>
+              )}
+              {currentIndex === questions.length - 1 && (
+                <button
+                  type="submit"
+                  className="btn btn-medium btn-primary heading-sm rounded-md"
+                >
+                  Submit
+                </button>
+              )}
+              {currentIndex < questions.length - 1 && (
+                <button
+                  type="button"
+                  className="btn btn-medium btn-primary heading-sm rounded-md"
+                  onClick={handleNextQuestion}
+                >
+                  Next
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="w-1/2 flex justify-between px-3 mb-4">
-          <div className="flex items-center w-full border border-black rounded-md px-4 py-3">
-            <input
-              id="answer-2"
-              type="radio"
-              name="answer"
-              defaultChecked={false}
-            />
-            <label htmlFor="answer-2" className="flex-1 ml-2 cursor-pointer">
-              Cài đặt dễ dàng
-            </label>
-          </div>
-        </div>
-        <div className="w-1/2 flex justify-between px-3 mb-4">
-          <div className="flex items-center w-full border border-black rounded-md px-4 py-3">
-            <input
-              id="answer-3"
-              type="radio"
-              name="answer"
-              defaultChecked={false}
-            />
-            <label htmlFor="answer-3" className="flex-1 ml-2 cursor-pointer">
-              Bảo mật và ổn định
-            </label>
-          </div>
-        </div>
-        <div className="w-1/2 flex justify-between px-3 mb-4">
-          <div className="flex items-center w-full border border-black rounded-md px-4 py-3">
-            <input
-              id="answer-4"
-              type="radio"
-              name="answer"
-              defaultChecked={false}
-            />
-            <label htmlFor="answer-4" className="flex-1 ml-2 cursor-pointer">
-              Khả năng kiểm soát và linh hoạt
-            </label>
-          </div>
-        </div>
-        <div className="w-1/2 flex justify-between px-3 mb-4">
-          <div className="flex items-center w-full border border-black rounded-md px-4 py-3">
-            <input
-              id="answer-5"
-              type="radio"
-              name="answer"
-              defaultChecked={false}
-            />
-            <label htmlFor="answer-5" className="flex-1 ml-2 cursor-pointer">
-              Cộng đồng phát triển lớn
-            </label>
-          </div>
-        </div>
-        <div className="w-1/2 flex justify-between px-3 mb-4">
-          <div className="flex items-center w-full border border-black rounded-md px-4 py-3">
-            <input
-              id="answer-6"
-              type="radio"
-              name="answer"
-              defaultChecked={false}
-            />
-            <label htmlFor="answer-6" className="flex-1 ml-2 cursor-pointer">
-              Phát triển và cập nhật
-            </label>
-          </div>
-        </div>
-      </div>
-      <div className="mt-10">
-        <button
-          className="btn btn-medium btn-primary heading-sm rounded-md"
-          onClick={handleFinishSubmission}
-        >
-          Submit
-        </button>
-      </div>
+        ))}
+      </form>
     </div>
   );
 };
