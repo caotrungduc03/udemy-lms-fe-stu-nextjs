@@ -1,9 +1,54 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { setIsDoingSubmission } from '../../lib/features/submission/submissionSlice';
+'use client';
 
-const Submission: React.FC = () => {
-  const { progressExerciseId } = useSelector((state: any) => state.submission);
-  const dispatch = useDispatch();
+import { usePathname, useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import Loading from '../../../../../../../components/Loading';
+import { useCreateSubmissionMutation } from '../../../../../../../lib/features/submission/submissionApi';
+import { RootState } from '../../../../../../../lib/store';
+
+const SubmissionPage: React.FC = () => {
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { general } = useSelector((state: RootState) => state.exercise);
+  const {
+    progressExerciseId,
+    tryCount,
+    questions,
+    isDoingSubmission,
+    submission,
+  } = useSelector((state: RootState) => state.submission);
+  const [trigger] = useCreateSubmissionMutation();
+  const router = useRouter();
+  const pathName = usePathname();
+
+  if (
+    !general ||
+    !progressExerciseId ||
+    !tryCount ||
+    !questions ||
+    !isDoingSubmission
+  ) {
+    router.push(pathName.split('/').slice(0, -1).join('/'));
+
+    return <Loading />;
+  }
+
+  const handleFinishSubmission = () => {
+    trigger({
+      progressExerciseId,
+      submission,
+      accessToken,
+    })
+      .unwrap()
+      .then((res) => {
+        toast.success('Submitted successfully');
+        router.push(pathName.split('/').slice(0, -1).join('/'));
+      })
+      .catch((error) => {
+        toast.error(error.data.message);
+        console.log('error', error);
+      });
+  };
 
   return (
     <div className="w-[1000px]">
@@ -15,13 +60,15 @@ const Submission: React.FC = () => {
           </div>
           <div className="flex mr-6">
             <span className="mr-3">Total tries:</span>
-            <span className="font-bold">1/6</span>
+            <span className="font-bold">
+              {tryCount}/{general.totalQuestions}
+            </span>
           </div>
         </div>
         <div className="flex">
           <div className="flex mr-6">
             <span className="mr-3">Time Remaining:</span>
-            <span className="font-bold">45'</span>
+            <span className="font-bold">{general.duration}'</span>
           </div>
         </div>
       </div>
@@ -112,7 +159,7 @@ const Submission: React.FC = () => {
       <div className="mt-10">
         <button
           className="btn btn-medium btn-primary heading-sm rounded-md"
-          onClick={() => dispatch(setIsDoingSubmission(false))}
+          onClick={handleFinishSubmission}
         >
           Submit
         </button>
@@ -121,4 +168,4 @@ const Submission: React.FC = () => {
   );
 };
 
-export default Submission;
+export default SubmissionPage;

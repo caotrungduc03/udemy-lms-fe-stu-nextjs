@@ -1,15 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+type getExerciseByIdParams = {
+  id: number;
+  accessToken: string | undefined;
+};
+
 export const exerciseApi = createApi({
   reducerPath: 'exerciseApi',
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
   }),
   endpoints: (builder) => ({
-    getExerciseById: builder.query<
-      any,
-      { id: string | number; accessToken: string }
-    >({
+    getExerciseById: builder.query<any, getExerciseByIdParams>({
       query: ({ id, accessToken }) => {
         return {
           url: `/exercises/${id}`,
@@ -19,7 +21,7 @@ export const exerciseApi = createApi({
           },
         };
       },
-      transformResponse: (res: any) => res.data || {},
+      transformResponse: (res: any) => res.data,
     }),
   }),
 });

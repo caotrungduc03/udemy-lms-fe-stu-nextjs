@@ -1,15 +1,22 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { AnswerSubmission } from './submissionSlice';
 
 type getSubmissionsParams = {
-  progressId: number;
-  exerciseId: number | string;
-  accessToken: string;
+  progressId: number | null;
+  exerciseId: number;
+  accessToken: string | undefined;
 };
 
 type createProgressExerciseParams = {
-  progressId: number;
-  exerciseId: number | string;
-  accessToken: string;
+  progressId: number | null;
+  exerciseId: number;
+  accessToken: string | undefined;
+};
+
+type createSubmissionParams = {
+  progressExerciseId: number | null;
+  submission: AnswerSubmission[];
+  accessToken: string | undefined;
 };
 
 export const submissionApi = createApi({
@@ -28,7 +35,7 @@ export const submissionApi = createApi({
           },
         };
       },
-      transformResponse: (res: any) => res.data || {},
+      transformResponse: (res: any) => res.data,
     }),
     createProgressExercise: builder.mutation<any, createProgressExerciseParams>(
       {
@@ -39,14 +46,29 @@ export const submissionApi = createApi({
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-            body: JSON.stringify({ progressId, exerciseId }),
+            body: { progressId, exerciseId },
           };
         },
-        transformResponse: (res: any) => res.data || {},
+        transformResponse: (res: any) => res.data,
       },
     ),
+    createSubmission: builder.mutation<any, createSubmissionParams>({
+      query: ({ progressExerciseId, submission, accessToken }) => {
+        return {
+          url: `/submissions`,
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: { progressExerciseId, submission },
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetSubmissionsQuery, useCreateProgressExerciseMutation } =
-  submissionApi;
+export const {
+  useGetSubmissionsQuery,
+  useCreateProgressExerciseMutation,
+  useCreateSubmissionMutation,
+} = submissionApi;

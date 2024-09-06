@@ -1,21 +1,41 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { usePathname, useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { useGetExerciseByIdQuery } from '../../lib/features/exercise/exerciseApi';
-import { setIsDoingSubmission } from '../../lib/features/submission/submissionSlice';
+import { useCreateProgressExerciseMutation } from '../../lib/features/submission/submissionApi';
+import { RootState } from '../../lib/store';
 import Loading from '../Loading';
 
 type Props = {
-  exerciseId: string;
+  exerciseId: number;
 };
 
 const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
-  const { accessToken } = useSelector((state: any) => state.auth);
-  const dispatch = useDispatch();
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { progressId } = useSelector((state: RootState) => state.progress);
   const { data, isFetching } = useGetExerciseByIdQuery({
     id: exerciseId,
     accessToken,
   });
+  const [trigger] = useCreateProgressExerciseMutation();
+  const router = useRouter();
+  const pathName = usePathname();
 
-  console.log(data);
+  const handleDoSubmission = () => {
+    trigger({
+      progressId,
+      exerciseId,
+      accessToken,
+    })
+      .unwrap()
+      .then((res) => {
+        router.push(`${pathName}/submission`);
+      })
+      .catch((error) => {
+        toast.error(error.data.message);
+        console.log('error', error);
+      });
+  };
 
   if (isFetching) return <Loading />;
 
@@ -37,7 +57,7 @@ const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
       <div className="flex gap-6 w-full justify-start">
         <button
           className="btn btn-medium btn-primary heading-sm rounded-md"
-          onClick={() => dispatch(setIsDoingSubmission(true))}
+          onClick={handleDoSubmission}
         >
           Start
         </button>
