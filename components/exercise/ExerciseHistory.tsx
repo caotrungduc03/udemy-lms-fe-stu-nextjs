@@ -1,21 +1,47 @@
+import { usePathname, useRouter } from 'next/navigation';
 import { MdInfoOutline } from 'react-icons/md';
-import { useDispatch, useSelector } from 'react-redux';
-import { useGetSubmissionsQuery } from '../../lib/features/submission/submissionApi';
-import { setIsDoingSubmission } from '../../lib/features/submission/submissionSlice';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import {
+  useCreateProgressExerciseMutation,
+  useGetSubmissionsQuery,
+} from '../../lib/features/submission/submissionApi';
+import { RootState } from '../../lib/store';
 import Loading from '../Loading';
 
-const ExerciseHistory: React.FC = () => {
-  const { accessToken } = useSelector((state: any) => state.auth);
-  const { progressId } = useSelector((state: any) => state.progress);
-  const { exerciseId } = useSelector((state: any) => state.learning);
-  const dispatch = useDispatch();
+type Props = {
+  exerciseId: number;
+};
+
+const ExerciseHistory: React.FC<Props> = ({ exerciseId }) => {
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { progressId } = useSelector((state: RootState) => state.progress);
   const { data, isFetching } = useGetSubmissionsQuery({
     progressId,
     exerciseId,
     accessToken,
   });
+  const [trigger] = useCreateProgressExerciseMutation();
+  const router = useRouter();
+  const pathName = usePathname();
 
-  if (!progressId || !exerciseId || isFetching) return <Loading />;
+  const handleDoSubmission = () => {
+    trigger({
+      progressId,
+      exerciseId,
+      accessToken,
+    })
+      .unwrap()
+      .then((res) => {
+        router.push(`${pathName}/submission`);
+      })
+      .catch((error) => {
+        toast.error(error.data.message);
+        console.log('error', error);
+      });
+  };
+
+  if (!progressId || isFetching) return <Loading />;
 
   return (
     <div className="w-[1000px]">
@@ -27,12 +53,12 @@ const ExerciseHistory: React.FC = () => {
         <p>Deadline: {data.exercise.deadline}</p>
         <p>
           Total tries:
-          {` ${data.submissions.length} / ${data.exercise.max_tries}`}
+          {` ${data.submissions.length} / ${data.exercise.maxTries}`}
         </p>
         <p>Time limit: {data.exercise.duration}'</p>
         <p>
           Minimum score:
-          {` ${data.exercise.min_passing_percentage}%`}
+          {` ${data.exercise.minPassingPercentage}%`}
         </p>
       </div>
       <div className="mt-5 mb-6">
@@ -51,8 +77,8 @@ const ExerciseHistory: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {data.submissions.map((submission: any) => (
-              <tr key={submission.id}>
+            {data.submissions.map((submission: any, index: number) => (
+              <tr key={index}>
                 <td>{submission.tryCount}</td>
                 <td>
                   <p>{submission.date.split(' ')[0]}</p>
@@ -91,7 +117,7 @@ const ExerciseHistory: React.FC = () => {
       <div className="flex gap-6 w-full justify-start">
         <button
           className="btn btn-medium btn-primary heading-sm rounded-md"
-          onClick={() => dispatch(setIsDoingSubmission(true))}
+          onClick={handleDoSubmission}
         >
           Start
         </button>

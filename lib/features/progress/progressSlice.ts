@@ -30,5 +30,4 @@ const progressSlice = createSlice({
 });
 
 export const {} = progressSlice.actions;
-
 export default progressSlice.reducer;

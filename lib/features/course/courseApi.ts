@@ -5,7 +5,7 @@ interface CourseQuery {
 }
 
 type getCourseByIdParams = {
-  id: number | string;
+  id: number;
 };
 
 export const courseApi = createApi({

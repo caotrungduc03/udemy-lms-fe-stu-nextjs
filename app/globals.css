@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --sidebar-width: 416px;
+  }
+
   body {
     @apply font-udemy-sans;
   }
@@ -45,6 +49,10 @@
     @apply bg-primary text-white;
   }
 
+  .btn-primary:hover {
+    @apply bg-[#3e4143];
+  }
+
   .btn-secondary {
     @apply border border-solid border-primary bg-transparent text-primary;
   }
@@ -67,6 +75,10 @@
 
   .icon {
     @apply fill-current inline-block flex-shrink-0;
+  }
+
+  .icon-xsmall {
+    @apply w-4 h-4;
   }
 
   .icon-small {
@@ -154,5 +166,29 @@
 
   .label-warning {
     @apply text-[#FF9800];
+  }
+
+  .ud-text-xs {
+    @apply text-xs font-normal;
+  }
+
+  .ud-text-sm {
+    @apply text-sm font-normal;
+  }
+
+  .real-toggle-input {
+    @apply hidden;
+  }
+
+  .real-toggle-input:checked + .fake-toggle-checkbox {
+    @apply bg-primary text-white;
+  }
+
+  .fake-toggle-input {
+    @apply border-[2px] border-solid border-primary;
+  }
+
+  .fake-toggle-checkbox {
+    @apply text-transparent;
   }
 }

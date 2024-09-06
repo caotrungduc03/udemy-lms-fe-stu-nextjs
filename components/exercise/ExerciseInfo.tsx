@@ -1,23 +1,43 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { usePathname, useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { useGetExerciseByIdQuery } from '../../lib/features/exercise/exerciseApi';
-import { setIsDoingSubmission } from '../../lib/features/submission/submissionSlice';
+import { useCreateProgressExerciseMutation } from '../../lib/features/submission/submissionApi';
+import { RootState } from '../../lib/store';
 import Loading from '../Loading';
 
-const ExerciseInfo: React.FC = () => {
-  const { accessToken } = useSelector((state: any) => state.auth);
-  const { exerciseId } = useSelector((state: any) => state.learning);
-  const dispatch = useDispatch();
-  const { data, isFetching } = useGetExerciseByIdQuery(
-    {
-      id: exerciseId,
-      accessToken,
-    },
-    {
-      skip: !exerciseId,
-    },
-  );
+type Props = {
+  exerciseId: number;
+};
 
-  if (!exerciseId || isFetching) return <Loading />;
+const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { progressId } = useSelector((state: RootState) => state.progress);
+  const { data, isFetching } = useGetExerciseByIdQuery({
+    id: exerciseId,
+    accessToken,
+  });
+  const [trigger] = useCreateProgressExerciseMutation();
+  const router = useRouter();
+  const pathName = usePathname();
+
+  const handleDoSubmission = () => {
+    trigger({
+      progressId,
+      exerciseId,
+      accessToken,
+    })
+      .unwrap()
+      .then((res) => {
+        router.push(`${pathName}/submission`);
+      })
+      .catch((error) => {
+        toast.error(error.data.message);
+        console.log('error', error);
+      });
+  };
+
+  if (isFetching) return <Loading />;
 
   return (
     <div className="w-[560px] border border-solid border-primary rounded-xl py-16 px-20">
@@ -29,15 +49,15 @@ const ExerciseInfo: React.FC = () => {
         <p>Deadline: {data.deadline}</p>
         <p className="pt-4">Number of questions: {data.totalQuestions}</p>
         <p className="pt-4">Time limit: {data.duration}'</p>
-        <p className="pt-4">Total tries: 0/{data.max_tries}</p>
+        <p className="pt-4">Total tries: 0/{data.maxTries}</p>
         <p className="pt-4">
-          Minimum score to complete: {data.min_passing_percentage}%
+          Minimum score to complete: {data.minPassingPercentage}%
         </p>
       </div>
       <div className="flex gap-6 w-full justify-start">
         <button
           className="btn btn-medium btn-primary heading-sm rounded-md"
-          onClick={() => dispatch(setIsDoingSubmission(true))}
+          onClick={handleDoSubmission}
         >
           Start
         </button>
