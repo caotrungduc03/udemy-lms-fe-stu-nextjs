@@ -4,6 +4,7 @@ import authSlice from './features/auth/authSlice';
 import { courseApi } from './features/course/courseApi';
 import courseSlice from './features/course/courseSlice';
 import { exerciseApi } from './features/exercise/exerciseApi';
+import exerciseSlice from './features/exercise/exerciseSlice';
 import { lessonApi } from './features/lesson/lessonApi';
 import { progressApi } from './features/progress/progressApi';
 import progressSlice from './features/progress/progressSlice';
@@ -17,6 +18,7 @@ export const makeStore = () => {
       auth: authSlice,
       course: courseSlice,
       progress: progressSlice,
+      exercise: exerciseSlice,
       submission: submissionSlice,
       [authApi.reducerPath]: authApi.reducer,
       [courseApi.reducerPath]: courseApi.reducer,

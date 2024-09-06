@@ -35,7 +35,7 @@ const SidebarContentItem: React.FC<Props> = ({
   const router = useRouter();
   const isActive = pathName.endsWith(`${type}/${item.id}`);
 
-  const handleClick = (id: string | number) => {
+  const handleClick = (id: number) => {
     if (isDoingSubmission) {
       return toast.warn('Please complete the exercise first');
     }

@@ -5,7 +5,7 @@ interface CourseQuery {
 }
 
 type getCourseByIdParams = {
-  id: number | string;
+  id: number;
 };
 
 export const courseApi = createApi({
@@ -33,7 +33,7 @@ export const courseApi = createApi({
           method: 'GET',
         };
       },
-      transformResponse: (res: any) => res.data || {},
+      transformResponse: (res: any) => res.data,
     }),
   }),
 });
