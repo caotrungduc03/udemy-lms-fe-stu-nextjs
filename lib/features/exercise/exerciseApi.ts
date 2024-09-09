@@ -23,7 +23,29 @@ export const exerciseApi = createApi({
       },
       transformResponse: (res: any) => res.data,
     }),
+    getExerciseByCourseIdData: builder.query({
+      query: ({ courseId }) => {
+        return {
+          url: `/exercises?courseId=${courseId}`,
+          method: 'GET',
+        };
+      },
+    }),
+    createExercise: builder.mutation<any, any>({
+      query: ({ data, accessToken }) => ({
+        url: '/exercises',
+        method: 'POST',
+        body: data,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetExerciseByIdQuery } = exerciseApi;
+export const {
+  useGetExerciseByIdQuery,
+  useGetExerciseByCourseIdDataQuery,
+  useCreateExerciseMutation,
+} = exerciseApi;

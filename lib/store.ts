@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authApi } from './features/auth/authApi';
 import authSlice from './features/auth/authSlice';
+import { categoriesApi } from './features/categories/categoryApi';
 import { courseApi } from './features/course/courseApi';
 import courseSlice from './features/course/courseSlice';
 import { exerciseApi } from './features/exercise/exerciseApi';
@@ -27,6 +28,7 @@ export const makeStore = () => {
       [exerciseApi.reducerPath]: exerciseApi.reducer,
       [progressApi.reducerPath]: progressApi.reducer,
       [submissionApi.reducerPath]: submissionApi.reducer,
+      [categoriesApi.reducerPath]: categoriesApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(
@@ -37,6 +39,7 @@ export const makeStore = () => {
         exerciseApi.middleware,
         progressApi.middleware,
         submissionApi.middleware,
+        categoriesApi.middleware,
       ),
   });
 };

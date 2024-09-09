@@ -1,5 +1,6 @@
 'use client';
 
+import { useGetCategoriesQuery } from '@/lib/features/categories/categoryApi';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,9 +15,28 @@ import {
 } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../lib/features/auth/authSlice';
-import { categories } from './categories';
+import logoU from '../public/fakeImage/logo-udemy.svg';
 interface SearchFormData {
   search: string;
+}
+
+interface Category {
+  id: number;
+  categoryName: string;
+  parent?: Parent;
+}
+
+interface Parent {
+  id: number;
+  categoryName: string;
+}
+
+interface CategoryResponse {
+  data: {
+    data: {
+      items: Category[];
+    };
+  };
 }
 
 const Header: React.FC = () => {
@@ -33,6 +53,42 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     dispatch(logout());
   };
+  const { data } = useGetCategoriesQuery<CategoryResponse>();
+  console.log(data);
+  function transformData(data: Category[]) {
+    const categories: {
+      [key: string]: { name: string; id: number; subcategories: Parent[] };
+    } = {};
+
+    data.forEach((item) => {
+      if (item.parent) {
+        if (!categories[item.parent.categoryName]) {
+          categories[item.parent.categoryName] = {
+            name: item.parent.categoryName,
+            id: item.parent.id,
+            subcategories: [],
+          };
+        }
+        categories[item.parent.categoryName].subcategories.push({
+          categoryName: item.categoryName,
+          id: item.id,
+        });
+      } else {
+        if (!categories[item.categoryName]) {
+          categories[item.categoryName] = {
+            name: item.categoryName,
+            id: item.id,
+            subcategories: [],
+          };
+        }
+      }
+    });
+
+    return Object.values(categories);
+  }
+
+  const transformedData = transformData(data?.data?.items ?? []);
+  console.log(',', transformedData);
 
   const onSubmit: SubmitHandler<SearchFormData> = (data) => {
     const searchURL = `/search?query=${encodeURIComponent(data.search)}`;
@@ -43,7 +99,7 @@ const Header: React.FC = () => {
     <header className="z-10 flex items-center justify-between shadow-md px-6">
       <Link href={'/'} className="pr-2">
         <Image
-          src={'/logo-udemy.svg'}
+          src={logoU}
           width={91}
           height={34}
           alt={'Udemy Logo'}
@@ -64,7 +120,7 @@ const Header: React.FC = () => {
               </svg>
             </button>
             <ul className="absolute hidden pt-1 w-48 group-hover/main:block bg-white border border-gray-200">
-              {categories.map((category, index) => (
+              {transformedData.map((category, index) => (
                 <li key={index} className="group/item">
                   <a
                     className="flex items-center my-3 px-3 text-sm text-primary hover:text-[#412885] hover:cursor-pointer"
@@ -78,7 +134,7 @@ const Header: React.FC = () => {
                         key={subIndex}
                         className="flex items-center my-3 px-3 text-sm text-primary hover:text-[#412885] hover:cursor-pointer"
                       >
-                        {subcategory}
+                        {subcategory.categoryName}
                       </li>
                     ))}
                   </ul>
@@ -111,7 +167,9 @@ const Header: React.FC = () => {
         <span className="header-item">Udemy Business</span>
         {user ? (
           <>
-            <span className="header-item">Instructor</span>
+            <Link href="/instructor/course" className="header-item">
+              Instructor
+            </Link>
             <Link href={'/my-course'}>
               <span className="header-item">My learning</span>
             </Link>

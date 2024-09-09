@@ -20,6 +20,7 @@ export const authSlice = createSlice({
       localStorage.removeItem('accessToken');
       state.user = null;
       state.accessToken = undefined;
+      window.location.href = '/log-in';
     },
   },
   extraReducers: (builder) => {
