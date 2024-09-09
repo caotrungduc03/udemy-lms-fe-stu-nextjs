@@ -18,15 +18,42 @@ export const lessonApi = createApi({
       },
     }),
     getLessonByCourseIdData: builder.query({
-      query: ({ courseId }) => {
+      query: ({ accessToken, courseId }) => {
         return {
           url: `/lessons?courseId=${courseId}`,
           method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         };
       },
+    }),
+    createLesson: builder.mutation<any, any>({
+      query: ({ data, accessToken }) => ({
+        url: '/lessons',
+        method: 'POST',
+        body: data,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+    }),
+    updateLesson: builder.mutation({
+      query: ({ accessToken, data, id }) => ({
+        url: `/lessons/${id}`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: data,
+      }),
     }),
   }),
 });
 
-export const { useGetLessonByIdQuery, useGetLessonByCourseIdDataQuery } =
-  lessonApi;
+export const {
+  useGetLessonByIdQuery,
+  useGetLessonByCourseIdDataQuery,
+  useCreateLessonMutation,
+  useUpdateLessonMutation,
+} = lessonApi;
