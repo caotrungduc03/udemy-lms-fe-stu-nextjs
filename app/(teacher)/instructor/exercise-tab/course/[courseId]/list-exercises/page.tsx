@@ -166,9 +166,13 @@ export default function ExerciseList() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex space-x-2 items-end">
                       <TiPencil size={20} />
-                      <button className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
-                        Edit
-                      </button>
+                      <a
+                        href={`/instructor/exercise-tab/course/${courseId}/edit-exercise/${exercise.id}`}
+                      >
+                        <button className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
+                          Edit
+                        </button>
+                      </a>
                     </div>
                   </td>
                 </tr>
