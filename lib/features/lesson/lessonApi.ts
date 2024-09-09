@@ -17,7 +17,16 @@ export const lessonApi = createApi({
         };
       },
     }),
+    getLessonByCourseIdData: builder.query({
+      query: ({ courseId }) => {
+        return {
+          url: `/lessons?courseId=${courseId}`,
+          method: 'GET',
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetLessonByIdQuery } = lessonApi;
+export const { useGetLessonByIdQuery, useGetLessonByCourseIdDataQuery } =
+  lessonApi;
