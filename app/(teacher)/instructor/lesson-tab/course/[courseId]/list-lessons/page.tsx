@@ -1,6 +1,7 @@
 'use client';
 import Loading from '@/components/Loading';
 import { useGetLessonByCourseIdDataQuery } from '@/lib/features/lesson/lessonApi';
+import { getToken } from '@/lib/tokens';
 import classroom from '@/public/fakeImage/excercise2.jpg';
 import headerBg from '@/public/fakeImage/header-bg.jpg';
 import Image from 'next/image';
@@ -55,17 +56,18 @@ export default function LessonList() {
   const search = searchParam.get('lessonId') || '';
   const itemsPerPage = 6;
   const { data, isLoading } = useGetLessonByCourseIdDataQuery({
+    accessToken: getToken(),
     courseId: courseId,
   });
   console.log(data);
   if (isLoading) {
     return <Loading />;
   }
-  const filteredData = data.data.items.filter((lesson: any) =>
+  const filteredData = data?.data?.items?.filter((lesson: any) =>
     lesson.lessonName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const numResults = filteredData.length;
+  const numResults = filteredData.length || 0;
   var totalPages = Math.ceil(numResults / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -156,7 +158,7 @@ export default function LessonList() {
       <div className="h-screen flex flex-col items-center w-full pt-10">
         <div className="w-5/6 flex flex-col">
           <button className="font-bold text-white text-sm bg-blue-600 py-2 w-36 rounded-lg hover:bg-blue-700 mb-2">
-            <a href="/instructor/lesson-tab/course/2/create-lesson">
+            <a href={`/instructor/lesson-tab/course/${courseId}/create-lesson`}>
               Create New Lesson
             </a>
           </button>
@@ -202,9 +204,13 @@ export default function LessonList() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex space-x-2 items-end">
                       <TiPencil size={20} />
-                      <button className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
-                        Edit
-                      </button>
+                      <a
+                        href={`/instructor/lesson-tab/course/${courseId}/edit-lesson/${lesson.id}`}
+                      >
+                        <button className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
+                          Edit
+                        </button>
+                      </a>
                     </div>
                   </td>
                 </tr>

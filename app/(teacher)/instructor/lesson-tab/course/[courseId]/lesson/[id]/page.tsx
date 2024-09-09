@@ -1,15 +1,16 @@
 'use client';
 import Loading from '@/components/Loading';
-import { useGetLessonByCourseIdDataQuery } from '@/lib/features/lesson/lessonApi';
+import { useGetLessonByIdQuery } from '@/lib/features/lesson/lessonApi';
 import { getToken } from '@/lib/tokens';
-import classroom from '@/public/excercise2.jpg';
+import classroom from '@/public/fakeImage/excercise2.jpg';
 import headerBg from '@/public/fakeImage/header-bg.jpg';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 
 const Lesson: React.FC = () => {
-  const id = useParams().id;
-  const { data, isLoading } = useGetLessonByCourseIdDataQuery({
+  const params = useParams();
+  const id = Number(params.id);
+  const { data, isLoading } = useGetLessonByIdQuery({
     id: id,
     accessToken: getToken(),
   });
@@ -57,23 +58,24 @@ const Lesson: React.FC = () => {
             <div>
               <div className="pb-4">
                 <h2 className="font-bold text-lg text-gray-700">Lesson Name</h2>
-                <p className="text-gray-600 mt-2">{data.data.lessonName}</p>
+                <p className="text-gray-600 mt-2">{data?.data.lessonName}</p>
               </div>
               <div>
                 <h2 className="font-bold text-lg text-gray-700">Duration</h2>
                 <p className="text-gray-600 mt-2">
-                  {data.data.duration} minutes
+                  {data?.data.duration} minutes
                 </p>
               </div>
             </div>
             <div>
               <h2 className="font-bold text-lg text-gray-700">Description</h2>
-              <p className="text-gray-600 mt-2">{data.data.description}</p>
+              <p className="text-gray-600 mt-2">{data?.data.description}</p>
             </div>
           </div>
           <div>
             <h2 className="font-bold text-lg text-gray-700">Content</h2>
-            <p className="text-gray-600 mt-2">{data.data.content}</p>
+            {/* <p className="text-gray-600 mt-2">{data?.data.content}</p> */}
+            <div dangerouslySetInnerHTML={{ __html: data?.data.content }} />
           </div>
         </div>
       </div>

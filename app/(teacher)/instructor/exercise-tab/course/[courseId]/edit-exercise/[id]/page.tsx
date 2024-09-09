@@ -1,8 +1,8 @@
 'use client';
 
 import {
-  useCreateExerciseMutation,
   useGetExerciseByIdQuery,
+  useUpdateExerciseMutation,
 } from '@/lib/features/exercise/exerciseApi';
 import { getToken } from '@/lib/tokens';
 import { useParams } from 'next/navigation';
@@ -14,14 +14,14 @@ type FormValues = {
   exerciseName: string;
   description: string;
   exerciseType: string;
-  duration: string;
+  duration: number;
   deadline: string;
-  minPassingPercentage: string;
-  maxTries: string;
+  minPassingPercentage: number;
+  maxTries: number;
   courseId: string;
 };
 
-export default function CreateExercise() {
+export default function EditExercise() {
   const [date, setDate] = useState('');
   const params = useParams();
   const courseId = params.courseId;
@@ -48,40 +48,44 @@ export default function CreateExercise() {
     }
     return inputDate;
   };
-  const [createExercise, { isLoading, error }] = useCreateExerciseMutation();
+  const [editExercise, { isLoading }] = useUpdateExerciseMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
   const formatYYYYMMDD = (dateString: string | undefined) => {
-    if (!dateString) return ''; // Return an empty string if dateString is undefined
+    if (!dateString) return '';
 
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = `0${date.getMonth() + 1}`.slice(-2); // Get month (0-based) and add leading 0
-    const day = `0${date.getDate()}`.slice(-2); // Get day and add leading 0
+    const month = `0${date.getMonth() + 1}`.slice(-2);
+    const day = `0${date.getDate()}`.slice(-2);
 
     return `${year}-${month}-${day}`;
   };
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const exerciseData = {
       ...data,
-      courseId: courseId, // Truyền thêm courseId từ params vào data
+      minPassingPercentage: Number(data.minPassingPercentage),
+      maxTries: Number(data.maxTries),
+      duration: Number(data.duration),
+      courseId: courseId,
     };
     try {
-      const result = await createExercise({
+      const result = await editExercise({
+        id: exerciseId,
         data: exerciseData,
         accessToken: getToken(),
       }).unwrap();
       if (result) {
-        toast.success('Create exercise successfully');
+        toast.success('Edit exercise successfully');
         setTimeout(() => {
           window.location.href = `/instructor/exercise-tab/course/${courseId}/list-exercises`;
         }, 2000);
       }
     } catch (err) {
-      toast.error('Failed to create exercise');
+      toast.error('Failed to edit exercise');
     }
   };
 

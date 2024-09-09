@@ -1,11 +1,14 @@
 'use client';
-import { useCreateLessonMutation } from '@/lib/features/lesson/lessonApi';
+import {
+  useGetLessonByIdQuery,
+  useUpdateLessonMutation,
+} from '@/lib/features/lesson/lessonApi';
 import { getToken } from '@/lib/tokens';
 import html2canvas from 'html2canvas'; // Import html2canvas
 import jsPDF from 'jspdf'; // Import jsPDF
 import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { toast } from 'react-toastify';
@@ -18,11 +21,20 @@ type FormValues = {
   courseId: number;
 };
 
-export default function CreateLesson() {
+export default function EditLesson() {
   const params = useParams();
   const courseId = params.courseId;
+  const lessonId = Number(params.id);
   const [content, setContent] = useState('');
-  const [createLesson, { isLoading }] = useCreateLessonMutation();
+  const { data } = useGetLessonByIdQuery({
+    id: lessonId,
+    accessToken: getToken(),
+  });
+  console.log(data);
+  useEffect(() => {
+    setContent(data?.data.content);
+  }, [data]);
+  const [editLesson, { isLoading }] = useUpdateLessonMutation();
   const quillModules = {
     toolbar: {
       container: [
@@ -97,7 +109,8 @@ export default function CreateLesson() {
       courseId: courseId,
     };
     try {
-      const result = await createLesson({
+      const result = await editLesson({
+        id: lessonId,
         data: lessonData,
         accessToken: getToken(),
       }).unwrap();
@@ -125,7 +138,7 @@ export default function CreateLesson() {
             Lesson Name
           </label>
           <input
-            placeholder="Lesson Name"
+            placeholder={data?.data.lessonName}
             {...register('lessonName', { required: true })}
             className="border border-gray-300 p-3 rounded-lg mb-5 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
@@ -133,7 +146,7 @@ export default function CreateLesson() {
             Description
           </label>
           <input
-            placeholder="Description"
+            placeholder={data?.data.description}
             {...register('description', { required: true })}
             className="border border-gray-300 p-3 rounded-lg mb-5 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
@@ -141,7 +154,7 @@ export default function CreateLesson() {
             Duration
           </label>
           <input
-            placeholder="Duration..."
+            placeholder={data?.data.duration}
             {...register('duration', { required: true })}
             type="number"
             className="border border-gray-300 p-3 rounded-lg w-full text-gray-900 mb-5"
@@ -191,7 +204,7 @@ export default function CreateLesson() {
                 type="submit"
                 className="inline-flex items-center px-5 py-3 text-sm font-medium text-center text-white bg-blue-600 rounded-lg dark:focus:ring-blue-900 hover:bg-blue-700"
               >
-                Create Lesson
+                Edit Lesson
               </button>
             )}
           </div>

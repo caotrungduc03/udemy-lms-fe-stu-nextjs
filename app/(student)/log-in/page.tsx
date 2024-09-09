@@ -47,8 +47,8 @@ const Login: React.FC = () => {
     if (isSuccess) {
       toast.success('Login successfully');
       setAuthorId(data.data.user.id);
-      if (data.data.user.role.roleName === 'ADMIN') {
-        redirect('/');
+      if (data.data.user.role.roleName === 'PROFESSOR') {
+        redirect('/instructor');
       }
     }
 

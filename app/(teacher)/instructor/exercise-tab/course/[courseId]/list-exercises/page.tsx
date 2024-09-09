@@ -1,6 +1,7 @@
 'use client';
 import Loading from '@/components/Loading';
 import { useGetExerciseByCourseIdDataQuery } from '@/lib/features/exercise/exerciseApi';
+import { getToken } from '@/lib/tokens';
 import classroom from '@/public/fakeImage/excercise2.jpg';
 import headerBg from '@/public/fakeImage/header-bg.jpg';
 import Image from 'next/image';
@@ -18,6 +19,7 @@ export default function ExerciseList() {
   const search = searchParam.get('search') || '';
   const itemsPerPage = 6;
   const { data, isLoading } = useGetExerciseByCourseIdDataQuery({
+    accessToken: getToken(),
     courseId: courseId,
   });
   if (isLoading) {
@@ -27,7 +29,7 @@ export default function ExerciseList() {
     exercise.exerciseName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const numResults = filteredData.length;
+  const numResults = filteredData.length || 0;
   var totalPages = Math.ceil(numResults / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;

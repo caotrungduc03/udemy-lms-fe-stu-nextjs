@@ -11,10 +11,10 @@ type FormValues = {
   exerciseName: string;
   description: string;
   exerciseType: string;
-  duration: string;
+  duration: number;
   deadline: string;
-  minPassingPercentage: string;
-  maxTries: string;
+  minPassingPercentage: number;
+  maxTries: number;
   courseId: string;
 };
 
@@ -37,7 +37,7 @@ export default function CreateExercise() {
     }
     return inputDate;
   };
-  const [createExercise, { isLoading, error }] = useCreateExerciseMutation();
+  const [createExercise, { isLoading }] = useCreateExerciseMutation();
   const {
     register,
     handleSubmit,
@@ -47,6 +47,9 @@ export default function CreateExercise() {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const exerciseData = {
       ...data,
+      minPassingPercentage: Number(data.minPassingPercentage),
+      maxTries: Number(data.maxTries),
+      duration: Number(data.duration),
       courseId: courseId, // Truyền thêm courseId từ params vào data
     };
     try {

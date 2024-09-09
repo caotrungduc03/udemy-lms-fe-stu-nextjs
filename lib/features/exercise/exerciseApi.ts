@@ -24,10 +24,13 @@ export const exerciseApi = createApi({
       transformResponse: (res: any) => res.data,
     }),
     getExerciseByCourseIdData: builder.query({
-      query: ({ courseId }) => {
+      query: ({ accessToken, courseId }) => {
         return {
           url: `/exercises?courseId=${courseId}`,
           method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         };
       },
     }),
@@ -41,6 +44,16 @@ export const exerciseApi = createApi({
         },
       }),
     }),
+    updateExercise: builder.mutation({
+      query: ({ accessToken, data, id }) => ({
+        url: `/exercises/${id}`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -48,4 +61,5 @@ export const {
   useGetExerciseByIdQuery,
   useGetExerciseByCourseIdDataQuery,
   useCreateExerciseMutation,
+  useUpdateExerciseMutation,
 } = exerciseApi;
