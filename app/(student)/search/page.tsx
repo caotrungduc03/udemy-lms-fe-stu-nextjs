@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 
 import { useGetCourseDataQuery } from '@/lib/features/course/courseApi';
 import { IoIosArrowDropleft, IoIosArrowDropright } from 'react-icons/io';
-import useAuth from '../hook/auth';
 
 interface Course {
   id: number;
@@ -33,7 +32,6 @@ interface Author {
 }
 
 export const Search: React.FC = () => {
-  useAuth();
   const searchParam = useSearchParams();
   const search = searchParam.get('query') || '';
   const [currentPage, setCurrentPage] = useState(1);

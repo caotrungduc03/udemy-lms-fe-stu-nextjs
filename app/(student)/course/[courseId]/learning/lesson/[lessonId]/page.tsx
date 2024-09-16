@@ -2,6 +2,7 @@
 
 import Loading from '@/components/Loading';
 import { useGetLessonByIdQuery } from '@/lib/features/lesson/lessonApi';
+import { RootState } from '@/lib/store';
 import { useParams } from 'next/navigation';
 import { IoTime } from 'react-icons/io5';
 import { TbWorld } from 'react-icons/tb';
@@ -13,7 +14,8 @@ type Params = {
 };
 
 const LessonPage: React.FC = () => {
-  const { accessToken } = useSelector((state: any) => state.auth);
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { progressId } = useSelector((state: RootState) => state.progress);
   const { lessonId }: Params = useParams();
 
   const { data, isFetching } = useGetLessonByIdQuery({
@@ -21,7 +23,7 @@ const LessonPage: React.FC = () => {
     accessToken,
   });
 
-  if (isFetching) {
+  if (!progressId || isFetching) {
     return <Loading />;
   }
 

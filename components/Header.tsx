@@ -15,7 +15,7 @@ import {
 } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../lib/features/auth/authSlice';
-import logoU from '../public/fakeImage/logo-udemy.svg';
+import logoU from '../public/logo-udemy.svg';
 interface SearchFormData {
   search: string;
 }
@@ -54,7 +54,6 @@ const Header: React.FC = () => {
     dispatch(logout());
   };
   const { data } = useGetCategoriesQuery<CategoryResponse>();
-  console.log(data);
   function transformData(data: Category[]) {
     const categories: {
       [key: string]: { name: string; id: number; subcategories: Parent[] };
@@ -88,7 +87,6 @@ const Header: React.FC = () => {
   }
 
   const transformedData = transformData(data?.data?.items ?? []);
-  console.log(',', transformedData);
 
   const onSubmit: SubmitHandler<SearchFormData> = (data) => {
     const searchURL = `/search?query=${encodeURIComponent(data.search)}`;

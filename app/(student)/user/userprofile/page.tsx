@@ -32,7 +32,6 @@ const Profile: React.FC<User> = ({ userName, email, phone, photo }) => {
   const [isHovered, setIsHovered] = useState(false);
   useEffect(() => {
     setToken(getToken() || '');
-    console.log(token);
   }, [token]);
 
   const handleFileChange = async (

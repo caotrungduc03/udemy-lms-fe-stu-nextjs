@@ -3,12 +3,10 @@ import { useGetAuthDataQuery } from '@/lib/features/auth/authApi';
 import { getToken } from '@/lib/tokens';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import useAuth from '../hook/auth';
 import Security from './user-account-security/page';
 import Profile from './userprofile/page';
 
 const User: React.FC = () => {
-  useAuth();
   const [token, setToken] = useState('');
   const { user } = useSelector((state: any) => state.auth);
   const [page, setPage] = useState('profile'); // Default to "profile" page
@@ -20,9 +18,7 @@ const User: React.FC = () => {
 
   useEffect(() => {
     setToken(getToken() || '');
-    console.log(token);
   }, [token]);
-  console.log(user);
 
   if (isFetching || !user) {
     return (
