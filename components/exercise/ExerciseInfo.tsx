@@ -21,23 +21,22 @@ const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
   const router = useRouter();
   const pathName = usePathname();
 
-  const handleDoSubmission = () => {
-    trigger({
-      progressId,
-      exerciseId,
-      accessToken,
-    })
-      .unwrap()
-      .then((res) => {
-        router.push(`${pathName}/submission`);
-      })
-      .catch((error) => {
-        toast.error(error.data.message);
-        console.log('error', error);
-      });
+  const handleDoSubmission = async () => {
+    try {
+      const res = await trigger({
+        progressId,
+        exerciseId,
+        accessToken,
+      }).unwrap();
+
+      router.push(`${pathName}/submission`);
+    } catch (error: any) {
+      toast.error(error.data.message);
+      console.log('error', error);
+    }
   };
 
-  if (isFetching) return <Loading />;
+  if (!progressId || isFetching) return <Loading />;
 
   return (
     <div className="w-[560px] border border-solid border-primary rounded-xl py-16 px-20">

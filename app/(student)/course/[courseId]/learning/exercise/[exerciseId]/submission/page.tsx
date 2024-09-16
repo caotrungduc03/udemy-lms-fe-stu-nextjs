@@ -31,32 +31,31 @@ const SubmissionPage: React.FC = () => {
   const router = useRouter();
   const pathName = usePathname();
 
-  const handleFinishSubmission = (data: any) => {
-    if (confirm('Are you sure you want to submit?')) {
-      const submission: AnswerSubmission[] = [];
-      Object.keys(data).forEach((key) => {
-        const keys = key.split('-');
-        const questionId = Number(keys[1]);
+  const handleFinishSubmission = async (data: any) => {
+    try {
+      if (confirm('Are you sure you want to submit?')) {
+        const submission: AnswerSubmission[] = [];
+        Object.keys(data).forEach((key) => {
+          const keys = key.split('-');
+          const questionId = Number(keys[1]);
 
-        submission.push({
-          questionId,
-          answers: [data[key]],
+          submission.push({
+            questionId,
+            answers: [data[key]],
+          });
         });
-      });
-      trigger({
-        progressExerciseId,
-        submission,
-        accessToken,
-      })
-        .unwrap()
-        .then((res) => {
-          toast.success('Submitted successfully');
-          router.push(pathName.split('/').slice(0, -1).join('/'));
-        })
-        .catch((error) => {
-          toast.error(error.data.message);
-          console.log('error', error);
-        });
+        const res = await trigger({
+          progressExerciseId,
+          submission,
+          accessToken,
+        }).unwrap();
+
+        toast.success('Submitted successfully');
+        router.push(pathName.split('/').slice(0, -1).join('/'));
+      }
+    } catch (error: any) {
+      toast.error(error.data.message);
+      console.log('error', error);
     }
   };
 

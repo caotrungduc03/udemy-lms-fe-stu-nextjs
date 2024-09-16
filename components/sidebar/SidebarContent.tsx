@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { useGetCourseByIdQuery } from '../../lib/features/course/courseApi';
 import { useGetProgressByCourseIdQuery } from '../../lib/features/progress/progressApi';
 import { RootState } from '../../lib/store';
+import Loading from '../Loading';
 import SidebarContentItem from './SidebarContentItem';
 
 type Params = {
@@ -30,15 +31,15 @@ const SidebarContent: React.FC = () => {
     (state: RootState) => state.progress,
   );
   const params: Params = useParams();
-  const { isError: isErrorCourse } = useGetCourseByIdQuery(
+  const { isLoading: isLoadingCourse } = useGetCourseByIdQuery(
     {
-      id: params.courseId,
+      id: Number(params.courseId),
     },
     {
       skip: !!general,
     },
   );
-  const { isError: isErrorProgress } = useGetProgressByCourseIdQuery(
+  const { isLoading: isLoadingProgress } = useGetProgressByCourseIdQuery(
     {
       id: params.courseId,
       accessToken,
@@ -54,8 +55,9 @@ const SidebarContent: React.FC = () => {
         isOpen ? 'w-[var(--sidebar-width)]' : 'w-0'
       }`}
     >
-      {/* Content */}
-      {isOpen && (
+      {isLoadingCourse || isLoadingProgress ? (
+        <Loading />
+      ) : isOpen ? (
         <div className="flex flex-col h-full">
           <div className="flex justify-between items-center border-b border-[#d1d7dc] p-2 pl-4">
             <h2 className="heading-md">Course Content</h2>
@@ -134,10 +136,7 @@ const SidebarContent: React.FC = () => {
               ))}
           </div>
         </div>
-      )}
-
-      {/* Show Back Button */}
-      {!isOpen && (
+      ) : (
         <div
           className="absolute right-0 top-1/3 z-10 overflow-hidden"
           onClick={() => setIsOpen(true)}

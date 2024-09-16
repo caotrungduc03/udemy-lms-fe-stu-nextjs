@@ -6,12 +6,12 @@ const LearningLayout: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   return (
-    <div className="relative flex min-h-[600px]">
+    <main className="relative flex min-h-[600px]">
       <div className="basis-3/4 grow transition-all duration-500">
         {children}
       </div>
       <SidebarContent />
-    </div>
+    </main>
   );
 };
 
