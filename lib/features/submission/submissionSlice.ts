@@ -23,7 +23,11 @@ const initialState: SubmissionState = {
 const SubmissionSlice = createSlice({
   name: 'submission',
   initialState,
-  reducers: {},
+  reducers: {
+    setProgressExerciseId: (state, { payload }) => {
+      state.progressExerciseId = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addMatcher(
@@ -44,5 +48,5 @@ const SubmissionSlice = createSlice({
   },
 });
 
-export const {} = SubmissionSlice.actions;
+export const { setProgressExerciseId } = SubmissionSlice.actions;
 export default SubmissionSlice.reducer;

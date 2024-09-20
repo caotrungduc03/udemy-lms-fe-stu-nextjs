@@ -19,6 +19,11 @@ type createSubmissionParams = {
   accessToken: string | undefined;
 };
 
+type getSubmissionDetailParams = {
+  progressExerciseId: number | null;
+  accessToken: string | undefined;
+};
+
 export const submissionApi = createApi({
   reducerPath: 'submissionApi',
   baseQuery: fetchBaseQuery({
@@ -64,6 +69,18 @@ export const submissionApi = createApi({
         };
       },
     }),
+    getSubmissionDetail: builder.query<any, getSubmissionDetailParams>({
+      query: ({ progressExerciseId, accessToken }) => {
+        return {
+          url: `/submissions/${progressExerciseId}`,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        };
+      },
+      transformResponse: (res: any) => res.data,
+    }),
   }),
 });
 
@@ -71,4 +88,5 @@ export const {
   useGetSubmissionsQuery,
   useCreateProgressExerciseMutation,
   useCreateSubmissionMutation,
+  useGetSubmissionDetailQuery,
 } = submissionApi;

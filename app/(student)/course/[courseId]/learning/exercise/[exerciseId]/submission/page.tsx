@@ -11,9 +11,9 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 const questionTypeLabels: Record<string, string> = {
-  SINGLE_CHOICE: 'select one answer',
-  MULTIPLE_CHOICE: 'select multiple answers',
-  SHORT_ANSWER: 'write short answer',
+  SINGLE_CHOICE: 'Select one answer',
+  MULTIPLE_CHOICE: 'Select multiple answers',
+  SHORT_ANSWER: 'Write short answer',
 };
 
 const SubmissionPage: React.FC = () => {
