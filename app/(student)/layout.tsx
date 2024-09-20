@@ -47,7 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={udemySans.variable}>
+      <body className={`min-h-screen h-1 ${udemySans.variable}`}>
         <StoreProvider>
           <Wrapper children={children} />
         </StoreProvider>
