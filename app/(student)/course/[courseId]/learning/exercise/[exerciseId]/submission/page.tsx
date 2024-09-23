@@ -2,6 +2,7 @@
 
 import Loading from '@/components/Loading';
 import { addSubmission } from '@/lib/features/exercise/exerciseSlice';
+import { addExerciseId } from '@/lib/features/progress/progressSlice';
 import { useCreateSubmissionMutation } from '@/lib/features/submission/submissionApi';
 import { AnswerSubmission } from '@/lib/features/submission/submissionSlice';
 import { RootState } from '@/lib/store';
@@ -60,6 +61,7 @@ const SubmissionPage: React.FC = () => {
 
         if (res.statusCode === 201) {
           toast.success('Submitted successfully');
+          dispatch(addExerciseId(general.id));
           dispatch(addSubmission(res.data));
         } else {
           toast.error(res.message);
