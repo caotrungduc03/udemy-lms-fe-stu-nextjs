@@ -16,8 +16,8 @@ const SubmissionDetail: React.FC<Props> = ({ answerDetails }) => {
           <th>STT</th>
           <th>Question type</th>
           <th>Question title</th>
-          <th>Answer</th>
           <th>Correct answer</th>
+          <th>Answer</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -27,8 +27,8 @@ const SubmissionDetail: React.FC<Props> = ({ answerDetails }) => {
             <td>{index + 1}</td>
             <td>{questionTypeLabels[answerDetail.questionType]}</td>
             <td>{answerDetail.questionTitle}</td>
-            <td>{answerDetail.answers}</td>
-            <td>{answerDetail.correctAnswers}</td>
+            <td>{answerDetail.correctAnswers.join('; ')}</td>
+            <td>{answerDetail.answers.join('; ')}</td>
             <td>
               <span
                 className={`${

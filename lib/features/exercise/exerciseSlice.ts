@@ -15,7 +15,11 @@ const initialState: ExerciseState = {
 const exerciseSlice = createSlice({
   name: 'exercise',
   initialState,
-  reducers: {},
+  reducers: {
+    addSubmission(state, { payload }) {
+      state.submissions = [payload, ...state.submissions];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addMatcher(
@@ -34,5 +38,5 @@ const exerciseSlice = createSlice({
   },
 });
 
-export const {} = exerciseSlice.actions;
+export const { addSubmission } = exerciseSlice.actions;
 export default exerciseSlice.reducer;

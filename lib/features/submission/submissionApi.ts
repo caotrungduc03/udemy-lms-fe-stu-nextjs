@@ -54,7 +54,6 @@ export const submissionApi = createApi({
             body: { progressId, exerciseId },
           };
         },
-        transformResponse: (res: any) => res.data,
       },
     ),
     createSubmission: builder.mutation<any, createSubmissionParams>({

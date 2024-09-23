@@ -16,7 +16,13 @@ const initialState: ProgressState = {
 const progressSlice = createSlice({
   name: 'progress',
   initialState,
-  reducers: {},
+  reducers: {
+    addExerciseId: (state, { payload }) => {
+      if (!state.exerciseIds.includes(payload)) {
+        state.exerciseIds = [...state.exerciseIds, payload];
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addMatcher(
       progressApi.endpoints.getProgressByCourseId.matchFulfilled,
@@ -29,5 +35,5 @@ const progressSlice = createSlice({
   },
 });
 
-export const {} = progressSlice.actions;
+export const { addExerciseId } = progressSlice.actions;
 export default progressSlice.reducer;

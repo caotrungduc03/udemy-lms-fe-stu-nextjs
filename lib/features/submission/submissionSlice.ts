@@ -33,9 +33,9 @@ const SubmissionSlice = createSlice({
       .addMatcher(
         submissionApi.endpoints.createProgressExercise.matchFulfilled,
         (state, { payload }) => {
-          state.progressExerciseId = payload.id;
-          state.tryCount = payload.tryCount;
-          state.questions = payload.questions;
+          state.progressExerciseId = payload.data.id;
+          state.tryCount = payload.data.tryCount;
+          state.questions = payload.data.questions;
           state.isDoingSubmission = true;
         },
       )

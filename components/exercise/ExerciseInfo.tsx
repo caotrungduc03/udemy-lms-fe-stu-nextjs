@@ -1,40 +1,20 @@
-import { usePathname, useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { useGetExerciseByIdQuery } from '../../lib/features/exercise/exerciseApi';
-import { useCreateProgressExerciseMutation } from '../../lib/features/submission/submissionApi';
 import { RootState } from '../../lib/store';
 import Loading from '../Loading';
 
 type Props = {
   exerciseId: number;
+  handleDoSubmission: () => void;
 };
 
-const ExerciseInfo: React.FC<Props> = ({ exerciseId }) => {
+const ExerciseInfo: React.FC<Props> = ({ exerciseId, handleDoSubmission }) => {
   const { accessToken } = useSelector((state: RootState) => state.auth);
   const { progressId } = useSelector((state: RootState) => state.progress);
   const { data, isFetching } = useGetExerciseByIdQuery({
     id: exerciseId,
     accessToken,
   });
-  const [trigger] = useCreateProgressExerciseMutation();
-  const router = useRouter();
-  const pathName = usePathname();
-
-  const handleDoSubmission = async () => {
-    try {
-      const res = await trigger({
-        progressId,
-        exerciseId,
-        accessToken,
-      }).unwrap();
-
-      router.push(`${pathName}/submission`);
-    } catch (error: any) {
-      toast.error(error.data.message);
-      console.log('error', error);
-    }
-  };
 
   if (!progressId || isFetching) return <Loading />;
 
