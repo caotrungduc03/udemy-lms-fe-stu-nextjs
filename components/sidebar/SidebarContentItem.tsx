@@ -1,4 +1,7 @@
+'use client';
+
 import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   MdCheck,
   MdOutlineLightbulb,
@@ -27,13 +30,20 @@ const SidebarContentItem: React.FC<Props> = ({
   item,
   type,
 }) => {
+  const [isChecked, setIsChecked] = useState<boolean>(false);
   const { isDoingSubmission } = useSelector(
     (state: RootState) => state.submission,
   );
   const params: Params = useParams();
   const pathName = usePathname();
   const router = useRouter();
-  const isActive = pathName.endsWith(`${type}/${item.id}`);
+  const isActive = pathName.includes(`${type}/${item.id}`);
+
+  useEffect(() => {
+    if (itemIds.includes(item.id)) {
+      setIsChecked(true);
+    }
+  }, [itemIds, item]);
 
   const handleClick = (id: number) => {
     if (isDoingSubmission) {
@@ -41,6 +51,10 @@ const SidebarContentItem: React.FC<Props> = ({
     }
 
     router.push(`/course/${params.courseId}/learning/${type}/${id}`);
+  };
+
+  const handleChange = () => {
+    setIsChecked(!isChecked);
   };
 
   return (
@@ -57,7 +71,8 @@ const SidebarContentItem: React.FC<Props> = ({
             id={`${type}-checkbox-` + index}
             type="checkbox"
             className="real-toggle-input"
-            defaultChecked={itemIds.includes(item.id)}
+            checked={isChecked}
+            onChange={handleChange}
           />
           <MdCheck className="icon icon-xsmall fake-toggle-input fake-toggle-checkbox relative top-1 cursor-pointer" />
         </label>
