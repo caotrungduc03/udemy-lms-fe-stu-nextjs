@@ -1,3 +1,4 @@
+import { usePathname, useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { useGetExerciseByIdQuery } from '../../lib/features/exercise/exerciseApi';
 import { RootState } from '../../lib/store';
@@ -11,10 +12,30 @@ type Props = {
 const ExerciseInfo: React.FC<Props> = ({ exerciseId, handleDoSubmission }) => {
   const { accessToken } = useSelector((state: RootState) => state.auth);
   const { progressId } = useSelector((state: RootState) => state.progress);
+  const { exercises } = useSelector((state: RootState) => state.course);
+  const router = useRouter();
+  const pathName = usePathname();
+
   const { data, isFetching } = useGetExerciseByIdQuery({
     id: exerciseId,
     accessToken,
   });
+
+  const handleSkipExercise = () => {
+    const currentIndex = exercises.findIndex(
+      (exercise) => exercise.id === exerciseId,
+    );
+    let nextIndex = currentIndex + 1;
+    if (nextIndex >= exercises.length) {
+      nextIndex = 0;
+    }
+
+    router.push(
+      `${pathName.split('/').slice(0, -1).join('/')}/${
+        exercises[nextIndex].id
+      }`,
+    );
+  };
 
   if (!progressId || isFetching) return <Loading />;
 
@@ -40,7 +61,10 @@ const ExerciseInfo: React.FC<Props> = ({ exerciseId, handleDoSubmission }) => {
         >
           Start
         </button>
-        <button className="btn btn-medium btn-ghost heading-sm rounded-md">
+        <button
+          className="btn btn-medium btn-ghost heading-sm rounded-md"
+          onClick={handleSkipExercise}
+        >
           Skip this exercise
         </button>
       </div>

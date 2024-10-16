@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { courseApi } from './courseApi';
+import { progressApi } from '../progress/progressApi';
 
 type CourseState = {
   general: any;
@@ -19,9 +19,9 @@ const courseSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addMatcher(
-      courseApi.endpoints.getCourseById.matchFulfilled,
+      progressApi.endpoints.getCourseAndProgressById.matchFulfilled,
       (state, { payload }) => {
-        const { lessons, exercises, ...rest } = payload;
+        const { lessons, exercises, ...rest } = payload.course.data;
         state.general = rest;
         state.lessons = lessons;
         state.exercises = exercises;

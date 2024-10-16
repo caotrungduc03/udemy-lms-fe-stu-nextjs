@@ -34,7 +34,7 @@ const SidebarContentItem: React.FC<Props> = ({
   const { isDoingSubmission } = useSelector(
     (state: RootState) => state.submission,
   );
-  const params: Params = useParams();
+  const { courseId }: Params = useParams();
   const pathName = usePathname();
   const router = useRouter();
   const isActive = pathName.includes(`${type}/${item.id}`);
@@ -50,7 +50,7 @@ const SidebarContentItem: React.FC<Props> = ({
       return toast.warn('Please complete the exercise first');
     }
 
-    router.push(`/course/${params.courseId}/learning/${type}/${id}`);
+    router.push(`/course/${courseId}/learning/${type}/${id}`);
   };
 
   const handleChange = () => {
