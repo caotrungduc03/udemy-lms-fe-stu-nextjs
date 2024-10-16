@@ -44,14 +44,17 @@ const LessonPage: React.FC = () => {
       </div>
       <div className="flex space-x-10 text-sm p-10">
         <h1>Description</h1>
-        <div className="w-3/4">
+        <div className="w-full">
           <p>{data.data.description}</p>
         </div>
       </div>
       <div className="space-x-10 text-sm px-10 pb-10">
         <h1 className="font-bold">Content</h1>
-        <div className="w-3/4">
-          <p>{data.data.content}</p>
+        <div className="w-full">
+          <div
+            className="quill-content"
+            dangerouslySetInnerHTML={{ __html: data.data.content }}
+          />
         </div>
       </div>
     </div>

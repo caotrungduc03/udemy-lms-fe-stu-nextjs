@@ -50,7 +50,7 @@ export default function CreateExercise() {
       minPassingPercentage: Number(data.minPassingPercentage),
       maxTries: Number(data.maxTries),
       duration: Number(data.duration),
-      courseId: courseId, // Truyền thêm courseId từ params vào data
+      courseId: Number(courseId), // Truyền thêm courseId từ params vào data
     };
     try {
       const result = await createExercise({

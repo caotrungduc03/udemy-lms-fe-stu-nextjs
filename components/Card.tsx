@@ -34,7 +34,9 @@ const Cards: React.FC<Card> = ({ desc, img, name, lastUpdate, price, id }) => {
         <h5 className="text-lg overflow-hidden font-bold tracking-tight text-gray-900 dark:text-white">
           {name}
         </h5>
-        <span className="text-sm text-gray-900 dark:text-white">{desc}</span>
+        <span className="text-sm text-gray-900 dark:text-white first-line: text-ellipsis line-clamp-2">
+          {desc}
+        </span>
         <span className="text-sm text-gray-900 dark:text-white">
           Last update: <p className="font-bold">{lastUpdate}</p>
         </span>
