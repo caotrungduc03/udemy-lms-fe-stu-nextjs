@@ -1,21 +1,23 @@
 'use client';
 
-import { updateQuestionTitle, updateQuestionType } from '@/lib/redux/formSlice';
+import {
+  updateQuestionCorrectAnswers,
+  updateQuestionPoint,
+  updateQuestionTitle,
+  updateQuestionType,
+} from '@/lib/features/question/formSlice';
 import { RootState } from '@/lib/store';
 import { Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import Edit from './Edit';
 import MultipleChoices from './qtypes/MultipleChoices';
-import Paragraph from './qtypes/Paragraph';
+import ShortAnswer from './qtypes/ShortAnswer';
+import SingleChoice from './qtypes/SingleChoice';
 
 const data = [
   {
-    title: 'MultipleChoices',
-    file: <MultipleChoices />,
-  },
-  {
-    title: 'Paragraph',
-    file: <Paragraph />,
+    title: 'SHORT_ANSWER',
+    file: <ShortAnswer />,
   },
 ];
 
@@ -28,43 +30,69 @@ const Question = ({
   onclick,
 }: {
   index: number;
-  value: { title: string; type: string; choices?: string[] | undefined };
+  value: {
+    questionTitle: string;
+    questionType: string;
+    answers?: string[];
+    correctAnswers?: string[];
+    maxPoint: number;
+  };
   addQuestion: () => void;
   handleDelete: () => void;
   isActiveQuestion: boolean;
   onclick: any;
 }) => {
   const dispatch = useDispatch();
-  const { title, type } = value; // Assuming value contains title and type
+  const { questionTitle, questionType, correctAnswers = [], maxPoint } = value;
 
   const handleChange = (newValue: string) => {
-    dispatch(updateQuestionTitle({ index, title: newValue }));
+    dispatch(updateQuestionTitle({ index, questionTitle: newValue }));
   };
 
   const handleTypeChange = (value: string) => {
-    dispatch(updateQuestionType({ index, type: value }));
+    dispatch(updateQuestionType({ index, questionType: value }));
   };
+
+  const handleCorrectAnswersChange = (value: string[]) => {
+    dispatch(
+      updateQuestionCorrectAnswers({
+        index,
+        questionCorrectAnswers: value,
+      }),
+    );
+  };
+
+  const handlePointChange = (newValue: string) => {
+    const parsedValue = parseInt(newValue);
+    if (isNaN(parsedValue)) {
+      dispatch(updateQuestionPoint({ index, maxPoint: 0 }));
+    } else {
+      dispatch(updateQuestionPoint({ index, maxPoint: parsedValue }));
+    }
+  };
+
   const activeQuestionIndex = useSelector(
     (state: RootState) => state.form.activeQuestionIndex,
   );
-  const qType = data.find((elem) => elem.title === type);
+
+  const qType = data.find((elem) => elem.title === questionType);
 
   return (
     <div
       onClick={onclick}
-      className="flex md:flex-row flex-col justify-center items-center w-full max-w-3xl mx-auto "
+      className="flex md:flex-row flex-col justify-center items-center w-full max-w-3xl mx-auto"
     >
       <div
-        className={` rounded-md my-6 ${
+        className={`rounded-md my-6 ${
           activeQuestionIndex === index
             ? 'border-l-4 border-[#29A0B1]'
             : 'border border-gray-300'
-        }  bg-white max-w-2xl shadow w-full grid place-items-center lg:place-items-start lg:ml-10 mx-auto`}
+        } bg-white max-w-2xl shadow w-full grid place-items-center lg:place-items-start lg:ml-10 mx-auto`}
       >
         <div className="w-full md:px-6 px-2 flex md:flex-row flex-col md:justify-between justify-center items-center gap-8 py-6">
           <input
             type="text"
-            value={title}
+            value={questionTitle}
             onChange={(e) => handleChange(e.target.value)}
             placeholder="Question"
             required
@@ -74,14 +102,42 @@ const Question = ({
             placeholder="Select Question Type"
             style={{ width: 300 }}
             onChange={handleTypeChange}
-            value={type}
+            value={questionType}
             options={[
-              { value: 'MultipleChoices', label: 'MultipleChoices' },
-              { value: 'Paragraph', label: 'Paragraph' },
+              { value: 'MULTIPLE_CHOICE', label: 'Multiple choices' },
+              { value: 'SINGLE_CHOICE', label: 'Single choice' },
+              { value: 'SHORT_ANSWER', label: 'Short Answer' },
             ]}
           />
         </div>
-        {qType && <div className="w-full">{qType.file}</div>}
+        {questionType === 'MULTIPLE_CHOICE' && (
+          <MultipleChoices
+            selectedOptions={correctAnswers}
+            onOptionsSelect={handleCorrectAnswersChange}
+          />
+        )}
+        {questionType === 'SINGLE_CHOICE' && (
+          <SingleChoice
+            selectedOption={correctAnswers[0] || null} // Lấy lựa chọn đúng đầu tiên hoặc null
+            onOptionSelect={(value) =>
+              handleCorrectAnswersChange(value ? [value] : [])
+            } // Chuyển đổi giá trị vào hàm callback
+          />
+        )}
+        {qType &&
+          questionType !== 'MultipleChoices' &&
+          questionType !== 'SingleChoice' && (
+            <div className="w-full">{qType.file}</div>
+          )}
+        <div className="w-full md:px-6 px-2 flex md:flex-row flex-col md:justify-between justify-center items-center gap-8 py-6">
+          <input
+            type="text"
+            value={maxPoint}
+            onChange={(e) => handlePointChange(e.target.value)}
+            placeholder="Point"
+            className="text-base px-4 outline-none capitalize border-b bg-gray-100 focus:border-b-2 border-gray-400 pt-3 pb-2 focus:border-[#29A0B1]"
+          />
+        </div>
       </div>
       {isActiveQuestion && (
         <Edit handleAdd={addQuestion} handleDelete={handleDelete} />

@@ -9,6 +9,8 @@ import exerciseSlice from './features/exercise/exerciseSlice';
 import { lessonApi } from './features/lesson/lessonApi';
 import { progressApi } from './features/progress/progressApi';
 import progressSlice from './features/progress/progressSlice';
+import formSlice from './features/question/formSlice';
+import { questionApi } from './features/question/questionApi';
 import { submissionApi } from './features/submission/submissionApi';
 import submissionSlice from './features/submission/submissionSlice';
 import { userApi } from './features/user/userApi';
@@ -21,6 +23,7 @@ export const makeStore = () => {
       progress: progressSlice,
       exercise: exerciseSlice,
       submission: submissionSlice,
+      form: formSlice,
       [authApi.reducerPath]: authApi.reducer,
       [courseApi.reducerPath]: courseApi.reducer,
       [userApi.reducerPath]: userApi.reducer,
@@ -29,6 +32,7 @@ export const makeStore = () => {
       [progressApi.reducerPath]: progressApi.reducer,
       [submissionApi.reducerPath]: submissionApi.reducer,
       [categoriesApi.reducerPath]: categoriesApi.reducer,
+      [questionApi.reducerPath]: questionApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(
@@ -40,6 +44,7 @@ export const makeStore = () => {
         progressApi.middleware,
         submissionApi.middleware,
         categoriesApi.middleware,
+        questionApi.middleware,
       ),
   });
 };

@@ -10,6 +10,26 @@
   body {
     @apply font-udemy-sans;
   }
+  .ql-align-center {
+    @apply text-center;
+  }
+
+  .ql-align-right {
+    @apply text-right;
+  }
+
+  .ql-align-left {
+    @apply text-left;
+  }
+
+  .ql-align-justify {
+    @apply text-justify;
+  }
+
+  .ql-video {
+    width: 100% !important;
+    height: 300px !important;
+  }
 }
 
 @layer components {

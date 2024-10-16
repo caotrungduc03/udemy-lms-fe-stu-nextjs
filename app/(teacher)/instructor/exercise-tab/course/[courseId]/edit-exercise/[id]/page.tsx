@@ -191,7 +191,7 @@ export default function EditExercise() {
               type="submit"
               className="inline-flex items-center px-5 py-3 text-sm font-medium text-center text-white bg-blue-600 rounded-lg dark:focus:ring-blue-900 hover:bg-blue-700"
             >
-              Create Exercise
+              Edit Exercise
             </button>
           )}
         </div>

@@ -1,22 +1,18 @@
 import { useState } from 'react';
 
-const MultipleChoices = ({
-  selectedOptions,
-  onOptionsSelect,
+const SingleChoice = ({
+  selectedOption,
+  onOptionSelect,
 }: {
-  selectedOptions: string[];
-  onOptionsSelect: (value: string[]) => void; // Nhận hàm callback từ component cha
+  selectedOption: string | null;
+  onOptionSelect: (value: string | null) => void; // Hàm callback nhận kiểu string hoặc null
 }) => {
   const [options, setOptions] = useState(['Option 1', 'Option 2']);
   const [newOption, setNewOption] = useState('');
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = e.target;
-    if (checked) {
-      onOptionsSelect([...selectedOptions, value]); // Thêm vào danh sách lựa chọn
-    } else {
-      onOptionsSelect(selectedOptions.filter((option) => option !== value)); // Xóa khỏi danh sách lựa chọn
-    }
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    onOptionSelect(value); // Gọi hàm callback khi lựa chọn thay đổi
   };
 
   const handleOptionNameChange = (index: number, newName: string) => {
@@ -35,8 +31,10 @@ const MultipleChoices = ({
   const deleteOption = (index: number) => {
     const updatedOptions = options.filter((_, i) => i !== index);
     setOptions(updatedOptions);
-    // Cập nhật lại các lựa chọn đã chọn khi xóa một lựa chọn
-    setOptions(selectedOptions.filter((option) => option !== options[index]));
+    // Nếu xóa lựa chọn đang được chọn, đặt lại selectedOption về null
+    if (selectedOption === options[index]) {
+      onOptionSelect(null); // Đặt lại lựa chọn đúng
+    }
   };
 
   return (
@@ -45,11 +43,12 @@ const MultipleChoices = ({
         {options.map((option, index) => (
           <div key={index} className="flex items-center mb-2">
             <input
-              type="checkbox"
+              type="radio"
               id={`option-${index}`}
+              name="single-choice" // Đặt cùng tên để tạo nhóm radio
               value={option}
-              checked={selectedOptions.includes(option)}
-              onChange={handleCheckboxChange}
+              checked={selectedOption === option}
+              onChange={handleRadioChange}
               className="mr-2"
             />
             <input
@@ -86,4 +85,4 @@ const MultipleChoices = ({
   );
 };
 
-export default MultipleChoices;
+export default SingleChoice;
