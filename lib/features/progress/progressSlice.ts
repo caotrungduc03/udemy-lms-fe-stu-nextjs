@@ -25,11 +25,13 @@ const progressSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      progressApi.endpoints.getProgressByCourseId.matchFulfilled,
+      progressApi.endpoints.getCourseAndProgressById.matchFulfilled,
       (state, { payload }) => {
-        state.progressId = payload.data.id;
-        state.lessonIds = payload.data.progressLessonIds;
-        state.exerciseIds = payload.data.progressExerciseIds;
+        const { id, progressLessonIds, progressExerciseIds } =
+          payload.progress.data;
+        state.progressId = id;
+        state.lessonIds = progressLessonIds;
+        state.exerciseIds = progressExerciseIds;
       },
     );
   },
