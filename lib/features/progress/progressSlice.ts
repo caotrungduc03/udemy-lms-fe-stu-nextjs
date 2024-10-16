@@ -16,18 +16,26 @@ const initialState: ProgressState = {
 const progressSlice = createSlice({
   name: 'progress',
   initialState,
-  reducers: {},
+  reducers: {
+    addExerciseId: (state, { payload }) => {
+      if (!state.exerciseIds.includes(payload)) {
+        state.exerciseIds = [...state.exerciseIds, payload];
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addMatcher(
-      progressApi.endpoints.getProgressByCourseId.matchFulfilled,
+      progressApi.endpoints.getCourseAndProgressById.matchFulfilled,
       (state, { payload }) => {
-        state.progressId = payload.data.id;
-        state.lessonIds = payload.data.progressLessonIds;
-        state.exerciseIds = payload.data.progressExerciseIds;
+        const { id, progressLessonIds, progressExerciseIds } =
+          payload.progress.data;
+        state.progressId = id;
+        state.lessonIds = progressLessonIds;
+        state.exerciseIds = progressExerciseIds;
       },
     );
   },
 });
 
-export const {} = progressSlice.actions;
+export const { addExerciseId } = progressSlice.actions;
 export default progressSlice.reducer;

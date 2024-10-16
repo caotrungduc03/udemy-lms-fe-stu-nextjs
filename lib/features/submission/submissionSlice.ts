@@ -23,15 +23,19 @@ const initialState: SubmissionState = {
 const SubmissionSlice = createSlice({
   name: 'submission',
   initialState,
-  reducers: {},
+  reducers: {
+    setProgressExerciseId: (state, { payload }) => {
+      state.progressExerciseId = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addMatcher(
         submissionApi.endpoints.createProgressExercise.matchFulfilled,
         (state, { payload }) => {
-          state.progressExerciseId = payload.id;
-          state.tryCount = payload.tryCount;
-          state.questions = payload.questions;
+          state.progressExerciseId = payload.data.id;
+          state.tryCount = payload.data.tryCount;
+          state.questions = payload.data.questions;
           state.isDoingSubmission = true;
         },
       )
@@ -44,5 +48,5 @@ const SubmissionSlice = createSlice({
   },
 });
 
-export const {} = SubmissionSlice.actions;
+export const { setProgressExerciseId } = SubmissionSlice.actions;
 export default SubmissionSlice.reducer;

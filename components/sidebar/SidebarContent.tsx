@@ -1,5 +1,6 @@
 'use client';
 
+import { useGetCourseAndProgressByIdQuery } from '@/lib/features/progress/progressApi';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import {
@@ -9,8 +10,6 @@ import {
   MdOutlineExpandMore,
 } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { useGetCourseByIdQuery } from '../../lib/features/course/courseApi';
-import { useGetProgressByCourseIdQuery } from '../../lib/features/progress/progressApi';
 import { RootState } from '../../lib/store';
 import Loading from '../Loading';
 import SidebarContentItem from './SidebarContentItem';
@@ -27,25 +26,17 @@ const SidebarContent: React.FC = () => {
   const { general, lessons, exercises } = useSelector(
     (state: RootState) => state.course,
   );
-  const { progressId, lessonIds, exerciseIds } = useSelector(
+  const { lessonIds, exerciseIds } = useSelector(
     (state: RootState) => state.progress,
   );
-  const params: Params = useParams();
-  const { isLoading: isLoadingCourse } = useGetCourseByIdQuery(
+  const { courseId }: Params = useParams();
+  const { isLoading } = useGetCourseAndProgressByIdQuery(
     {
-      id: Number(params.courseId),
-    },
-    {
-      skip: !!general,
-    },
-  );
-  const { isLoading: isLoadingProgress } = useGetProgressByCourseIdQuery(
-    {
-      id: params.courseId,
+      courseId: Number(courseId),
       accessToken,
     },
     {
-      skip: !!progressId,
+      skip: general && general.id === Number(courseId),
     },
   );
 
@@ -55,7 +46,7 @@ const SidebarContent: React.FC = () => {
         isOpen ? 'w-[var(--sidebar-width)]' : 'w-0'
       }`}
     >
-      {isLoadingCourse || isLoadingProgress ? (
+      {isLoading ? (
         <Loading />
       ) : isOpen ? (
         <div className="flex flex-col h-full">

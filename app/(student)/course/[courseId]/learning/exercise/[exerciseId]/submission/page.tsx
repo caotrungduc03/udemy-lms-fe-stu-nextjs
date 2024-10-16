@@ -1,19 +1,21 @@
 'use client';
 
 import Loading from '@/components/Loading';
+import { addSubmission } from '@/lib/features/exercise/exerciseSlice';
+import { addExerciseId } from '@/lib/features/progress/progressSlice';
 import { useCreateSubmissionMutation } from '@/lib/features/submission/submissionApi';
 import { AnswerSubmission } from '@/lib/features/submission/submissionSlice';
 import { RootState } from '@/lib/store';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 const questionTypeLabels: Record<string, string> = {
-  SINGLE_CHOICE: 'select one answer',
-  MULTIPLE_CHOICE: 'select multiple answers',
-  SHORT_ANSWER: 'write short answer',
+  SINGLE_CHOICE: 'Select one answer',
+  MULTIPLE_CHOICE: 'Select multiple answers',
+  SHORT_ANSWER: 'Write short answer',
 };
 
 const SubmissionPage: React.FC = () => {
@@ -30,6 +32,13 @@ const SubmissionPage: React.FC = () => {
   const [trigger] = useCreateSubmissionMutation();
   const router = useRouter();
   const pathName = usePathname();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!isDoingSubmission) {
+      router.push(pathName.split('/').slice(0, -1).join('/'));
+    }
+  }, [isDoingSubmission, general]);
 
   const handleFinishSubmission = async (data: any) => {
     try {
@@ -50,12 +59,16 @@ const SubmissionPage: React.FC = () => {
           accessToken,
         }).unwrap();
 
-        toast.success('Submitted successfully');
-        router.push(pathName.split('/').slice(0, -1).join('/'));
+        if (res.statusCode === 201) {
+          toast.success('Submitted successfully');
+          dispatch(addExerciseId(general.id));
+          dispatch(addSubmission(res.data));
+        } else {
+          toast.error(res.message);
+        }
       }
     } catch (error: any) {
       toast.error(error.data.message);
-      console.log('error', error);
     }
   };
 
@@ -71,15 +84,7 @@ const SubmissionPage: React.FC = () => {
     );
   };
 
-  if (
-    !general ||
-    !progressExerciseId ||
-    !tryCount ||
-    !questions ||
-    !isDoingSubmission
-  ) {
-    router.push(pathName.split('/').slice(0, -1).join('/'));
-
+  if (!general || !questions || !tryCount) {
     return <Loading />;
   }
 
@@ -96,7 +101,7 @@ const SubmissionPage: React.FC = () => {
           <div className="flex mr-6">
             <span className="mr-3">Total tries:</span>
             <span className="font-bold">
-              {tryCount}/{general.totalQuestions}
+              {tryCount}/{general.maxTries}
             </span>
           </div>
         </div>
@@ -108,68 +113,74 @@ const SubmissionPage: React.FC = () => {
         </div>
       </div>
       <form onSubmit={handleSubmit(handleFinishSubmission)}>
-        {questions?.map((question: any, index: number) => (
-          <div
-            key={question.id}
-            className={currentIndex === index ? 'block' : 'hidden'}
-          >
-            <div className="my-10">
-              <h2 className="mb-5 text-2xl">
-                {index + 1}. {question.questionTitle}
-              </h2>
-              <p>({questionTypeLabels[question.questionType]})</p>
-            </div>
-            <div className="flex w-full flex-wrap">
-              {question.answers.map((answer: any, index: number) => (
-                <div
-                  key={index}
-                  className="w-1/2 flex justify-between px-3 mb-4"
-                >
-                  <label
-                    htmlFor={`question-${question.id}-answer-${index}`}
-                    className="flex items-center w-full border border-black rounded-md px-4 py-3 cursor-pointer"
+        {questions?.length ? (
+          questions.map((question: any, index: number) => (
+            <div
+              key={question.id}
+              className={currentIndex === index ? 'block' : 'hidden'}
+            >
+              <div className="my-10">
+                <h2 className="mb-5 text-2xl">
+                  {index + 1}. {question.questionTitle}
+                </h2>
+                <p>({questionTypeLabels[question.questionType]})</p>
+              </div>
+              <div className="flex w-full flex-wrap">
+                {question.answers.map((answer: any, index: number) => (
+                  <div
+                    key={index}
+                    className="w-1/2 flex justify-between px-3 mb-4"
                   >
-                    <input
-                      {...register(`question-${question.id}-answer`)}
-                      id={`question-${question.id}-answer-${index}`}
-                      type="radio"
-                      value={answer}
-                    />
-                    <span className="flex-1 ml-2">{answer}</span>
-                  </label>
-                </div>
-              ))}
+                    <label
+                      htmlFor={`question-${question.id}-answer-${index}`}
+                      className="flex items-center w-full border border-black rounded-md px-4 py-3 cursor-pointer"
+                    >
+                      <input
+                        {...register(`question-${question.id}-answer`)}
+                        id={`question-${question.id}-answer-${index}`}
+                        type="radio"
+                        value={answer}
+                      />
+                      <span className="flex-1 ml-2">{answer}</span>
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="flex gap-3 justify-center mt-10">
-              {currentIndex > 0 && (
-                <button
-                  type="button"
-                  className="btn btn-medium btn-primary heading-sm rounded-md"
-                  onClick={handlePrevQuestion}
-                >
-                  Previous
-                </button>
-              )}
-              {currentIndex === questions.length - 1 && (
-                <button
-                  type="submit"
-                  className="btn btn-medium btn-primary heading-sm rounded-md"
-                >
-                  Submit
-                </button>
-              )}
-              {currentIndex < questions.length - 1 && (
-                <button
-                  type="button"
-                  className="btn btn-medium btn-primary heading-sm rounded-md"
-                  onClick={handleNextQuestion}
-                >
-                  Next
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="my-10 text-center">No questions</div>
+        )}
+        <div className="flex gap-3 justify-center mt-10">
+          {currentIndex > 0 && (
+            <button
+              type="button"
+              className="btn btn-medium btn-primary heading-sm rounded-md"
+              onClick={handlePrevQuestion}
+            >
+              Previous
+            </button>
+          )}
+          {(questions.length === 0 ||
+            (questions.length > 0 &&
+              currentIndex === questions.length - 1)) && (
+            <button
+              type="submit"
+              className="btn btn-medium btn-primary heading-sm rounded-md"
+            >
+              Submit
+            </button>
+          )}
+          {currentIndex < questions.length - 1 && (
+            <button
+              type="button"
+              className="btn btn-medium btn-primary heading-sm rounded-md"
+              onClick={handleNextQuestion}
+            >
+              Next
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
