@@ -162,13 +162,13 @@ export const Search: React.FC = () => {
           <div className="col-span-10">
             <div className="min-w-[800px] grid grid-cols-10 flex">
               <div id="filter" className="col-span-2 mr-10 pb-10">
-                <select
+                {/* <select
                   name="options"
                   className="w-full p-2 border border-black mb-4 mt-2 cursor-pointer"
                 >
                   <option value="old">Oldest</option>
                   <option value="new">Newest</option>
-                </select>
+                </select> */}
                 <div className="flex flex-col">
                   <span className="font-bold border-t border-gray-200 pt-2">
                     Language
@@ -188,13 +188,13 @@ export const Search: React.FC = () => {
                       type="checkbox"
                       id="checkbox2"
                       className="m-2"
-                      onChange={() => toggleFilter('language', 'Tiếng Việt')}
-                      checked={filters.language.includes('Tiếng Việt')}
+                      onChange={() => toggleFilter('language', 'Vietnamese')}
+                      checked={filters.language.includes('Vietnamese')}
                     />
                     Tiếng Việt
                   </div>
                 </div>
-                <div className="flex flex-col pt-2">
+                {/* <div className="flex flex-col pt-2">
                   <span className="font-bold border-t border-gray-200 pt-2">
                     Topic
                   </span>
@@ -206,7 +206,7 @@ export const Search: React.FC = () => {
                     <input type="checkbox" id="checkbox2" className="m-2" />
                     C++
                   </div>
-                </div>
+                </div> */}
                 <div className="flex flex-col pt-2">
                   <span className="font-bold border-t border-gray-200 pt-2">
                     Price
@@ -216,8 +216,8 @@ export const Search: React.FC = () => {
                       type="checkbox"
                       id="checkbox1"
                       className="m-2"
-                      onChange={() => toggleFilter('priceType', 'paid')}
-                      checked={filters.priceType.includes('paid')}
+                      onChange={() => toggleFilter('priceType', 'PAID')}
+                      checked={filters.priceType.includes('PAID')}
                     />
                     Paid
                   </div>
@@ -226,8 +226,8 @@ export const Search: React.FC = () => {
                       type="checkbox"
                       id="checkbox2"
                       className="m-2"
-                      onChange={() => toggleFilter('priceType', 'free')}
-                      checked={filters.priceType.includes('free')}
+                      onChange={() => toggleFilter('priceType', 'FREE')}
+                      checked={filters.priceType.includes('FREE')}
                     />
                     Free
                   </div>

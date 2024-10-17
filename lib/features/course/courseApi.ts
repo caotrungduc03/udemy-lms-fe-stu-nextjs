@@ -71,6 +71,14 @@ export const courseApi = createApi({
         };
       },
     }),
+    getCourseByIdCategory: builder.query({
+      query: ({ id }) => {
+        return {
+          url: `/courses?categoryId=${id}`,
+          method: 'GET',
+        };
+      },
+    }),
   }),
 });
 
@@ -80,5 +88,6 @@ export const {
   useGetCourseByAuthorIdDataQuery,
   useCreateCourseMutation,
   useEditCourseMutation,
+  useGetCourseByIdCategoryQuery,
   useGetCourseByIdDataQuery,
 } = courseApi;

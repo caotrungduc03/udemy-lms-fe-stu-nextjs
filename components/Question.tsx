@@ -5,6 +5,7 @@ import {
   updateQuestionPoint,
   updateQuestionTitle,
   updateQuestionType,
+  updateQuestionValue,
 } from '@/lib/features/question/formSlice';
 import { RootState } from '@/lib/store';
 import { Select } from 'antd';
@@ -43,7 +44,13 @@ const Question = ({
   onclick: any;
 }) => {
   const dispatch = useDispatch();
-  const { questionTitle, questionType, correctAnswers = [], maxPoint } = value;
+  const {
+    questionTitle,
+    questionType,
+    correctAnswers = [],
+    answers = [],
+    maxPoint,
+  } = value;
 
   const handleChange = (newValue: string) => {
     dispatch(updateQuestionTitle({ index, questionTitle: newValue }));
@@ -58,6 +65,15 @@ const Question = ({
       updateQuestionCorrectAnswers({
         index,
         questionCorrectAnswers: value,
+      }),
+    );
+  };
+
+  const handleAnswersChange = (value: string[]) => {
+    dispatch(
+      updateQuestionValue({
+        index,
+        value: value,
       }),
     );
   };
@@ -114,6 +130,7 @@ const Question = ({
           <MultipleChoices
             selectedOptions={correctAnswers}
             onOptionsSelect={handleCorrectAnswersChange}
+            answers={handleAnswersChange}
           />
         )}
         {questionType === 'SINGLE_CHOICE' && (
@@ -122,6 +139,7 @@ const Question = ({
             onOptionSelect={(value) =>
               handleCorrectAnswersChange(value ? [value] : [])
             } // Chuyển đổi giá trị vào hàm callback
+            answers={handleAnswersChange}
           />
         )}
         {qType &&
