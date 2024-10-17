@@ -3,9 +3,11 @@ import { useState } from 'react';
 const MultipleChoices = ({
   selectedOptions,
   onOptionsSelect,
+  answers,
 }: {
   selectedOptions: string[];
-  onOptionsSelect: (value: string[]) => void; // Nhận hàm callback từ component cha
+  onOptionsSelect: (value: string[]) => void;
+  answers: (value: string[]) => void; // Nhận hàm callback từ component cha
 }) => {
   const [options, setOptions] = useState(['Option 1', 'Option 2']);
   const [newOption, setNewOption] = useState('');
@@ -28,6 +30,7 @@ const MultipleChoices = ({
   const addOption = () => {
     if (newOption.trim() !== '') {
       setOptions([...options, newOption.trim()]);
+      answers([...options, newOption.trim()]);
       setNewOption('');
     }
   };
@@ -37,6 +40,7 @@ const MultipleChoices = ({
     setOptions(updatedOptions);
     // Cập nhật lại các lựa chọn đã chọn khi xóa một lựa chọn
     setOptions(selectedOptions.filter((option) => option !== options[index]));
+    answers(selectedOptions.filter((option) => option !== options[index]));
   };
 
   return (

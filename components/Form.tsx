@@ -18,7 +18,7 @@ const Form = () => {
   const params = useParams();
   const courseId = params.courseId;
   const dispatch = useDispatch();
-  const exerciseId = 13;
+  const exerciseId = params.id;
   const questions = useSelector((state: RootState) => state.form.questions);
   //console.log("ques", questions);
   const activeQuestionIndex = useSelector(
@@ -60,11 +60,11 @@ const Form = () => {
         toast.success('Create questions successfully');
 
         // Chuyển hướng sau khi thành công
-        setTimeout(() => {
-          router.push(
-            `/instructor/exercise-tab/course/${courseId}/list-exercises`,
-          );
-        }, 2000);
+        // setTimeout(() => {
+        //   router.push(
+        //     `/instructor/exercise-tab/course/${courseId}/list-exercises`,
+        //   );
+        // }, 2000);
       }
     } catch (err) {
       console.error('Error:', err);

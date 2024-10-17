@@ -3,9 +3,11 @@ import { useState } from 'react';
 const SingleChoice = ({
   selectedOption,
   onOptionSelect,
+  answers,
 }: {
   selectedOption: string | null;
   onOptionSelect: (value: string | null) => void; // Hàm callback nhận kiểu string hoặc null
+  answers: (value: string[]) => void;
 }) => {
   const [options, setOptions] = useState(['Option 1', 'Option 2']);
   const [newOption, setNewOption] = useState('');
@@ -24,6 +26,7 @@ const SingleChoice = ({
   const addOption = () => {
     if (newOption.trim() !== '') {
       setOptions([...options, newOption.trim()]);
+      answers([...options, newOption.trim()]);
       setNewOption('');
     }
   };
@@ -31,6 +34,7 @@ const SingleChoice = ({
   const deleteOption = (index: number) => {
     const updatedOptions = options.filter((_, i) => i !== index);
     setOptions(updatedOptions);
+    answers(updatedOptions);
     // Nếu xóa lựa chọn đang được chọn, đặt lại selectedOption về null
     if (selectedOption === options[index]) {
       onOptionSelect(null); // Đặt lại lựa chọn đúng

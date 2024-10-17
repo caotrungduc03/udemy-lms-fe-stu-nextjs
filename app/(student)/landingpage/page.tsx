@@ -1,9 +1,9 @@
 // // pages/signup.tsx
 'use client'; // Chỉ thị này cần được thêm vào đầu tệp
-import logo1 from '@/fakeImage/cisco_logo.svg';
+import { useGetCourseByIdCategoryQuery } from '@/lib/features/course/courseApi';
 import logo2 from '@/public/fakeImage/citi_logo.svg';
+import customer from '@/public/fakeImage/customer.png';
 import logo3 from '@/public/fakeImage/ericsson_logo.svg';
-import customer from '@/public/fakeImage/fakeIage/customer.png';
 import logo4 from '@/public/fakeImage/hewlett_packard_enterprise_logo.svg';
 import instructor from '@/public/fakeImage/instructor.jpg';
 import logoUB from '@/public/fakeImage/logo-ub.svg';
@@ -36,7 +36,7 @@ const courses = [
     author: 'Author',
     rating: 4.6,
     price: '299,000 VND',
-    imageSrc: '/excercise.jpg', // Replace with actual image path
+    imageSrc: '/fakeImage/excercise.jpg', // Replace with actual image path
   },
   {
     id: 2,
@@ -44,7 +44,7 @@ const courses = [
     author: 'Author',
     rating: 4.6,
     price: '299,000 VND',
-    imageSrc: '/excercise2.jpg', // Replace with actual image path
+    imageSrc: '/fakeImage/excercise2.jpg', // Replace with actual image path
   },
   {
     id: 3,
@@ -52,7 +52,7 @@ const courses = [
     author: 'Author',
     rating: 4.6,
     price: '299,000 VND',
-    imageSrc: '/excercise3.jpg', // Replace with actual image path
+    imageSrc: '/fakeImage/excercise3.jpg', // Replace with actual image path
   },
   {
     id: 4,
@@ -60,7 +60,7 @@ const courses = [
     author: 'Author',
     rating: 4.6,
     price: '299,000 VND',
-    imageSrc: '/excercise4.jpg', // Replace with actual image path
+    imageSrc: '/fakeImage/excercise4.jpg', // Replace with actual image path
   },
   {
     id: 5,
@@ -68,7 +68,7 @@ const courses = [
     author: 'Author',
     rating: 4.6,
     price: '299,000 VND',
-    imageSrc: '/excercise5.jpg', // Replace with actual image path
+    imageSrc: '/fakeImage/excercise5.jpg', // Replace with actual image path
   },
   {
     id: 6,
@@ -76,7 +76,7 @@ const courses = [
     author: 'Author',
     rating: 4.6,
     price: '299,000 VND',
-    imageSrc: '/excercise6.jpg', // Replace with actual image path
+    imageSrc: '/fakeImage/excercise6.jpg', // Replace with actual image path
   },
 
   // Repeat for other courses
@@ -143,7 +143,7 @@ const topic = [
 ];
 
 const LandingPage: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState('Python');
+  const [selectedTab, setSelectedTab] = useState('Development');
 
   var settings = {
     dots: true,
@@ -152,13 +152,41 @@ const LandingPage: React.FC = () => {
     slidesToShow: 5,
     slidesToScroll: 1,
   };
+
+  const handleTab = (tab: any) => {
+    setSelectedTab(tab);
+  };
+  let id = 0;
+  switch (selectedTab) {
+    case 'Development':
+      id = 3;
+      break;
+    case 'Business':
+      id = 4;
+      break;
+    case 'Music':
+      id = 13;
+      break;
+    case 'Lifestyle':
+      id = 10;
+      break;
+    case 'Marketing':
+      id = 9;
+      break;
+    default:
+      return;
+  }
+  const { data, isLoading } = useGetCourseByIdCategoryQuery({
+    id: id,
+  });
+  console.log('data ne', data);
   return (
     <>
       <div className="relative w-full" style={{ height: 'auto' }}>
         <div
           className="bg-cover bg-center bg-gray-100 flex"
           style={{
-            backgroundImage: 'url(./clock-landingpage.jpg)',
+            backgroundImage: 'url(./fakeImage/clock-landingpage.jpg)',
             width: '100%',
             height: '100%',
           }}
@@ -188,7 +216,7 @@ const LandingPage: React.FC = () => {
           world
         </div>
         <div className="mb-16 flex justify-around mx-20">
-          <Image src={logo1} alt="logo1" />
+          {/* <Image src={logo1} alt="logo1" /> */}
           <Image src={logo2} alt="logo2" />
           <Image src={logo3} alt="logo3" />
           <Image src={logo4} alt="logo4" />
@@ -208,25 +236,19 @@ const LandingPage: React.FC = () => {
           published every month
         </h2>
         <div className="font-bold">
-          {[
-            'Python',
-            'Microsoft Excel',
-            'Web Development',
-            'JavaScript',
-            'Data Science',
-            'Amazon',
-            'Drawing',
-          ].map((tab) => (
-            <button
-              key={tab}
-              className={`hover:text-purple-900 hover:bg-gray-200 transition-colors duration-300 p-2 ${
-                selectedTab === tab ? 'bg-gray-200' : ''
-              }`}
-              onClick={() => setSelectedTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
+          {['Development', 'Business', 'Music', 'Lifestyle', 'Marketing'].map(
+            (tab) => (
+              <button
+                key={tab}
+                className={`hover:text-purple-900 hover:bg-gray-200 transition-colors duration-300 p-2 ${
+                  selectedTab === tab ? 'bg-gray-200' : ''
+                }`}
+                onClick={() => handleTab(tab)}
+              >
+                {tab}
+              </button>
+            ),
+          )}
         </div>
         <div className="bg-gray-200">
           <div className="grid grid-cols-5">
@@ -246,7 +268,54 @@ const LandingPage: React.FC = () => {
             Explore Python
           </button>
           <div className="flex space-x-4 mx-5 mb-10 ">
-            <CourseSwiper courses={courses} slidesPerView={5} />
+            <Swiper
+              spaceBetween={50}
+              slidesPerView={5} // Use the prop here
+              freeMode={true}
+              pagination={{
+                clickable: true,
+              }}
+              autoplay={{
+                delay: 2500,
+                disableOnInteraction: false,
+              }}
+              speed={750}
+              modules={[FreeMode, Pagination, Autoplay]}
+            >
+              {data?.data?.items?.map((course: any) => (
+                <SwiperSlide key={course.id} className="mb-10">
+                  <div>
+                    <img
+                      src={course.coverImage}
+                      alt="img"
+                      className="border border-gray-200 mt-2 object-cover w-full h-[200px]"
+                    />
+                    <p className="font-bold text-sm">{course.courseName}</p>
+                    <p className="text-gray-600 text-xs">
+                      {course.author.fullName}
+                    </p>
+                    <div className="flex">
+                      <span>5</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                        />
+                      </svg>
+                    </div>
+                    <span className="font-bold text-md">{course.price}</span>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
       </div>
