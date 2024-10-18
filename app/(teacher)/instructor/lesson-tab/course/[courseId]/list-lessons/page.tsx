@@ -1,6 +1,9 @@
 'use client';
 import Loading from '@/components/Loading';
-import { useGetLessonByCourseIdDataQuery } from '@/lib/features/lesson/lessonApi';
+import {
+  useDeleteLessonMutation,
+  useGetLessonByCourseIdDataQuery,
+} from '@/lib/features/lesson/lessonApi';
 import { getToken } from '@/lib/tokens';
 import classroom from '@/public/fakeImage/excercise2.jpg';
 import headerBg from '@/public/fakeImage/header-bg.jpg';
@@ -8,45 +11,8 @@ import Image from 'next/image';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { IoIosArrowDropleft, IoIosArrowDropright } from 'react-icons/io';
-import { TiPencil } from 'react-icons/ti';
+import { TiDelete, TiPencil } from 'react-icons/ti';
 
-const lessons = [
-  {
-    id: 23,
-    lessonName: 'Unbranded Cotton Ball',
-    description:
-      'Commodi magni sunt autem est ipsa accusantium laborum provident. Ab sit neque omnis corrupti et cupiditate. Quam distinctio natus qui. Harum voluptatum laudantium vel qui omnis maiores et. Doloribus sit labore quae quisquam quo et nulla et id.',
-    duration: 12,
-    content:
-      'The JBOD monitor is down, reboot the haptic interface so we can parse the SMTP bus!',
-  },
-  {
-    id: 22,
-    lessonName: 'Generic Concrete Ball',
-    description:
-      'Nihil repellendus dicta cumque est aut ex est asperiores. Porro ipsa quaerat consequatur eos fugiat quos est est. Cum suscipit a occaecati maxime quasi velit in.',
-    duration: 725,
-    content:
-      'If we hack the card, we can get to the RSS array through the primary SQL bus!',
-  },
-  {
-    id: 21,
-    lessonName: 'Awesome Steel Ball',
-    description:
-      'Quo porro dolores est velit fuga fugiat. Deserunt nobis et. Sunt tempora et ut exercitationem tempore at nihil est.',
-    duration: 572,
-    content: '{"name":"sss"}',
-  },
-  {
-    id: 20,
-    lessonName: '16',
-    description:
-      'Est eos perferendis non veritatis. Asperiores ut aut quod rem. Suscipit optio exercitationem eos assumenda nemo sit in voluptatibus. Est adipisci excepturi qui qui maiores illum ducimus ipsum. Maxime consectetur adipisci doloribus est voluptatem ut. Et velit perspiciatis autem dolorem tenetur eaque voluptatem.',
-    duration: 365,
-    content:
-      'Try to copy the CSS firewall, maybe it will input the primary circuit!',
-  },
-];
 export default function LessonList() {
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
@@ -55,6 +21,32 @@ export default function LessonList() {
   const searchParam = useSearchParams();
   const search = searchParam.get('lessonId') || '';
   const itemsPerPage = 6;
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [lessonToDelete, setLessonToDelete] = useState(null);
+  const [deleteExercise] = useDeleteLessonMutation();
+
+  const handleDeleteClick = (id: any) => {
+    setLessonToDelete(id);
+    setConfirmDelete(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const accessToken = getToken();
+    try {
+      await deleteExercise({ accessToken, id: lessonToDelete }).unwrap();
+      setConfirmDelete(false);
+      setLessonToDelete(null);
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to delete exercise:', error);
+      setConfirmDelete(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmDelete(false);
+    setLessonToDelete(null);
+  };
   const { data, isLoading } = useGetLessonByCourseIdDataQuery({
     accessToken: getToken(),
     courseId: courseId,
@@ -174,9 +166,6 @@ export default function LessonList() {
                   Name
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Description
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Duration
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -188,21 +177,22 @@ export default function LessonList() {
               {currentData.map((lesson: any, index: any) => (
                 <tr
                   key={index}
-                  className="hover:-translate-y-2 transition duration-150 hover:bg-gray-100"
+                  className="hover:-translate-y-2 transition duration-150 hover:bg-gray-100 "
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-lg font-semibold text-gray-900 cursor-pointer">
-                    <a onClick={() => handleClick(lesson.id)}>
-                      {lesson.lessonName}
-                    </a>
+                  <td
+                    onClick={() => handleClick(lesson.id)}
+                    className="px-6 py-4 whitespace-nowrap text-lg font-semibold text-gray-900 cursor-pointer"
+                  >
+                    {lesson.lessonName}
                   </td>
-                  <td className="px-6 py-4 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-500">
-                    {lesson.description}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td
+                    onClick={() => handleClick(lesson.id)}
+                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                  >
                     {lesson.duration}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="flex space-x-2 items-end">
+                    <div className="flex space-x-2 items-center">
                       <TiPencil size={20} />
                       <a
                         href={`/instructor/lesson-tab/course/${courseId}/edit-lesson/${lesson.id}`}
@@ -211,6 +201,34 @@ export default function LessonList() {
                           Edit
                         </button>
                       </a>
+                      <div className="relative">
+                        <button
+                          onClick={() => handleDeleteClick(lesson.id)}
+                          className="flex items-center text-red-600"
+                        >
+                          <TiDelete size={20} className="" />
+                          Delete
+                        </button>
+                        {confirmDelete && lessonToDelete === lesson.id && (
+                          <div className="absolute left-[calc(100%+0.5rem)] bg-white border border-gray-300 shadow-lg p-2 rounded-md z-10">
+                            <div className="flex items-center">
+                              <span>Are you sure to delete?</span>
+                              <button
+                                onClick={handleConfirmDelete}
+                                className="ml-2 text-green-600 hover:text-green-800 font-semibold"
+                              >
+                                Yes
+                              </button>
+                              <button
+                                onClick={handleCancelDelete}
+                                className="ml-2 text-red-600 hover:text-red-800 font-semibold"
+                              >
+                                No
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </td>
                 </tr>
