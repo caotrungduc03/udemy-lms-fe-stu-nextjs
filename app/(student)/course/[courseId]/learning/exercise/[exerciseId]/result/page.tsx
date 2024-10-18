@@ -15,10 +15,13 @@ const ResultPage: React.FC = () => {
   const { progressExerciseId } = useSelector(
     (state: RootState) => state.submission,
   );
-  const { data, isLoading } = useGetSubmissionDetailQuery({
-    progressExerciseId,
-    accessToken,
-  });
+  const { data, isLoading } = useGetSubmissionDetailQuery(
+    {
+      progressExerciseId,
+      accessToken,
+    },
+    { skip: !progressExerciseId },
+  );
   const router = useRouter();
   const pathName = usePathname();
 

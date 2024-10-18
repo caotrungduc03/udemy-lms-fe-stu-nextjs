@@ -24,11 +24,7 @@ const SubmissionPage: React.FC = () => {
   const { general } = useSelector((state: RootState) => state.exercise);
   const { progressExerciseId, tryCount, questions, isDoingSubmission } =
     useSelector((state: RootState) => state.submission);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
   const [trigger] = useCreateSubmissionMutation();
   const router = useRouter();
   const pathName = usePathname();
@@ -39,7 +35,6 @@ const SubmissionPage: React.FC = () => {
       router.push(pathName.split('/').slice(0, -1).join('/'));
     }
   }, [isDoingSubmission, general]);
-
   const handleFinishSubmission = async (data: any) => {
     try {
       if (confirm('Are you sure you want to submit?')) {
@@ -50,9 +45,15 @@ const SubmissionPage: React.FC = () => {
 
           submission.push({
             questionId,
-            answers: [data[key]],
+            answers:
+              data[key] !== false && data[key] !== null && data[key] !== ''
+                ? Array.isArray(data[key])
+                  ? data[key]
+                  : [data[key]]
+                : [],
           });
         });
+
         const res = await trigger({
           progressExerciseId,
           submission,
@@ -126,25 +127,67 @@ const SubmissionPage: React.FC = () => {
                 <p>({questionTypeLabels[question.questionType]})</p>
               </div>
               <div className="flex w-full flex-wrap">
-                {question.answers.map((answer: any, index: number) => (
-                  <div
-                    key={index}
-                    className="w-1/2 flex justify-between px-3 mb-4"
-                  >
-                    <label
-                      htmlFor={`question-${question.id}-answer-${index}`}
-                      className="flex items-center w-full border border-black rounded-md px-4 py-3 cursor-pointer"
-                    >
+                {question.questionType === 'SINGLE_CHOICE' ||
+                question.questionType === 'MULTIPLE_CHOICE' ? (
+                  question.answers?.length ? (
+                    question.answers.map((answer: any, index: number) =>
+                      question.questionType === 'SINGLE_CHOICE' ? (
+                        <div
+                          key={index}
+                          className="w-1/2 flex justify-between px-3 mb-4"
+                        >
+                          <label
+                            htmlFor={`question-${question.id}-answer-${index}`}
+                            className="flex items-center w-full border border-black rounded-md px-4 py-3 cursor-pointer"
+                          >
+                            <input
+                              {...register(`question-${question.id}-answer`)}
+                              id={`question-${question.id}-answer-${index}`}
+                              type="radio"
+                              value={answer}
+                            />
+                            <span className="flex-1 ml-2">{answer}</span>
+                          </label>
+                        </div>
+                      ) : (
+                        <div
+                          key={index}
+                          className="w-1/2 flex justify-between px-3 mb-4"
+                        >
+                          <label
+                            htmlFor={`question-${question.id}-answer-${index}`}
+                            className="flex items-center w-full border border-black rounded-md px-4 py-3 cursor-pointer"
+                          >
+                            <input
+                              {...register(`question-${question.id}-answer`)}
+                              id={`question-${question.id}-answer-${index}`}
+                              type="checkbox"
+                              value={answer}
+                            />
+                            <span className="flex-1 ml-2">{answer}</span>
+                          </label>
+                        </div>
+                      ),
+                    )
+                  ) : (
+                    <>
+                      <div className="w-full my-10 text-center">No answers</div>
                       <input
                         {...register(`question-${question.id}-answer`)}
                         id={`question-${question.id}-answer-${index}`}
-                        type="radio"
-                        value={answer}
+                        type="hidden"
                       />
-                      <span className="flex-1 ml-2">{answer}</span>
-                    </label>
-                  </div>
-                ))}
+                    </>
+                  )
+                ) : (
+                  <textarea
+                    key={index}
+                    {...register(`question-${question.id}-answer`)}
+                    className="w-full border border-black rounded-md px-4 py-3"
+                    placeholder="Write your answer here"
+                    rows={3}
+                  ></textarea>
+                )}
               </div>
             </div>
           ))
