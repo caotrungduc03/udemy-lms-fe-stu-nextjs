@@ -1,6 +1,9 @@
 'use client';
 import Loading from '@/components/Loading';
-import { useGetExerciseByCourseIdDataQuery } from '@/lib/features/exercise/exerciseApi';
+import {
+  useDeleteExerciseMutation,
+  useGetExerciseByCourseIdDataQuery,
+} from '@/lib/features/exercise/exerciseApi';
 import { getToken } from '@/lib/tokens';
 import classroom from '@/public/fakeImage/excercise2.jpg';
 import headerBg from '@/public/fakeImage/header-bg.jpg';
@@ -8,7 +11,7 @@ import Image from 'next/image';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { IoIosArrowDropleft, IoIosArrowDropright } from 'react-icons/io';
-import { TiPencil } from 'react-icons/ti';
+import { TiDelete, TiPencil } from 'react-icons/ti';
 
 export default function ExerciseList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,6 +21,32 @@ export default function ExerciseList() {
   const searchParam = useSearchParams();
   const search = searchParam.get('search') || '';
   const itemsPerPage = 6;
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [exerciseToDelete, setExerciseToDelete] = useState(null);
+  const [deleteExercise] = useDeleteExerciseMutation();
+
+  const handleDeleteClick = (id: any) => {
+    setExerciseToDelete(id);
+    setConfirmDelete(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const accessToken = getToken();
+    try {
+      await deleteExercise({ accessToken, id: exerciseToDelete }).unwrap();
+      setConfirmDelete(false);
+      setExerciseToDelete(null);
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to delete exercise:', error);
+      setConfirmDelete(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmDelete(false);
+    setExerciseToDelete(null);
+  };
   const { data, isLoading } = useGetExerciseByCourseIdDataQuery({
     accessToken: getToken(),
     courseId: courseId,
@@ -175,6 +204,34 @@ export default function ExerciseList() {
                           Edit
                         </button>
                       </a>
+                      <div className="relative">
+                        <button
+                          onClick={() => handleDeleteClick(exercise.id)}
+                          className="flex items-center text-red-600"
+                        >
+                          <TiDelete size={20} className="" />
+                          Delete
+                        </button>
+                        {confirmDelete && exerciseToDelete === exercise.id && (
+                          <div className="absolute left-[calc(100%+0.5rem)] bg-white border border-gray-300 shadow-lg p-2 rounded-md z-10">
+                            <div className="flex items-center">
+                              <span>Are you sure to delete?</span>
+                              <button
+                                onClick={handleConfirmDelete}
+                                className="ml-2 text-green-600 hover:text-green-800 font-semibold"
+                              >
+                                Yes
+                              </button>
+                              <button
+                                onClick={handleCancelDelete}
+                                className="ml-2 text-red-600 hover:text-red-800 font-semibold"
+                              >
+                                No
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </td>
                 </tr>

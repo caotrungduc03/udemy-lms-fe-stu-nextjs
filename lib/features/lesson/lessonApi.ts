@@ -48,6 +48,15 @@ export const lessonApi = createApi({
         body: data,
       }),
     }),
+    deleteLesson: builder.mutation({
+      query: ({ accessToken, id }) => ({
+        url: `/lessons/${id}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -56,4 +65,5 @@ export const {
   useGetLessonByCourseIdDataQuery,
   useCreateLessonMutation,
   useUpdateLessonMutation,
+  useDeleteLessonMutation,
 } = lessonApi;

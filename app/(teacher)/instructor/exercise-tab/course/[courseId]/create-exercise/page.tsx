@@ -60,7 +60,7 @@ export default function CreateExercise() {
       if (result) {
         toast.success('Create exercise successfully');
         setTimeout(() => {
-          window.location.href = `/instructor/exercise-tab/course/${courseId}/list-exercises`;
+          window.location.href = `/instructor/exercise-tab/course/${courseId}/exercise/${result?.data?.id}/form-exercise`;
         }, 2000);
       }
     } catch (err) {

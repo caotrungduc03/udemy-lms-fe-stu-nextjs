@@ -54,6 +54,15 @@ export const exerciseApi = createApi({
         body: data,
       }),
     }),
+    deleteExercise: builder.mutation({
+      query: ({ accessToken, id }) => ({
+        url: `/exercises/${id}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -62,4 +71,5 @@ export const {
   useGetExerciseByCourseIdDataQuery,
   useCreateExerciseMutation,
   useUpdateExerciseMutation,
+  useDeleteExerciseMutation,
 } = exerciseApi;

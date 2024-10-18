@@ -18,7 +18,8 @@ const Form = () => {
   const params = useParams();
   const courseId = params.courseId;
   const dispatch = useDispatch();
-  const exerciseId = params.id;
+  const rexerciseId = Array.isArray(params.id) ? params.id[0] : params.id; // Lấy phần tử đầu tiên nếu là mảng
+  const exerciseId = parseInt(rexerciseId, 10);
   const questions = useSelector((state: RootState) => state.form.questions);
   //console.log("ques", questions);
   const activeQuestionIndex = useSelector(
@@ -80,6 +81,7 @@ const Form = () => {
           onSubmit={handleSubmit}
           className="w-full block mx-auto h-full px-6 md:px-0 overflow-x-hidden"
         >
+          <h1 className="font-bold text-2xl text-center">Form Exercise</h1>
           <div className="flex md:flex-row flex-col justify-center items-center max-w-3xl mx-auto">
             <div>
               {questions.length === 0 && (

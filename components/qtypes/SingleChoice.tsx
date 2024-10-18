@@ -9,7 +9,7 @@ const SingleChoice = ({
   onOptionSelect: (value: string | null) => void; // Hàm callback nhận kiểu string hoặc null
   answers: (value: string[]) => void;
 }) => {
-  const [options, setOptions] = useState(['Option 1', 'Option 2']);
+  const [options, setOptions] = useState<string[]>([]);
   const [newOption, setNewOption] = useState('');
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -9,7 +9,7 @@ const MultipleChoices = ({
   onOptionsSelect: (value: string[]) => void;
   answers: (value: string[]) => void; // Nhận hàm callback từ component cha
 }) => {
-  const [options, setOptions] = useState(['Option 1', 'Option 2']);
+  const [options, setOptions] = useState<string[]>([]);
   const [newOption, setNewOption] = useState('');
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
