@@ -96,6 +96,10 @@ const formSlice = createSlice({
     setActiveQuestionIndex(state, action: PayloadAction<number | null>) {
       state.activeQuestionIndex = action.payload;
     },
+    setQuestions(state, action: PayloadAction<Question[]>) {
+      console.log(action.payload);
+      state.questions = action.payload;
+    },
   },
 });
 
@@ -108,6 +112,7 @@ export const {
   updateQuestionValue,
   deleteQuestion,
   setActiveQuestionIndex,
+  setQuestions,
 } = formSlice.actions;
 
 export default formSlice.reducer;

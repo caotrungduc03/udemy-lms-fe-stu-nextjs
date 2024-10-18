@@ -4,24 +4,60 @@ import {
   addQuestion,
   deleteQuestion,
   setActiveQuestionIndex,
+  setQuestions,
 } from '@/lib/features/question/formSlice';
-import { useCreateQuestionMutation } from '@/lib/features/question/questionApi';
+import {
+  useGetQuestionByExerciseIdQuery,
+  useUpdateQuestionByExerciseIdMutation,
+} from '@/lib/features/question/questionApi';
 import { RootState } from '@/lib/store';
 import { getToken } from '@/lib/tokens';
 import { useParams, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Edit from './Edit';
+import Loading from './Loading';
 import Question from './Question';
 
-const Form = () => {
+const FormUpdate = () => {
   const params = useParams();
   const courseId = params.courseId;
   const dispatch = useDispatch();
   const rexerciseId = Array.isArray(params.id) ? params.id[0] : params.id; // Lấy phần tử đầu tiên nếu là mảng
   const exerciseId = parseInt(rexerciseId, 10);
   const questions = useSelector((state: RootState) => state.form.questions);
-  //console.log("ques", questions);
+  const { data, isFetching } = useGetQuestionByExerciseIdQuery({
+    id: exerciseId,
+    accessToken: getToken(),
+    limit: 100, // hoặc giá trị bạn cần
+    sort: 'id:asc', // hoặc giá trị bạn cần
+  });
+  useEffect(() => {
+    if (data) {
+      // Chuyển đổi dữ liệu nếu cần và gọi action để cập nhật
+      const formattedQuestions = data.data.items.map(
+        (question: {
+          id: any;
+          questionTitle: any;
+          questionType: any;
+          answers: any;
+          correctAnswers: any;
+          maxPoint: any;
+        }) => ({
+          id: question.id,
+          questionTitle: question.questionTitle,
+          questionType: question.questionType,
+          answers: question.answers || [],
+          correctAnswers: question.correctAnswers || [],
+          maxPoint: question.maxPoint,
+        }),
+      );
+
+      dispatch(setQuestions(formattedQuestions));
+      console.log('aaaaaaaaa', formattedQuestions);
+    }
+  }, [data, dispatch]);
   const activeQuestionIndex = useSelector(
     (state: RootState) => state.form.activeQuestionIndex,
   );
@@ -37,24 +73,24 @@ const Form = () => {
     dispatch(setActiveQuestionIndex(index));
   };
   const router = useRouter();
-  const [createQuestion, { isLoading }] = useCreateQuestionMutation();
+  const [updateQuestion, { isLoading }] =
+    useUpdateQuestionByExerciseIdMutation();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    const formdata = { exerciseId, questions };
+    const formdata = { questions };
 
     console.log('Form Data:', formdata);
 
     try {
       // Gọi API tạo câu hỏi
-      console.log('Calling createQuestion API...');
-      const result = await createQuestion({
+      const result = await updateQuestion({
         data: formdata,
         accessToken: getToken(),
+        id: exerciseId,
       }).unwrap();
 
       // In kết quả trả về từ API để kiểm tra
-      console.log('API Result:', result);
 
       if (result) {
         // Hiển thị thông báo thành công
@@ -73,7 +109,9 @@ const Form = () => {
       toast.error('Failed to create exercise');
     }
   };
-
+  if (isFetching) {
+    return <Loading />;
+  }
   return (
     <div>
       <div className="bg-[#29A0B1]/10 w-full grid mx-auto min-h-screen py-10">
@@ -140,7 +178,7 @@ const Form = () => {
                     type="submit"
                     className="inline-flex items-center px-5 py-3 text-sm font-medium text-center text-white bg-blue-600 rounded-lg dark:focus:ring-blue-900 hover:bg-blue-700"
                   >
-                    Create Questions
+                    Update Questions
                   </button>
                 )}
               </div>
@@ -152,4 +190,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default FormUpdate;

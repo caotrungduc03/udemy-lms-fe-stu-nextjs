@@ -191,7 +191,7 @@ const LandingPage: React.FC = () => {
             height: '100%',
           }}
         >
-          <div className="z-10 items-left justify-center text-black ml-20 mt-20 mb-30 p-30">
+          <div className="items-left justify-center text-black ml-20 mt-20 mb-30 p-30">
             <div
               className="bg-white shadow-lg border border-gray-100 mb-20 pr-20"
               style={{ width: '70%' }}
