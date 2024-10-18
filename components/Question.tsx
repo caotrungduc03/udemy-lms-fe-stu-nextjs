@@ -92,7 +92,6 @@ const Question = ({
   );
 
   const qType = data.find((elem) => elem.title === questionType);
-
   return (
     <div
       onClick={onclick}
@@ -130,7 +129,8 @@ const Question = ({
           <MultipleChoices
             selectedOptions={correctAnswers}
             onOptionsSelect={handleCorrectAnswersChange}
-            answers={handleAnswersChange}
+            answers={answers}
+            onAnswersChange={handleAnswersChange}
           />
         )}
         {questionType === 'SINGLE_CHOICE' && (
@@ -139,7 +139,8 @@ const Question = ({
             onOptionSelect={(value) =>
               handleCorrectAnswersChange(value ? [value] : [])
             } // Chuyển đổi giá trị vào hàm callback
-            answers={handleAnswersChange}
+            answers={answers}
+            onAnswersChange={handleAnswersChange}
           />
         )}
         {qType &&

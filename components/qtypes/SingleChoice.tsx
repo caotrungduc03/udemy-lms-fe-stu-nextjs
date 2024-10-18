@@ -1,32 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const SingleChoice = ({
   selectedOption,
   onOptionSelect,
-  answers,
+  answers, // This should be passed as an array of strings
+  onAnswersChange, // Added to handle the change in answers from the parent
 }: {
   selectedOption: string | null;
-  onOptionSelect: (value: string | null) => void; // Hàm callback nhận kiểu string hoặc null
-  answers: (value: string[]) => void;
+  onOptionSelect: (value: string | null) => void; // Callback to handle selected option
+  answers: string[]; // Expecting an array of strings from the parent
+  onAnswersChange: (value: string[]) => void; // Callback to update answers array
 }) => {
-  const [options, setOptions] = useState<string[]>([]);
+  const [options, setOptions] = useState<string[]>(answers); // Initialize with passed answers
   const [newOption, setNewOption] = useState('');
+
+  useEffect(() => {
+    // Keep the options in sync with answers prop when it changes
+    setOptions(answers);
+  }, [answers]);
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    onOptionSelect(value); // Gọi hàm callback khi lựa chọn thay đổi
+    onOptionSelect(value); // Call the callback when the selected option changes
   };
 
   const handleOptionNameChange = (index: number, newName: string) => {
     const updatedOptions = [...options];
     updatedOptions[index] = newName;
     setOptions(updatedOptions);
+    onAnswersChange(updatedOptions); // Update the parent with new answers
   };
 
   const addOption = () => {
     if (newOption.trim() !== '') {
-      setOptions([...options, newOption.trim()]);
-      answers([...options, newOption.trim()]);
+      const updatedOptions = [...options, newOption.trim()];
+      setOptions(updatedOptions);
+      onAnswersChange(updatedOptions); // Add the new option to the answers array
       setNewOption('');
     }
   };
@@ -34,10 +43,10 @@ const SingleChoice = ({
   const deleteOption = (index: number) => {
     const updatedOptions = options.filter((_, i) => i !== index);
     setOptions(updatedOptions);
-    answers(updatedOptions);
-    // Nếu xóa lựa chọn đang được chọn, đặt lại selectedOption về null
+    onAnswersChange(updatedOptions); // Remove option from answers array
+    // If the deleted option is the selected one, reset selectedOption to null
     if (selectedOption === options[index]) {
-      onOptionSelect(null); // Đặt lại lựa chọn đúng
+      onOptionSelect(null); // Reset selected option
     }
   };
 
@@ -49,7 +58,7 @@ const SingleChoice = ({
             <input
               type="radio"
               id={`option-${index}`}
-              name="single-choice" // Đặt cùng tên để tạo nhóm radio
+              name="single-choice" // Group the radio buttons
               value={option}
               checked={selectedOption === option}
               onChange={handleRadioChange}

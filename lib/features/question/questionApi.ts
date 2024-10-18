@@ -37,6 +37,27 @@ export const questionApi = createApi({
         body: data,
       }),
     }),
+    getQuestionByExerciseId: builder.query({
+      query: ({ id, accessToken, limit, sort }) => {
+        return {
+          url: `/questions?exerciseId=${id}&limit=${limit}&sort=${sort}`,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        };
+      },
+    }),
+    updateQuestionByExerciseId: builder.mutation({
+      query: ({ accessToken, data, id }) => ({
+        url: `/questions/exercises/${id}`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -44,4 +65,6 @@ export const {
   useGetQuestionByIdQuery,
   useCreateQuestionMutation,
   useUpdateQuestionMutation,
+  useUpdateQuestionByExerciseIdMutation,
+  useGetQuestionByExerciseIdQuery,
 } = questionApi;

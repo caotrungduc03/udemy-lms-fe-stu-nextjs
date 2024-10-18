@@ -65,7 +65,9 @@ export default function ExerciseList() {
   const endIndex = startIndex + itemsPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
   const handleClick = (id: any) => {
-    router.push(`/instructor/exercise-tab/course/${courseId}/exercise/${id}`);
+    router.push(
+      `/instructor/exercise-tab/course/${courseId}/exercise/${id}/form-exercise-update`,
+    );
   };
   const paginationNumbers = () => {
     const pages: (number | string)[] = [];
@@ -183,15 +185,22 @@ export default function ExerciseList() {
                   key={index}
                   className="hover:-translate-y-2 transition duration-150 hover:bg-gray-100"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-lg font-semibold text-gray-900 cursor-pointer">
-                    <a onClick={() => handleClick(exercise.id)}>
-                      {exercise.exerciseName}
-                    </a>
+                  <td
+                    onClick={() => handleClick(exercise.id)}
+                    className="px-6 py-4 whitespace-nowrap text-lg font-semibold text-gray-900 cursor-pointer"
+                  >
+                    {exercise.exerciseName}
                   </td>
-                  <td className="px-6 py-4 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-500">
+                  <td
+                    onClick={() => handleClick(exercise.id)}
+                    className="px-6 py-4 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-500"
+                  >
                     {exercise.description}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td
+                    onClick={() => handleClick(exercise.id)}
+                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  >
                     {exercise.duration}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
